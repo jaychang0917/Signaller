@@ -4,6 +4,6 @@ import io.realm.RealmObject;
 
 public class Payload extends RealmObject {
 
-  public String messageUUID;
+  public long timestamp;
 
 }

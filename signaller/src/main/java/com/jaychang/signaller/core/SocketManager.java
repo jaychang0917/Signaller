@@ -13,14 +13,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
-import java.util.UUID;
 
 import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
-
-import static android.R.id.message;
 
 class SocketManager {
 
@@ -92,7 +89,7 @@ class SocketManager {
   void send(SocketChatMessage message) {
     try {
       Payload payload = new Payload();
-      payload.messageUUID = UUID.randomUUID().toString();
+      payload.timestamp = System.currentTimeMillis();
       message.payload = payload;
       JSONObject object = new JSONObject(new Gson().toJson(message));
       socket.emit(SEND_MESSAGE, object);
@@ -143,11 +140,12 @@ class SocketManager {
 
   private void updateChatMsgInDb(SocketChatMessage socketChatMessage) {
     // update own just sent msg
-    if (socketChatMessage.payload != null && socketChatMessage.payload.messageUUID != null) {
+    if (socketChatMessage.payload != null && socketChatMessage.payload.timestamp != 0L) {
       // remove temp msg
-      DatabaseManager.getInstance().removeChatMessage(socketChatMessage.payload.messageUUID);
-      // save real msg
+      DatabaseManager.getInstance().removeChatMessage(socketChatMessage.payload.timestamp);
+      // save real msg with local timestamp
       socketChatMessage.message.isSent = true;
+      socketChatMessage.message.mtime = socketChatMessage.payload.timestamp;
       DatabaseManager.getInstance().saveChatMessage(socketChatMessage.message);
       // remove msg from pending queue
       removePendingChatMsg(socketChatMessage);
@@ -161,7 +159,7 @@ class SocketManager {
   }
 
   private void removePendingChatMsg(SocketChatMessage msg) {
-    DatabaseManager.getInstance().removePendingChatMsg(msg.payload.messageUUID);
+    DatabaseManager.getInstance().removePendingChatMsg(msg.payload.timestamp);
   }
 
   private void sendPendingChatMsg() {
@@ -180,11 +178,11 @@ class SocketManager {
   }
 
   private void dispatchMsg(SocketChatMessage socketChatMessage) {
-    boolean isInChatRoomPage = Signaller.getInstance().isInChatRoomPage();
-    boolean isInChatRoomListPage = Signaller.getInstance().isInChatRoomListPage();
+    boolean isInChatRoomPage = ChatRoomState.getInstance().isInChatRoomPage();
+    boolean isInChatRoomListPage = ChatRoomState.getInstance().isInChatRoomListPage();
 
     if (isInChatRoomPage) {
-      boolean isInSameChatRoom = Signaller.getInstance().getCurrentChatRoomId().equals(socketChatMessage.roomId);
+      boolean isInSameChatRoom = ChatRoomState.getInstance().getCurrentChatRoomId().equals(socketChatMessage.roomId);
       if (isInSameChatRoom) {
         EventBus.getDefault().postSticky(new Events.OnMsgReceivedEvent(socketChatMessage.message));
       } else {

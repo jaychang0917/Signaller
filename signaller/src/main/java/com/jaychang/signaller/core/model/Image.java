@@ -3,9 +3,10 @@ package com.jaychang.signaller.core.model;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmObject;
 import io.realm.annotations.Ignore;
 
-public class Image {
+public class Image extends RealmObject {
 
   @SerializedName("ctime")
   public long ctime;
@@ -27,7 +28,7 @@ public class Image {
   @SerializedName("type")
   public String type;
   @SerializedName("name")
-  public Object name;
+  public String name;
 
   public static class Attributes {
     @SerializedName("width")

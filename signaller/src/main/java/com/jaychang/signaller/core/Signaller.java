@@ -1,5 +1,7 @@
 package com.jaychang.signaller.core;
 
+import android.content.Context;
+
 public final class Signaller {
 
   private static final Signaller INSTANCE = new Signaller();
@@ -7,12 +9,12 @@ public final class Signaller {
   private String socketUrl;
   private String accessToken;
   private String userId;
-  private boolean isInChatRoomListPage;
-  private boolean isInChatRoomPage;
-  private String currentChatRoomId;
 
   private Signaller() {
-    DatabaseManager.init();
+  }
+
+  public static void init(Context appContext) {
+    DatabaseManager.init(appContext);
   }
 
   public static Signaller getInstance() {
@@ -49,30 +51,6 @@ public final class Signaller {
 
   public String getUserId() {
     return userId;
-  }
-
-  public boolean isInChatRoomListPage() {
-    return isInChatRoomListPage;
-  }
-
-  public void setInChatRoomListPage(boolean inChatRoomListPage) {
-    isInChatRoomListPage = inChatRoomListPage;
-  }
-
-  public boolean isInChatRoomPage() {
-    return isInChatRoomPage;
-  }
-
-  public void setInChatRoomPage(boolean inChatRoomPage) {
-    isInChatRoomPage = inChatRoomPage;
-  }
-
-  public String getCurrentChatRoomId() {
-    return currentChatRoomId;
-  }
-
-  public void setCurrentChatRoomId(String currentChatRoomId) {
-    this.currentChatRoomId = currentChatRoomId;
   }
 
 }

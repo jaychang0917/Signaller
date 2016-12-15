@@ -2,13 +2,13 @@ package com.jaychang.demo.signaler;
 
 import android.app.Application;
 
-import io.realm.Realm;
+import com.jaychang.signaller.core.Signaller;
 
 public class App extends Application {
 
   @Override
   public void onCreate() {
     super.onCreate();
-    Realm.init(this);
+    Signaller.init(this);
   }
 }

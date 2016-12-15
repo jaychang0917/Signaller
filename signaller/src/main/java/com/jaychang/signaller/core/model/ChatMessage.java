@@ -1,7 +1,5 @@
 package com.jaychang.signaller.core.model;
 
-import android.media.Image;
-
 import com.google.gson.annotations.SerializedName;
 import com.jaychang.signaller.core.Signaller;
 

@@ -2,17 +2,28 @@
 <RelativeLayout
     android:id="@+id/activity_main"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.jaychang.demo.signaler.MainActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hello World!" />
+    <com.jaychang.demo.signaler.widget.NoSwipeViewPager
+        android:id="@+id/viewPager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.ogaclejapan.smarttablayout.SmartTabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        app:stl_distributeEvenly="true"
+        app:stl_overlineThickness="1dp"
+        app:stl_dividerColor="@android:color/transparent"
+        app:stl_indicatorColor="@color/colorPrimary"
+        app:stl_indicatorGravity="top"
+        app:stl_indicatorThickness="3dp"
+        />
+
 </RelativeLayout>

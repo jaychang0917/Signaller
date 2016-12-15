@@ -1,6 +1,6 @@
 package com.jaychang.signaller.core;
 
-import android.provider.Telephony;
+import android.content.Context;
 
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.ChatRoom;
@@ -36,7 +36,9 @@ class DatabaseManager {
     return INSTANCE;
   }
 
-  static void init() {
+  static void init(Context appContext) {
+    Realm.init(appContext);
+
     RealmConfiguration realmConfig = new RealmConfiguration.Builder()
       .schemaVersion(DB_VERSION)
       .migration(migration)
@@ -61,6 +63,7 @@ class DatabaseManager {
   public Observable<List<ChatRoom>> getChatRooms(String userId) {
     return realm
       .where(ChatRoom.class)
+      .equalTo("userId", userId)
       .findAllSortedAsync("mtime", Sort.DESCENDING)
       .asObservable()
       .filter(RealmResults::isLoaded)
@@ -108,22 +111,22 @@ class DatabaseManager {
       });
   }
 
-  public void removeChatMessage(String msgUUID) {
+  public void removeChatMessage(long timestamp) {
     Realm.getDefaultInstance()
       .executeTransactionAsync(realm -> {
         ChatMessage msg = realm.where(ChatMessage.class)
-          .equalTo("msgUUID", msgUUID).findFirst();
+          .equalTo("timestamp", timestamp).findFirst();
         if (msg != null) {
           msg.deleteFromRealm();
         }
       });
   }
 
-  public void removePendingChatMsg(String msgUUID) {
+  public void removePendingChatMsg(long timestamp) {
     Realm.getDefaultInstance()
       .executeTransactionAsync(realm -> {
         PendingChatMessage msg = realm.where(PendingChatMessage.class)
-          .equalTo("socketChatMessage.payload.msgUUID", msgUUID).findFirst();
+          .equalTo("socketChatMessage.payload.timestamp", timestamp).findFirst();
         if (msg != null) {
           msg.deleteFromRealm();
         }
