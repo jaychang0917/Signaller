@@ -3,11 +3,13 @@ package com.jaychang.signaller.core;
 public class UserData {
 
   private static final UserData INSTANCE = new UserData();
-  private boolean isInChatRoomListPage;
-  private boolean isInChatRoomPage;
-  private String currentChatRoomId;
-  private String accessToken;
-  private String userId;
+  private static String serverDomain;
+  private static String socketUrl;
+  private static boolean isInChatRoomListPage;
+  private static boolean isInChatRoomPage;
+  private static String currentChatRoomId;
+  private static String accessToken;
+  private static String userId;
 
   private UserData() {
   }
@@ -56,4 +58,19 @@ public class UserData {
     this.userId = userId;
   }
 
+  public String getSocketUrl() {
+    return socketUrl;
+  }
+
+  public void setSocketUrl(String socketUrl) {
+    this.socketUrl = socketUrl;
+  }
+
+  public String getServerDomain() {
+    return serverDomain;
+  }
+
+  public void setServerDomain(String serverDomain) {
+    this.serverDomain = serverDomain;
+  }
 }

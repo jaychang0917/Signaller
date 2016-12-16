@@ -14,7 +14,7 @@ public class ChatRoom extends RealmObject {
   @SerializedName("ctime")
   public long ctime;
   @SerializedName("parent_id")
-  public String chatroomId;
+  public String chatRoomId;
   @SerializedName("last_message")
   public ChatMessage lastMessage;
   @SerializedName("mtime")
@@ -27,7 +27,7 @@ public class ChatRoom extends RealmObject {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder("ChatRoom{");
-    sb.append("chatroomId='").append(chatroomId).append('\'');
+    sb.append("chatRoomId='").append(chatRoomId).append('\'');
     sb.append('}');
     return sb.toString();
   }

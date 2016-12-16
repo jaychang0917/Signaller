@@ -15,6 +15,7 @@ import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.DataManager;
+import com.jaychang.signaller.core.DatabaseManager;
 import com.jaychang.signaller.core.Events;
 import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.UserData;
@@ -312,6 +313,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     chatMessage.content = inputMessageView.getText().toString();
     addOwnTextMessageCell(chatMessage);
     sendTextMessage();
+    clearInput();
   }
 
   private void sendTextMessage() {
@@ -321,9 +323,11 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     message.type = "text";
     message.content = inputMessageView.getText().toString();
     socketChatMessage.message = message;
-
+    DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage);
     SocketManager.getInstance().send(socketChatMessage);
+  }
 
+  private void clearInput() {
     inputMessageView.setText("");
   }
 

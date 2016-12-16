@@ -1,8 +1,9 @@
 package com.jaychang.demo.signaler;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 
+import com.jaychang.demo.signaler.push.GcmManager;
 import com.jaychang.signaller.core.Signaller;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +23,9 @@ public class MainActivity extends AppCompatActivity {
 
     String accessToken = getIntent().getStringExtra(EXTRA_ACCESS_TOEKN);
     String userId = getIntent().getStringExtra(EXTRA_USER_ID);
+
     Signaller.getInstance().connect(accessToken, userId);
+
+    GcmManager.init(this);
   }
 }

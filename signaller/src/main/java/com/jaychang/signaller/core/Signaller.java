@@ -5,16 +5,17 @@ import android.content.Context;
 public final class Signaller {
 
   private static final Signaller INSTANCE = new Signaller();
-  private static String SERVER_DOMAIN;
-  private static String SOCKET_URL;
+
 
 
   private Signaller() {
   }
 
-  public static void init(Context appContext, String serverDomain, String socketUrl) {
-    Signaller.SERVER_DOMAIN = serverDomain;
-    Signaller.SOCKET_URL = socketUrl;
+  public static void init(Context appContext,
+                          String serverDomain,
+                          String socketUrl) {
+    UserData.getInstance().setServerDomain(serverDomain);
+    UserData.getInstance().setSocketUrl(socketUrl);
     DatabaseManager.getInstance().init(appContext);
   }
 
@@ -28,14 +29,6 @@ public final class Signaller {
 
     SocketManager.getInstance().initSocket(accessToken);
     SocketManager.getInstance().connect();
-  }
-
-  String getServerDomain() {
-    return SERVER_DOMAIN;
-  }
-
-  String getSocketUrl() {
-    return SOCKET_URL;
   }
 
 }

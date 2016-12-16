@@ -1,5 +1,6 @@
 package com.jaychang.signaller.core;
 
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -53,7 +54,7 @@ public class SocketManager {
       IO.Options opts = new IO.Options();
       opts.query = "access_token=" + accessToken;
       opts.secure = true;
-      socket = IO.socket(Signaller.getInstance().getSocketUrl(), opts);
+      socket = IO.socket(UserData.getInstance().getSocketUrl(), opts);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -142,7 +143,11 @@ public class SocketManager {
   private Emitter.Listener onMsgReceived = args -> {
     SocketChatMessage socketChatMessage = new Gson().fromJson(args[0].toString(), SocketChatMessage.class);
     mainThreadHandler.post(() -> {
-      updateChatMsgInDb(socketChatMessage);
+      AsyncTask.execute(() -> {
+        updateChatMsgInDb(socketChatMessage);
+        updateChatRoomInDb(socketChatMessage);
+        dispatchMsg(socketChatMessage);
+      });
     });
   };
 
@@ -156,33 +161,16 @@ public class SocketManager {
       socketChatMessage.message.mtime = socketChatMessage.payload.timestamp;
       DatabaseManager.getInstance().saveChatMessage(socketChatMessage.message);
       // remove msg from pending queue
-      removePendingChatMsg(socketChatMessage);
+      DatabaseManager.getInstance().removePendingChatMsg(socketChatMessage.payload.timestamp);
     }
     // save another received msg
     else {
       DatabaseManager.getInstance().saveChatMessage(socketChatMessage.message);
     }
-
-    dispatchMsg(socketChatMessage);
   }
 
-  private void removePendingChatMsg(SocketChatMessage msg) {
-    DatabaseManager.getInstance().removePendingChatMsg(msg.payload.timestamp);
-  }
-
-  private void sendPendingChatMsg() {
-    DatabaseManager.getInstance().getPendingChatMessages()
-      .subscribe(
-        pendingChatMessages -> {
-          for (PendingChatMessage pendingChatMessage : pendingChatMessages) {
-            send(pendingChatMessage.socketChatMessage);
-            LogUtils.d("sent pending chat message:" + pendingChatMessage.socketChatMessage.message);
-          }
-        },
-        error -> {
-          LogUtils.e("sendPendingChatMsg:" + error.getMessage());
-        }
-      );
+  private void updateChatRoomInDb(SocketChatMessage socketChatMessage) {
+    DatabaseManager.getInstance().updateChatRoom(socketChatMessage.roomId, socketChatMessage.message);
   }
 
   private void dispatchMsg(SocketChatMessage socketChatMessage) {
@@ -201,6 +189,21 @@ public class SocketManager {
     } else {
       EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(socketChatMessage.message));
     }
+  }
+
+  private void sendPendingChatMsg() {
+    DatabaseManager.getInstance().getPendingChatMessages()
+      .subscribe(
+        pendingChatMessages -> {
+          for (PendingChatMessage pendingChatMessage : pendingChatMessages) {
+            send(pendingChatMessage.socketChatMessage);
+            LogUtils.d("sent pending chat message:" + pendingChatMessage.socketChatMessage.message);
+          }
+        },
+        error -> {
+          LogUtils.e("sendPendingChatMsg:" + error.getMessage());
+        }
+      );
   }
 
 }

@@ -34,7 +34,7 @@ public class ApiManager {
   private static Api api;
 
   static {
-    BASE_URL = Signaller.getInstance().getServerDomain();
+    BASE_URL = UserData.getInstance().getServerDomain();
     setup();
   }
 

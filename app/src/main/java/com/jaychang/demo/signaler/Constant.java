@@ -2,10 +2,10 @@ package com.jaychang.demo.signaler;
 
 public class Constant {
 
-  public static final String ACCESS_TOKEN_JAY10 = "89f3b062bf1c8566eab604cba8e6d8136b7fb07fba87d4d6778d83234921c7f0eb735b39874cf1f11c9249970c608b643d5f361bb46d4c51614acca7c6be34c2";
+  public static final String ACCESS_TOKEN_JAY10 = "700a9af4174e711773f450121bce7e045b76a8a5588861fea8d6c08f30c9ea959eaacbd7338a84bcc5c76ef67153c96862b194a404adb0fa5872c07f1dc08918";
   public static final String USER_ID_JAY10 = "5714163003293696";
 
-  public static final String ACCESS_TOKEN_JAY11 = "fee51f721c1e345b39acdef15523ba63d082c2e25bf40596565b316f45dc177f652cbbb7c8edc2868d63fe1940134efb7d07028710172510ac72adb7d385e31";
+  public static final String ACCESS_TOKEN_JAY11 = "6f1d6e99e0f976d46fdbd92ce6fc028b2f8e85a82d6e9ed1b534049764abfe6e425ee1abae68d67989e69b06d0df5309f22d5d0fb832e9e3e0c1bbcd9c344ebe";
   public static final String USER_ID_JAY11 = "5745865499082752";
   public static final String SERVER_DOMAIN = "http://kol-pro.appspot.com/";
   public static final String SOCKETE_URL = "http://kol-chat.redso.com.hk:5000";

@@ -60,23 +60,25 @@ class ChatRoomCell extends BaseCell {
     holder.nameView.setText(receiver.name);
 
     ChatMessage lastMessage = chatroom.lastMessage;
-    if (lastMessage.isText()) {
-      holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-      holder.lastMsgView.setText(lastMessage.content);
-    } else if (lastMessage.isImage()) {
-      holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_camera, 0, 0, 0);
-      holder.lastMsgView.setText(R.string.image);
-    } else if (lastMessage.isEvent()) {
-      holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-    }
+    if (lastMessage != null) {
+      if (lastMessage.isText()) {
+        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        holder.lastMsgView.setText(lastMessage.content);
+      } else if (lastMessage.isImage()) {
+        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_camera, 0, 0, 0);
+        holder.lastMsgView.setText(R.string.image);
+      } else if (lastMessage.isEvent()) {
+        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+      }
 
-    String yesterday = "'" + context.getString(R.string.yesterday) + "'";
-    String date = DateTimeFormatUtils.translate(
-      String.valueOf(lastMessage.mtime),
-      "hh:mm a",
-      yesterday,
-      "dd/MM/yyyy");
-    holder.dateView.setText(date);
+      String yesterday = "'" + context.getString(R.string.yesterday) + "'";
+      String date = DateTimeFormatUtils.translate(
+        String.valueOf(lastMessage.mtime),
+        "hh:mm a",
+        yesterday,
+        "dd/MM/yyyy");
+      holder.dateView.setText(date);
+    }
   }
 
   public void setCallback(Callback callback) {
