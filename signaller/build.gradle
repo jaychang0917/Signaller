@@ -2,6 +2,7 @@ buildscript {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
+
     }
     dependencies {
         classpath "io.realm:realm-gradle-plugin:2.2.1"
@@ -11,16 +12,13 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 apply plugin: 'realm-android'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.jakewharton.butterknife'
 
-group='com.github.jaychang0917'
-
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.1"
 
     defaultConfig {
         minSdkVersion 15
@@ -44,7 +42,7 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:appcompat-v7:25.1.0'
     compile 'io.reactivex:rxandroid:1.2.1'
     compile 'io.reactivex:rxjava:1.2.3'
     compile 'com.trello:rxlifecycle:1.0'
@@ -71,4 +69,6 @@ dependencies {
 
     compile 'com.facebook.stetho:stetho:1.4.1'
     compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
+    compile 'com.uphyca:stetho_realm:2.0.0'
+
 }

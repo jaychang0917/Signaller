@@ -24,6 +24,8 @@ public class ChatFragment extends Fragment {
   }
 
   public void init() {
+
+
     ChatRoomListFragment fragment = ChatRoomListFragment.newInstance();
     getChildFragmentManager().beginTransaction()
       .replace(R.id.chatRoomListFragment, fragment)

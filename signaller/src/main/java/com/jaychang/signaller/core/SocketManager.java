@@ -7,7 +7,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.jaychang.signaller.core.model.Payload;
-import com.jaychang.signaller.core.model.PendingChatMessage;
 import com.jaychang.signaller.core.model.SocketChatMessage;
 import com.jaychang.signaller.util.LogUtils;
 
@@ -146,7 +145,7 @@ public class SocketManager {
       AsyncTask.execute(() -> {
         updateChatMsgInDb(socketChatMessage);
         updateChatRoomInDb(socketChatMessage);
-        dispatchMsg(socketChatMessage);
+        dispatchMsgEvents(socketChatMessage);
       });
     });
   };
@@ -155,7 +154,7 @@ public class SocketManager {
     // update own just sent msg
     if (socketChatMessage.payload != null && socketChatMessage.payload.timestamp != 0L) {
       // remove temp msg
-      DatabaseManager.getInstance().removeChatMessage(socketChatMessage.payload.timestamp);
+      DatabaseManager.getInstance().removeTempChatMessage(socketChatMessage.payload.timestamp);
       // save real msg with local timestamp
       socketChatMessage.message.isSent = true;
       socketChatMessage.message.mtime = socketChatMessage.payload.timestamp;
@@ -173,9 +172,8 @@ public class SocketManager {
     DatabaseManager.getInstance().updateChatRoom(socketChatMessage.roomId, socketChatMessage.message);
   }
 
-  private void dispatchMsg(SocketChatMessage socketChatMessage) {
+  private void dispatchMsgEvents(SocketChatMessage socketChatMessage) {
     boolean isInChatRoomPage = UserData.getInstance().isInChatRoomPage();
-    boolean isInChatRoomListPage = UserData.getInstance().isInChatRoomListPage();
 
     if (isInChatRoomPage) {
       boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(socketChatMessage.roomId);
@@ -184,8 +182,9 @@ public class SocketManager {
       } else {
         EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(socketChatMessage.message));
       }
+      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(socketChatMessage.message));
     } else {
-      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent());
+      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(socketChatMessage.message));
       EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(socketChatMessage.message));
     }
   }
@@ -194,9 +193,9 @@ public class SocketManager {
     DatabaseManager.getInstance().getPendingChatMessages()
       .subscribe(
         pendingChatMessages -> {
-          for (PendingChatMessage pendingChatMessage : pendingChatMessages) {
-            send(pendingChatMessage.socketChatMessage);
-            LogUtils.d("sent pending chat message:" + pendingChatMessage.socketChatMessage.message);
+          for (SocketChatMessage pendingChatMessage : pendingChatMessages) {
+            send(pendingChatMessage);
+            LogUtils.d("sent pending chat message:" + pendingChatMessage.message);
           }
         },
         error -> {

@@ -10,9 +10,9 @@ import io.realm.annotations.PrimaryKey;
 
 public class ChatMessage extends RealmObject {
 
-  public boolean isSent;
-  public long timestamp;
-  public String userId;
+  @PrimaryKey
+  @SerializedName("id")
+  public String msgId;
   @SerializedName("chatroom_id")
   public String chatroomId;
   @SerializedName("ctime")
@@ -27,11 +27,10 @@ public class ChatMessage extends RealmObject {
   public long mtime;
   @SerializedName("type")
   public String type;
-  @PrimaryKey
-  @SerializedName("id")
-  public String msgId;
   @SerializedName("sender")
   public Sender sender;
+  public boolean isSent;
+  public long timestamp;
 
   public boolean isSameSender(ChatMessage message) {
     return sender.userId.equals(message.sender.userId);
@@ -60,14 +59,6 @@ public class ChatMessage extends RealmObject {
 
   public boolean isEvent() {
     return type.equals("event");
-  }
-
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder("ChatMessage{");
-    sb.append("msgId='").append(msgId).append('\'');
-    sb.append('}');
-    return sb.toString();
   }
 
 }

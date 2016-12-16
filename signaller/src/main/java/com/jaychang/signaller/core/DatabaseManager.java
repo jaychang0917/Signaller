@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.ChatRoom;
-import com.jaychang.signaller.core.model.PendingChatMessage;
 import com.jaychang.signaller.core.model.SocketChatMessage;
 
 import java.util.List;
@@ -23,7 +22,6 @@ public class DatabaseManager {
   private static final DatabaseManager INSTANCE = new DatabaseManager();
 
   private RealmConfiguration realmConfig;
-  private Realm realm;
 
   private DatabaseManager() {
   }
@@ -45,8 +43,8 @@ public class DatabaseManager {
     realmConfig = new RealmConfiguration.Builder()
       .schemaVersion(DB_VERSION)
       .migration(migration)
-      .name("signaller.realm")
-      .modules(Realm.getDefaultModule(), new SignallerModule())
+//      .name("signaller.realm")   // todo uncomment
+      .modules(new SignallerModule())
       .build();
   }
 
@@ -54,11 +52,11 @@ public class DatabaseManager {
     return Realm.getInstance(realmConfig);
   }
 
-  Observable<RealmResults<PendingChatMessage>> getPendingChatMessages() {
+  Observable<RealmResults<SocketChatMessage>> getPendingChatMessages() {
     Realm realm = getRealm();
 
     return realm
-      .where(PendingChatMessage.class)
+      .where(SocketChatMessage.class)
       .findAllSorted("timestamp", Sort.ASCENDING)
       .asObservable()
       .doOnCompleted(realm::close);
@@ -66,21 +64,17 @@ public class DatabaseManager {
 
   public void addPendingChatMessageAsync(SocketChatMessage msg) {
     getRealm().executeTransactionAsync(realm -> {
-      PendingChatMessage pendingChatMessage = new PendingChatMessage();
-      pendingChatMessage.timestamp = System.currentTimeMillis();
-      pendingChatMessage.socketChatMessage = msg;
-      realm.insertOrUpdate(pendingChatMessage);
+      msg.timestamp = msg.payload.timestamp;
+      realm.insertOrUpdate(msg);
     });
   }
 
-  public Observable<RealmResults<ChatRoom>> getChatRooms(String userId) {
+  public Observable<RealmResults<ChatRoom>> getChatRooms() {
     Realm realm = getRealm();
 
     return realm
       .where(ChatRoom.class)
-//      .equalTo("userId", userId)
-//      .findAllSorted("lastMessage.mtime", Sort.DESCENDING)
-      .findAll()
+      .findAllSorted("mtime", Sort.DESCENDING)
       .asObservable()
       .doOnCompleted(realm::close);
   }
@@ -98,9 +92,6 @@ public class DatabaseManager {
 
   public void saveChatRooms(final List<ChatRoom> chatRooms) {
     getRealm().executeTransaction(realm -> {
-      for (ChatRoom chatRoom : chatRooms) {
-        chatRoom.userId = UserData.getInstance().getUserId();
-      }
       realm.insertOrUpdate(chatRooms);
     });
   }
@@ -120,9 +111,6 @@ public class DatabaseManager {
 
   public void saveChatMessages(final List<ChatMessage> chatMessages) {
     getRealm().executeTransaction(realm -> {
-      for (ChatMessage chatMessage : chatMessages) {
-        chatMessage.userId = UserData.getInstance().getUserId();
-      }
       realm.insertOrUpdate(chatMessages);
     });
   }
@@ -133,7 +121,7 @@ public class DatabaseManager {
     });
   }
 
-  public void removeChatMessage(long timestamp) {
+  public void removeTempChatMessage(long timestamp) {
     getRealm().executeTransaction(realm -> {
       ChatMessage msg = realm.where(ChatMessage.class)
         .equalTo("timestamp", timestamp).findFirst();
@@ -143,10 +131,10 @@ public class DatabaseManager {
     });
   }
 
-  void removePendingChatMsg(long timestamp) {
+  public void removePendingChatMsg(long timestamp) {
     getRealm().executeTransaction(realm -> {
-      PendingChatMessage msg = realm.where(PendingChatMessage.class)
-        .equalTo("socketChatMessage.payload.timestamp", timestamp).findFirst();
+      SocketChatMessage msg = realm.where(SocketChatMessage.class)
+        .equalTo("payload.timestamp", timestamp).findFirst();
       if (msg != null) {
         msg.deleteFromRealm();
       }

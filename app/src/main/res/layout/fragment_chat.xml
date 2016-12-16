@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
-        android:title="@string/chat"
-        app:titleTextColor="@color/white" />
+        app:titleTextColor="@android:color/white"
+        app:title="@string/chat" />
 
     <FrameLayout
         android:id="@+id/chatRoomListFragment"

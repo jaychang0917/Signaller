@@ -3,7 +3,7 @@ apply plugin: 'me.tatarka.retrolambda'
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "25.0.1"
     defaultConfig {
         applicationId "com.jaychang.demo.signaller"
         minSdkVersion 16
@@ -44,5 +44,4 @@ dependencies {
     compile project(':signaller')
 
     compile 'com.uphyca:stetho_realm:2.0.0'
-
 }

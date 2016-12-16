@@ -3,9 +3,11 @@ package com.jaychang.signaller.core.model;
 import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class Receiver extends RealmObject {
 
+  @PrimaryKey
   @SerializedName("user_id")
   public String userId;
   @SerializedName("ctime")

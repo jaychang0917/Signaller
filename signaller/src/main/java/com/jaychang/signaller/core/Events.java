@@ -21,5 +21,10 @@ public class Events {
   }
 
   public static class UpdateChatRoomListEvent {
+    public ChatMessage chatMessage;
+
+    public UpdateChatRoomListEvent(ChatMessage chatMessage) {
+      this.chatMessage = chatMessage;
+    }
   }
 }

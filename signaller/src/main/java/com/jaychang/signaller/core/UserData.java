@@ -5,7 +5,6 @@ public class UserData {
   private static final UserData INSTANCE = new UserData();
   private static String serverDomain;
   private static String socketUrl;
-  private static boolean isInChatRoomListPage;
   private static boolean isInChatRoomPage;
   private static String currentChatRoomId;
   private static String accessToken;
@@ -16,14 +15,6 @@ public class UserData {
 
   public static UserData getInstance() {
     return INSTANCE;
-  }
-
-  public boolean isInChatRoomListPage() {
-    return isInChatRoomListPage;
-  }
-
-  public void setInChatRoomListPage(boolean inChatRoomListPage) {
-    isInChatRoomListPage = inChatRoomListPage;
   }
 
   public boolean isInChatRoomPage() {
