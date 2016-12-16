@@ -23,6 +23,7 @@ public class DatabaseManager {
   private static final DatabaseManager INSTANCE = new DatabaseManager();
 
   private RealmConfiguration realmConfig;
+  private Realm realm;
 
   private DatabaseManager() {
   }
@@ -45,7 +46,7 @@ public class DatabaseManager {
       .schemaVersion(DB_VERSION)
       .migration(migration)
       .name("signaller.realm")
-      .modules(new SignallerModule())
+      .modules(Realm.getDefaultModule(), new SignallerModule())
       .build();
   }
 
@@ -72,19 +73,20 @@ public class DatabaseManager {
     });
   }
 
-  Observable<RealmResults<ChatRoom>> getChatRooms(String userId) {
+  public Observable<RealmResults<ChatRoom>> getChatRooms(String userId) {
     Realm realm = getRealm();
 
     return realm
       .where(ChatRoom.class)
-      .equalTo("userId", userId)
-      .findAllSorted("lastMessage.mtime", Sort.DESCENDING)
+//      .equalTo("userId", userId)
+//      .findAllSorted("lastMessage.mtime", Sort.DESCENDING)
+      .findAll()
       .asObservable()
       .doOnCompleted(realm::close);
   }
 
   // todo paging
-  Observable<RealmResults<ChatMessage>> getChatMessages() {
+  public Observable<RealmResults<ChatMessage>> getChatMessages() {
     Realm realm = getRealm();
 
     return realm
@@ -94,7 +96,7 @@ public class DatabaseManager {
       .doOnCompleted(realm::close);
   }
 
-  void saveChatRooms(final List<ChatRoom> chatRooms) {
+  public void saveChatRooms(final List<ChatRoom> chatRooms) {
     getRealm().executeTransaction(realm -> {
       for (ChatRoom chatRoom : chatRooms) {
         chatRoom.userId = UserData.getInstance().getUserId();
@@ -103,7 +105,7 @@ public class DatabaseManager {
     });
   }
 
-  void updateChatRoom(String roomId, ChatMessage lastMsg) {
+  public void updateChatRoom(String roomId, ChatMessage lastMsg) {
     getRealm().executeTransaction(realm -> {
       ChatRoom chatRoom = realm.where(ChatRoom.class)
         .equalTo("chatRoomId", roomId).findFirst();
@@ -116,7 +118,7 @@ public class DatabaseManager {
     });
   }
 
-  void saveChatMessages(final List<ChatMessage> chatMessages) {
+  public void saveChatMessages(final List<ChatMessage> chatMessages) {
     getRealm().executeTransaction(realm -> {
       for (ChatMessage chatMessage : chatMessages) {
         chatMessage.userId = UserData.getInstance().getUserId();
@@ -125,13 +127,13 @@ public class DatabaseManager {
     });
   }
 
-  void saveChatMessage(ChatMessage msg) {
+  public void saveChatMessage(ChatMessage msg) {
     getRealm().executeTransaction(realm -> {
       realm.insertOrUpdate(msg);
     });
   }
 
-  void removeChatMessage(long timestamp) {
+  public void removeChatMessage(long timestamp) {
     getRealm().executeTransaction(realm -> {
       ChatMessage msg = realm.where(ChatMessage.class)
         .equalTo("timestamp", timestamp).findFirst();

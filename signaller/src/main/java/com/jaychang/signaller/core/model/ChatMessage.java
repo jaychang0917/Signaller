@@ -6,6 +6,7 @@ import com.jaychang.signaller.core.UserData;
 import java.util.Calendar;
 
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 public class ChatMessage extends RealmObject {
 
@@ -26,6 +27,7 @@ public class ChatMessage extends RealmObject {
   public long mtime;
   @SerializedName("type")
   public String type;
+  @PrimaryKey
   @SerializedName("id")
   public String msgId;
   @SerializedName("sender")

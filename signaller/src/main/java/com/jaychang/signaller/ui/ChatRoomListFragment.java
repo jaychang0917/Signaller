@@ -11,10 +11,16 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.DataManager;
+import com.jaychang.signaller.core.DatabaseManager;
+import com.jaychang.signaller.core.Events;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.util.LogUtils;
 import com.trello.rxlifecycle.components.support.RxFragment;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -48,6 +54,24 @@ public class ChatRoomListFragment extends RxFragment {
     loadChatRooms();
   }
 
+  @Override
+  public void onStart() {
+    super.onStart();
+    EventBus.getDefault().register(this);
+  }
+
+  @Override
+  public void onStop() {
+    super.onStop();
+    EventBus.getDefault().unregister(this);
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+  public void updateChatRoomList(Events.UpdateChatRoomListEvent event) {
+    EventBus.getDefault().removeStickyEvent(event);
+    loadChatRoomsFromDB();
+  }
+
   public void init() {
     recyclerView.useVerticalLinearMode();
     recyclerView.showDivider();
@@ -63,6 +87,17 @@ public class ChatRoomListFragment extends RxFragment {
           bindChatRooms(response.chatRooms);
         }, error -> {
           LogUtils.e("loadChatRooms:" + error.getMessage());
+        });
+  }
+
+  private void loadChatRoomsFromDB() {
+    DatabaseManager.getInstance().getChatRooms(UserData.getInstance().getUserId())
+      .subscribe(chatRooms -> {
+          recyclerView.removeAllCells();
+          bindChatRooms(chatRooms);
+        },
+        error -> {
+          LogUtils.e("loadChatRoomsFromDB:" + error.getMessage());
         });
   }
 

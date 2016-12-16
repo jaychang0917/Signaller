@@ -184,9 +184,8 @@ public class SocketManager {
       } else {
         EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(socketChatMessage.message));
       }
-    } else if (isInChatRoomListPage) {
-      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent());
     } else {
+      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent());
       EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(socketChatMessage.message));
     }
   }

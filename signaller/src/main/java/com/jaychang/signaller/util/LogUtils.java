@@ -5,7 +5,7 @@ import android.util.Log;
 public class LogUtils {
 
   public static boolean enable = true;
-  private static final String TAG = "signaller";
+  private static final String TAG = "signallerlog";
 
   public static void d(String message) {
     if (!enable) {
