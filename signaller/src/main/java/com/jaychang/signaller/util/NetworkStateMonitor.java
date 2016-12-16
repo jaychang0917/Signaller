@@ -14,6 +14,10 @@ public class NetworkStateMonitor {
 
   private static final NetworkStateMonitor INSTANCE = new NetworkStateMonitor();
 
+  public enum NetworkState {
+    WIFI_CONNECTED, MOBILE_CONNECTED, DISCONNECTED;
+  }
+
   private NetworkStateMonitor() {
   }
 
@@ -41,7 +45,7 @@ public class NetworkStateMonitor {
     }).defaultIfEmpty(NetworkState.DISCONNECTED);
   }
 
-  public NetworkState getNetworkState(final Context context) {
+  private NetworkState getNetworkState(final Context context) {
     final ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
     final NetworkInfo networkInfo = manager.getActiveNetworkInfo();
 
@@ -58,8 +62,8 @@ public class NetworkStateMonitor {
     return NetworkState.DISCONNECTED;
   }
 
-  public enum NetworkState {
-    WIFI_CONNECTED, MOBILE_CONNECTED, DISCONNECTED;
+  public boolean isConnected(Context appContext) {
+    return getNetworkState(appContext) != NetworkState.DISCONNECTED;
   }
 
 }

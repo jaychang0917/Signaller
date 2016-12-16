@@ -2,8 +2,6 @@ package com.jaychang.signaller.core;
 
 import android.content.Context;
 
-import com.jaychang.signaller.util.StethoUtils;
-
 public final class Signaller {
 
   private static final Signaller INSTANCE = new Signaller();
@@ -18,7 +16,6 @@ public final class Signaller {
     Signaller.SERVER_DOMAIN = serverDomain;
     Signaller.SOCKET_URL = socketUrl;
     DatabaseManager.getInstance().init(appContext);
-    StethoUtils.init(appContext);
   }
 
   public static Signaller getInstance() {

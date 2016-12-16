@@ -11,7 +11,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.jaychang.signaller.core.model.RealmInt;
 import com.jaychang.signaller.core.model.RealmString;
-import com.jaychang.signaller.util.StethoUtils;
+import com.jaychang.signaller.util.DebugUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -44,7 +44,7 @@ public class ApiManager {
 
   private static OkHttpClient createOkHttpClient() {
     OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
-    if (StethoUtils.debug) {
+    if (DebugUtils.debug) {
       okHttpClientBuilder.addNetworkInterceptor(new StethoInterceptor());
     }
 

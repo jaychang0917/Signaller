@@ -9,6 +9,8 @@ public class App extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
-    Signaller.init(getApplicationContext(), Constant.SERVER_DOMAIN, Constant.SOCKETE_URL);
+    StethoUtils.init(this);
+
+    Signaller.init(this, Constant.SERVER_DOMAIN, Constant.SOCKETE_URL);
   }
 }

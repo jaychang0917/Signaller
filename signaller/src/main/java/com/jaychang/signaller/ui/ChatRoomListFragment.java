@@ -51,6 +51,7 @@ public class ChatRoomListFragment extends RxFragment {
   public void init() {
     recyclerView.useVerticalLinearMode();
     recyclerView.showDivider();
+    recyclerView.showDivider();
   }
 
   private void loadChatRooms() {
