@@ -1,5 +1,7 @@
 package com.jaychang.signaller.core;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -19,7 +21,7 @@ import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
 
-class SocketManager {
+public class SocketManager {
 
   private static final SocketManager INSTANCE = new SocketManager();
 
@@ -32,11 +34,13 @@ class SocketManager {
 
   private Socket socket;
   private boolean isSocketInitialized;
+  private Handler mainThreadHandler;
 
   private SocketManager() {
+    mainThreadHandler = new Handler(Looper.getMainLooper());
   }
 
-  static SocketManager getInstance() {
+  public static SocketManager getInstance() {
     return INSTANCE;
   }
 
@@ -49,7 +53,7 @@ class SocketManager {
       IO.Options opts = new IO.Options();
       opts.query = "access_token=" + accessToken;
       opts.secure = true;
-      socket = IO.socket(Signaller.getInstance().getAccessToken(), opts);
+      socket = IO.socket(Signaller.getInstance().getSocketUrl(), opts);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -61,7 +65,7 @@ class SocketManager {
     isSocketInitialized = true;
   }
 
-  boolean isConnected() {
+  public boolean isConnected() {
     return socket != null && socket.connected();
   }
 
@@ -86,7 +90,7 @@ class SocketManager {
     }
   }
 
-  void send(SocketChatMessage message) {
+  public void send(SocketChatMessage message) {
     try {
       Payload payload = new Payload();
       payload.timestamp = System.currentTimeMillis();
@@ -130,12 +134,16 @@ class SocketManager {
 
   private Emitter.Listener onConnected = args -> {
     LogUtils.d("onConnected");
-    sendPendingChatMsg();
+    mainThreadHandler.post(() -> {
+      sendPendingChatMsg();
+    });
   };
 
   private Emitter.Listener onMsgReceived = args -> {
     SocketChatMessage socketChatMessage = new Gson().fromJson(args[0].toString(), SocketChatMessage.class);
-    updateChatMsgInDb(socketChatMessage);
+    mainThreadHandler.post(() -> {
+      updateChatMsgInDb(socketChatMessage);
+    });
   };
 
   private void updateChatMsgInDb(SocketChatMessage socketChatMessage) {
@@ -178,11 +186,11 @@ class SocketManager {
   }
 
   private void dispatchMsg(SocketChatMessage socketChatMessage) {
-    boolean isInChatRoomPage = ChatRoomState.getInstance().isInChatRoomPage();
-    boolean isInChatRoomListPage = ChatRoomState.getInstance().isInChatRoomListPage();
+    boolean isInChatRoomPage = UserData.getInstance().isInChatRoomPage();
+    boolean isInChatRoomListPage = UserData.getInstance().isInChatRoomListPage();
 
     if (isInChatRoomPage) {
-      boolean isInSameChatRoom = ChatRoomState.getInstance().getCurrentChatRoomId().equals(socketChatMessage.roomId);
+      boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(socketChatMessage.roomId);
       if (isInSameChatRoom) {
         EventBus.getDefault().postSticky(new Events.OnMsgReceivedEvent(socketChatMessage.message));
       } else {

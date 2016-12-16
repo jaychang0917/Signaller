@@ -1,5 +1,6 @@
 package com.jaychang.signaller.core;
 
+import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.ExclusionStrategy;
 import com.google.gson.FieldAttributes;
 import com.google.gson.Gson;
@@ -10,6 +11,7 @@ import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 import com.jaychang.signaller.core.model.RealmInt;
 import com.jaychang.signaller.core.model.RealmString;
+import com.jaychang.signaller.util.StethoUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -42,6 +44,9 @@ public class ApiManager {
 
   private static OkHttpClient createOkHttpClient() {
     OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
+    if (StethoUtils.debug) {
+      okHttpClientBuilder.addNetworkInterceptor(new StethoInterceptor());
+    }
 
     okHttpClientBuilder.addInterceptor(new Interceptor() {
       @Override

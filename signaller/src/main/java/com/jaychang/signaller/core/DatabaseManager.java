@@ -20,14 +20,8 @@ class DatabaseManager {
 
   private static final int DB_VERSION = 1;
   private static final DatabaseManager INSTANCE = new DatabaseManager();
-  private Realm realm;
 
-  private static RealmMigration migration = new RealmMigration() {
-    @Override
-    public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
-
-    }
-  };
+  private RealmConfiguration realmConfig;
 
   private DatabaseManager() {
   }
@@ -36,20 +30,31 @@ class DatabaseManager {
     return INSTANCE;
   }
 
-  static void init(Context appContext) {
+  void init(Context appContext) {
     Realm.init(appContext);
 
-    RealmConfiguration realmConfig = new RealmConfiguration.Builder()
+    RealmMigration migration = new RealmMigration() {
+      @Override
+      public void migrate(DynamicRealm realm, long oldVersion, long newVersion) {
+
+      }
+    };
+
+    realmConfig = new RealmConfiguration.Builder()
       .schemaVersion(DB_VERSION)
       .migration(migration)
       .name("signaller.realm")
       .modules(new SignallerModule())
       .build();
-
-    INSTANCE.realm = Realm.getInstance(realmConfig);
   }
 
-  public Observable<List<PendingChatMessage>> getPendingChatMessages() {
+  private Realm getRealm() {
+    return Realm.getInstance(realmConfig);
+  }
+
+  Observable<List<PendingChatMessage>> getPendingChatMessages() {
+    Realm realm = getRealm();
+
     return realm
       .where(PendingChatMessage.class)
       .findAllAsync()
@@ -60,7 +65,9 @@ class DatabaseManager {
       .doOnCompleted(realm::close);
   }
 
-  public Observable<List<ChatRoom>> getChatRooms(String userId) {
+  Observable<List<ChatRoom>> getChatRooms(String userId) {
+    Realm realm = getRealm();
+
     return realm
       .where(ChatRoom.class)
       .equalTo("userId", userId)
@@ -73,7 +80,9 @@ class DatabaseManager {
   }
 
   // todo paging
-  public Observable<List<ChatMessage>> getChatMessages() {
+  Observable<List<ChatMessage>> getChatMessages() {
+    Realm realm = getRealm();
+
     return realm
       .where(ChatMessage.class)
       .findAllSortedAsync("mtime", Sort.DESCENDING)
@@ -84,53 +93,48 @@ class DatabaseManager {
       .doOnCompleted(realm::close);
   }
 
-  public void saveChatRooms(final List<ChatRoom> chatRooms) {
-    Realm.getDefaultInstance()
-      .executeTransactionAsync(realm -> {
-        for (ChatRoom chatRoom : chatRooms) {
-          chatRoom.userId = Signaller.getInstance().getUserId();
-        }
-        realm.insertOrUpdate(chatRooms);
-      });
+  void saveChatRooms(final List<ChatRoom> chatRooms) {
+    getRealm().executeTransactionAsync(realm -> {
+      for (ChatRoom chatRoom : chatRooms) {
+        chatRoom.userId = UserData.getInstance().getUserId();
+      }
+      realm.insertOrUpdate(chatRooms);
+    });
   }
 
-  public void saveChatMessages(final List<ChatMessage> chatMessages) {
-    Realm.getDefaultInstance()
-      .executeTransactionAsync(realm -> {
-        for (ChatMessage chatMessage : chatMessages) {
-          chatMessage.userId = Signaller.getInstance().getUserId();
-        }
-        realm.insertOrUpdate(chatMessages);
-      });
+  void saveChatMessages(final List<ChatMessage> chatMessages) {
+    getRealm().executeTransactionAsync(realm -> {
+      for (ChatMessage chatMessage : chatMessages) {
+        chatMessage.userId = UserData.getInstance().getUserId();
+      }
+      realm.insertOrUpdate(chatMessages);
+    });
   }
 
-  public void saveChatMessage(ChatMessage msg) {
-    Realm.getDefaultInstance()
-      .executeTransactionAsync(realm -> {
-        realm.insertOrUpdate(msg);
-      });
+  void saveChatMessage(ChatMessage msg) {
+    getRealm().executeTransactionAsync(realm -> {
+      realm.insertOrUpdate(msg);
+    });
   }
 
-  public void removeChatMessage(long timestamp) {
-    Realm.getDefaultInstance()
-      .executeTransactionAsync(realm -> {
-        ChatMessage msg = realm.where(ChatMessage.class)
-          .equalTo("timestamp", timestamp).findFirst();
-        if (msg != null) {
-          msg.deleteFromRealm();
-        }
-      });
+  void removeChatMessage(long timestamp) {
+    getRealm().executeTransactionAsync(realm -> {
+      ChatMessage msg = realm.where(ChatMessage.class)
+        .equalTo("timestamp", timestamp).findFirst();
+      if (msg != null) {
+        msg.deleteFromRealm();
+      }
+    });
   }
 
-  public void removePendingChatMsg(long timestamp) {
-    Realm.getDefaultInstance()
-      .executeTransactionAsync(realm -> {
-        PendingChatMessage msg = realm.where(PendingChatMessage.class)
-          .equalTo("socketChatMessage.payload.timestamp", timestamp).findFirst();
-        if (msg != null) {
-          msg.deleteFromRealm();
-        }
-      });
+  void removePendingChatMsg(long timestamp) {
+    getRealm().executeTransactionAsync(realm -> {
+      PendingChatMessage msg = realm.where(PendingChatMessage.class)
+        .equalTo("socketChatMessage.payload.timestamp", timestamp).findFirst();
+      if (msg != null) {
+        msg.deleteFromRealm();
+      }
+    });
   }
 
 }

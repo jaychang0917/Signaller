@@ -1,16 +1,18 @@
 package com.jaychang.signaller.core;
 
-class ChatRoomState {
+public class UserData {
 
-  private static final ChatRoomState INSTANCE = new ChatRoomState();
+  private static final UserData INSTANCE = new UserData();
   private boolean isInChatRoomListPage;
   private boolean isInChatRoomPage;
   private String currentChatRoomId;
+  private String accessToken;
+  private String userId;
 
-  private ChatRoomState() {
+  private UserData() {
   }
 
-  public static ChatRoomState getInstance() {
+  public static UserData getInstance() {
     return INSTANCE;
   }
 
@@ -36,6 +38,22 @@ class ChatRoomState {
 
   public void setCurrentChatRoomId(String currentChatRoomId) {
     this.currentChatRoomId = currentChatRoomId;
+  }
+
+  public String getAccessToken() {
+    return accessToken;
+  }
+
+  public void setAccessToken(String accessToken) {
+    this.accessToken = accessToken;
+  }
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
   }
 
 }

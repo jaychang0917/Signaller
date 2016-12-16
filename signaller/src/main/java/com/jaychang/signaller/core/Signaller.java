@@ -2,55 +2,43 @@ package com.jaychang.signaller.core;
 
 import android.content.Context;
 
+import com.jaychang.signaller.util.StethoUtils;
+
 public final class Signaller {
 
   private static final Signaller INSTANCE = new Signaller();
-  private String serverDomain;
-  private String socketUrl;
-  private String accessToken;
-  private String userId;
+  private static String SERVER_DOMAIN;
+  private static String SOCKET_URL;
+
 
   private Signaller() {
   }
 
-  public static void init(Context appContext) {
-    DatabaseManager.init(appContext);
+  public static void init(Context appContext, String serverDomain, String socketUrl) {
+    Signaller.SERVER_DOMAIN = serverDomain;
+    Signaller.SOCKET_URL = socketUrl;
+    DatabaseManager.getInstance().init(appContext);
+    StethoUtils.init(appContext);
   }
 
   public static Signaller getInstance() {
     return INSTANCE;
   }
 
-  public void setServerDomain(String serverHost) {
-    this.serverDomain = serverHost;
-  }
-
-  public void setSocketUrl(String socketUrl) {
-    this.socketUrl = socketUrl;
-  }
-
   public void connect(String accessToken, String userId) {
-    this.accessToken = accessToken;
-    this.userId = userId;
+    UserData.getInstance().setAccessToken(accessToken);
+    UserData.getInstance().setUserId(userId);
 
     SocketManager.getInstance().initSocket(accessToken);
     SocketManager.getInstance().connect();
   }
 
-  public String getServerDomain() {
-    return serverDomain;
+  String getServerDomain() {
+    return SERVER_DOMAIN;
   }
 
-  public String getSocketUrl() {
-    return socketUrl;
-  }
-
-  public String getAccessToken() {
-    return accessToken;
-  }
-
-  public String getUserId() {
-    return userId;
+  String getSocketUrl() {
+    return SOCKET_URL;
   }
 
 }

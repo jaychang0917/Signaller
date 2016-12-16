@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jaychang.signaller.ui.ChatRoomListFragment;
+
 public class ChatFragment extends Fragment {
 
   @Nullable
@@ -15,4 +17,16 @@ public class ChatFragment extends Fragment {
     return inflater.inflate(R.layout.fragment_chat, container, false);
   }
 
+  @Override
+  public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    init();
+  }
+
+  public void init() {
+    ChatRoomListFragment fragment = ChatRoomListFragment.newInstance();
+    getChildFragmentManager().beginTransaction()
+      .replace(R.id.chatRoomListFragment, fragment)
+      .commitNow();
+  }
 }

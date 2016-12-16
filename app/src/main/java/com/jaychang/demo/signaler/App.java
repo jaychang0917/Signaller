@@ -9,6 +9,6 @@ public class App extends Application {
   @Override
   public void onCreate() {
     super.onCreate();
-    Signaller.init(this);
+    Signaller.init(getApplicationContext(), Constant.SERVER_DOMAIN, Constant.SOCKETE_URL);
   }
 }

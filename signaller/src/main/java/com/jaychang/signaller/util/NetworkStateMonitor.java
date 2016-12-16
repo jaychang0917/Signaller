@@ -1,4 +1,4 @@
-package com.jaychang.signaller.core;
+package com.jaychang.signaller.util;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

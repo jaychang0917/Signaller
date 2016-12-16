@@ -1,7 +1,7 @@
 package com.jaychang.signaller.core.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.jaychang.signaller.core.Signaller;
+import com.jaychang.signaller.core.UserData;
 
 import java.util.Calendar;
 
@@ -10,7 +10,7 @@ import io.realm.RealmObject;
 public class ChatMessage extends RealmObject {
 
   public boolean isSent;
-  public String msgUUID;
+  public long timestamp;
   public String userId;
   @SerializedName("chatroom_id")
   public String chatroomId;
@@ -25,7 +25,7 @@ public class ChatMessage extends RealmObject {
   @SerializedName("mtime")
   public long mtime;
   @SerializedName("type")
-  private String type;
+  public String type;
   @SerializedName("id")
   public String msgId;
   @SerializedName("sender")
@@ -36,7 +36,7 @@ public class ChatMessage extends RealmObject {
   }
 
   public boolean isOwnMessage() {
-    return sender.userId.equals(Signaller.getInstance().getUserId());
+    return sender.userId.equals(UserData.getInstance().getUserId());
   }
 
   public boolean isSameDate(ChatMessage message) {
@@ -46,6 +46,10 @@ public class ChatMessage extends RealmObject {
     cal2.setTimeInMillis(message.mtime);
     return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
       cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+  }
+
+  public boolean isText() {
+    return type.equals("text");
   }
 
   public boolean isImage() {

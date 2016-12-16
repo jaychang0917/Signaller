@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:background="?attr/selectableItemBackground"
+    android:minHeight="62dp"
+    android:orientation="horizontal"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/logoView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        android:scaleType="centerCrop"
+        tools:background="#555" />
+
+    <com.vanniktech.emoji.EmojiTextView
+        android:id="@+id/nameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/logoView"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/logoView"
+        android:layout_toLeftOf="@+id/dateView"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@android:color/black"
+        android:paddingRight="4dp"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        tools:text="FooFooFooFooFooFooFooFooFooFooFoo" />
+
+    <com.vanniktech.emoji.EmojiTextView
+        android:id="@+id/lastMsgView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/nameView"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/logoView"
+        android:textColor="@android:color/darker_gray"
+        android:drawablePadding="4dp"
+        android:textSize="14sp"
+        app:emojiSize="14sp"
+        android:maxLines="1"
+        android:ellipsize="end"
+        tools:text="Last Msg Last Msg Last Msg Last Msg Last Msg Last Msg"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@id/dateView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:textColor="@android:color/darker_gray"
+        tools:text="11:45 AM" />
+
+</RelativeLayout>
+
