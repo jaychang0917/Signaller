@@ -23,6 +23,7 @@ import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.Image;
+import com.jaychang.signaller.core.model.Payload;
 import com.jaychang.signaller.core.model.SocketChatMessage;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.signaller.util.NetworkStateMonitor;
@@ -338,7 +339,12 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     message.type = "text";
     message.content = inputMessageView.getText().toString();
     socketChatMessage.message = message;
-    DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage);
+
+    Payload payload = new Payload();
+    payload.timestamp = System.currentTimeMillis();
+    socketChatMessage.payload = payload;
+
+    DatabaseManager.getInstance().addPendingChatMessage(socketChatMessage);
     SocketManager.getInstance().send(socketChatMessage);
   }
 

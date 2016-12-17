@@ -17,6 +17,8 @@ public class ChooseUserActivity extends AppCompatActivity {
   Button jay11Button;
   @BindView(R.id.jay12Button)
   Button jay12Button;
+  @BindView(R.id.jay13Button)
+  Button jay13Button;
   @BindView(R.id.jay14Button)
   Button jay14Button;
 
@@ -53,6 +55,16 @@ public class ChooseUserActivity extends AppCompatActivity {
     startActivity(intent);
     App.currentUserId = Constant.USER_ID_JAY12;
   }
+
+  @OnClick(R.id.jay13Button)
+  void loginAsJay13() {
+    Intent intent = new Intent(this, MainActivity.class);
+    intent.putExtra(MainActivity.EXTRA_ACCESS_TOEKN, Constant.ACCESS_TOKEN_JAY13);
+    intent.putExtra(MainActivity.EXTRA_USER_ID, Constant.USER_ID_JAY13);
+    startActivity(intent);
+    App.currentUserId = Constant.USER_ID_JAY13;
+  }
+
 
   @OnClick(R.id.jay14Button)
   void loginAsJay14() {

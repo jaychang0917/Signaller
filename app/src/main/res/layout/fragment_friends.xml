@@ -45,6 +45,13 @@
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:text="jay13" />
+
+        <Button
+            android:id="@+id/joinJay14Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="jay14" />
     </LinearLayout>
 
     <LinearLayout
@@ -85,6 +92,12 @@
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:text="jay13" />
+        <Button
+            android:id="@+id/leaveJay14Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAllCaps="false"
+            android:text="jay14" />
     </LinearLayout>
 
 </LinearLayout>

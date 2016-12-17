@@ -33,6 +33,13 @@
         android:text="jay12" />
 
     <Button
+        android:id="@+id/jay13Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="jay13" />
+
+    <Button
         android:id="@+id/jay14Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

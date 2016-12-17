@@ -62,8 +62,8 @@ public class DatabaseManager {
       .doOnCompleted(realm::close);
   }
 
-  public void addPendingChatMessageAsync(SocketChatMessage msg) {
-    getRealm().executeTransactionAsync(realm -> {
+  public void addPendingChatMessage(SocketChatMessage msg) {
+    getRealm().executeTransaction(realm -> {
       msg.timestamp = msg.payload.timestamp;
       realm.insertOrUpdate(msg);
     });

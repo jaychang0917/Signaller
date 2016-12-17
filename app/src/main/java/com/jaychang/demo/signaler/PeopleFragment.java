@@ -26,12 +26,16 @@ public class PeopleFragment extends Fragment {
   Button joinJay11Button;
   @BindView(R.id.joinJay12Button)
   Button joinJay12Button;
+  @BindView(R.id.joinJay14Button)
+  Button joinJay14Button;
   @BindView(R.id.leaveJay10Button)
   Button leaveJay10Button;
   @BindView(R.id.leaveJay11Button)
   Button leaveJay11Button;
   @BindView(R.id.leaveJay12Button)
   Button leaveJay12Button;
+  @BindView(R.id.leaveJay14Button)
+  Button leaveJay14Button;
 
   @Nullable
   @Override
@@ -81,6 +85,16 @@ public class PeopleFragment extends Fragment {
     });
   }
 
+  @OnClick(R.id.joinJay14Button)
+  void chatWithJay14() {
+    Signaller.getInstance().chatWith(Constant.USER_ID_JAY14, new ChatRoomJoinCallback() {
+      @Override
+      public void onChatRoomJoined(String userId, String chatRoomId) {
+        ChatRoomActivity.start(getContext(), userId, "jay14", chatRoomId);
+      }
+    });
+  }
+
   private String makeChatRoomId(String userId) {
     String ownUserId = App.currentUserId;
     return ownUserId.compareTo(userId) < 0 ?
@@ -121,6 +135,16 @@ public class PeopleFragment extends Fragment {
   @OnClick(R.id.leaveJay13Button)
   void leaveChatRoomWithJay13() {
     Signaller.getInstance().leaveChatRoom(makeChatRoomId(Constant.USER_ID_JAY13), new ChatRoomLeaveCallback() {
+      @Override
+      public void onChatRoomLeft(String chatRoomId) {
+        Utils.showToast(getActivity(), "onChatRoomLeft: " + chatRoomId);
+      }
+    });
+  }
+
+  @OnClick(R.id.leaveJay14Button)
+  void leaveChatRoomWithJay14() {
+    Signaller.getInstance().leaveChatRoom(makeChatRoomId(Constant.USER_ID_JAY14), new ChatRoomLeaveCallback() {
       @Override
       public void onChatRoomLeft(String chatRoomId) {
         Utils.showToast(getActivity(), "onChatRoomLeft: " + chatRoomId);

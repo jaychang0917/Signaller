@@ -7,7 +7,6 @@ import android.os.Looper;
 import com.google.gson.Gson;
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.ChatRoom;
-import com.jaychang.signaller.core.model.Payload;
 import com.jaychang.signaller.core.model.SocketChatMessage;
 import com.jaychang.signaller.util.LogUtils;
 
@@ -93,9 +92,6 @@ public class SocketManager {
 
   public void send(SocketChatMessage message) {
     try {
-      Payload payload = new Payload();
-      payload.timestamp = System.currentTimeMillis();
-      message.payload = payload;
       JSONObject object = new JSONObject(new Gson().toJson(message));
       socket.emit(SEND_MESSAGE, object);
     } catch (JSONException e) {
