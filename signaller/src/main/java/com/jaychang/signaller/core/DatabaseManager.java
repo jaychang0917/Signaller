@@ -52,7 +52,10 @@ public class DatabaseManager {
     return Realm.getInstance(realmConfig);
   }
 
-  Observable<RealmResults<SocketChatMessage>> getPendingChatMessages() {
+  /**
+   * chat message
+   * */
+  public Observable<RealmResults<SocketChatMessage>> getPendingChatMessages() {
     Realm realm = getRealm();
 
     return realm
@@ -62,24 +65,23 @@ public class DatabaseManager {
       .doOnCompleted(realm::close);
   }
 
-  public void addPendingChatMessage(SocketChatMessage msg) {
-    getRealm().executeTransaction(realm -> {
+  public void addPendingChatMessageAsync(SocketChatMessage msg, Realm.Transaction.OnSuccess callback) {
+    getRealm().executeTransactionAsync(realm -> {
       msg.timestamp = msg.payload.timestamp;
       realm.insertOrUpdate(msg);
+    }, callback);
+  }
+
+  public void removePendingChatMsg(long timestamp) {
+    getRealm().executeTransaction(realm -> {
+      SocketChatMessage msg = realm.where(SocketChatMessage.class)
+        .equalTo("payload.timestamp", timestamp).findFirst();
+      if (msg != null) {
+        msg.deleteFromRealm();
+      }
     });
   }
 
-  public Observable<RealmResults<ChatRoom>> getChatRooms() {
-    Realm realm = getRealm();
-
-    return realm
-      .where(ChatRoom.class)
-      .findAllSorted("mtime", Sort.DESCENDING)
-      .asObservable()
-      .doOnCompleted(realm::close);
-  }
-
-  // todo paging
   public Observable<RealmResults<ChatMessage>> getChatMessages() {
     Realm realm = getRealm();
 
@@ -90,30 +92,8 @@ public class DatabaseManager {
       .doOnCompleted(realm::close);
   }
 
-  public void saveChatRooms(final List<ChatRoom> chatRooms) {
-    getRealm().executeTransaction(realm -> {
-      realm.insertOrUpdate(chatRooms);
-    });
-  }
-
-  public void insertOrUpdateChatRoom(String roomId, ChatMessage lastMsg) {
-    getRealm().executeTransaction(realm -> {
-      ChatRoom chatRoom = realm.where(ChatRoom.class)
-        .equalTo("chatRoomId", roomId).findFirst();
-      if (chatRoom != null) {
-        if (!lastMsg.isOwnMessage()) {
-          chatRoom.unreadCount++;
-        }
-        chatRoom.lastMessage = realm.copyToRealmOrUpdate(lastMsg);
-      } else {
-        chatRoom = ChatRoom.from(roomId, lastMsg);
-        realm.copyToRealmOrUpdate(chatRoom);
-      }
-    });
-  }
-
-  public ChatRoom getChatRoom(String chatRoomId) {
-    return getRealm().where(ChatRoom.class).equalTo("chatRoomId", chatRoomId).findFirst();
+  public ChatMessage getChatMessage(String msgId) {
+    return getRealm().where(ChatMessage.class).equalTo("msgId", msgId).findFirst();
   }
 
   public void saveChatMessages(final List<ChatMessage> chatMessages) {
@@ -138,14 +118,43 @@ public class DatabaseManager {
     });
   }
 
-  public void removePendingChatMsg(long timestamp) {
+  /**
+   * chat room
+   * */
+  public void saveChatRooms(final List<ChatRoom> chatRooms) {
     getRealm().executeTransaction(realm -> {
-      SocketChatMessage msg = realm.where(SocketChatMessage.class)
-        .equalTo("payload.timestamp", timestamp).findFirst();
-      if (msg != null) {
-        msg.deleteFromRealm();
+      realm.insertOrUpdate(chatRooms);
+    });
+  }
+
+  public void insertOrUpdateChatRoom(String roomId, ChatMessage lastMsg) {
+    getRealm().executeTransaction(realm -> {
+      ChatRoom chatRoom = realm.where(ChatRoom.class)
+        .equalTo("chatRoomId", roomId).findFirst();
+      if (chatRoom != null) {
+        if (!lastMsg.isOwnMessage()) {
+          chatRoom.unreadCount++;
+        }
+        chatRoom.lastMessage = realm.copyToRealmOrUpdate(lastMsg);
+      } else {
+        chatRoom = ChatRoom.from(roomId, lastMsg);
+        realm.copyToRealmOrUpdate(chatRoom);
       }
     });
+  }
+
+  public Observable<RealmResults<ChatRoom>> getChatRooms() {
+    Realm realm = getRealm();
+
+    return realm
+      .where(ChatRoom.class)
+      .findAllSorted("mtime", Sort.DESCENDING)
+      .asObservable()
+      .doOnCompleted(realm::close);
+  }
+
+  public ChatRoom getChatRoom(String chatRoomId) {
+    return getRealm().where(ChatRoom.class).equalTo("chatRoomId", chatRoomId).findFirst();
   }
 
 }

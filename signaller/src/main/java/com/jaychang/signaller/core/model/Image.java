@@ -1,7 +1,7 @@
 package com.jaychang.signaller.core.model;
 
-import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
+import com.jaychang.signaller.util.GsonUtils;
 
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -29,6 +29,6 @@ public class Image extends RealmObject {
   public String name;
 
   public static Image from(String json) {
-    return new Gson().fromJson(json, Image.class);
+    return GsonUtils.getGson().fromJson(json, Image.class);
   }
 }

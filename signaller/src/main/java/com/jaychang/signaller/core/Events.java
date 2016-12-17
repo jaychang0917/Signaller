@@ -1,31 +1,28 @@
 package com.jaychang.signaller.core;
 
-import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.core.model.ChatRoom;
-
 public class Events {
 
   public static class OnMsgReceivedEvent {
-    public ChatMessage chatMessage;
+    public String msgId;
 
-    public OnMsgReceivedEvent(ChatMessage chatMessage) {
-      this.chatMessage = chatMessage;
+    public OnMsgReceivedEvent(String msgId) {
+      this.msgId = msgId;
     }
   }
 
   public static class ShowPushNotificationEvent {
-    public ChatMessage chatMessage;
+    public String msgId;
 
-    public ShowPushNotificationEvent(ChatMessage chatMessage) {
-      this.chatMessage = chatMessage;
+    public ShowPushNotificationEvent(String msgId) {
+      this.msgId = msgId;
     }
   }
 
   public static class UpdateChatRoomListEvent {
-    public ChatRoom chatRoom;
+    public String chatRoomId;
 
-    public UpdateChatRoomListEvent(ChatRoom chatRoom) {
-      this.chatRoom = chatRoom;
+    public UpdateChatRoomListEvent(String chatRoomId) {
+      this.chatRoomId = chatRoomId;
     }
   }
 }

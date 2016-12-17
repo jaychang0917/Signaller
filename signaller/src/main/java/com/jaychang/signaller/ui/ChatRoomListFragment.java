@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 
 import com.jaychang.nrv.BaseCell;
 import com.jaychang.nrv.NRecyclerView;
+import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.DataManager;
@@ -16,13 +17,15 @@ import com.jaychang.signaller.core.DatabaseManager;
 import com.jaychang.signaller.core.Events;
 import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.util.LogUtils;
+import com.jaychang.signaller.util.NetworkStateMonitor;
 import com.trello.rxlifecycle.components.support.RxFragment;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -33,9 +36,9 @@ public class ChatRoomListFragment extends RxFragment {
   @BindView(R2.id.recyclerView)
   NRecyclerView recyclerView;
 
+  private static final int OFF_SCREEN_CELLS_THRESHOLD = 10;
   private String cursor;
   private boolean hasMoreData;
-  private List<ChatRoom> chatRooms = new ArrayList<>();
 
   public static ChatRoomListFragment newInstance() {
     return new ChatRoomListFragment();
@@ -71,7 +74,8 @@ public class ChatRoomListFragment extends RxFragment {
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
   public void updateChatRoomList(Events.UpdateChatRoomListEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    insertOrUpdateChatRoom(event.chatRoom);
+    ChatRoom chatRoom = DatabaseManager.getInstance().getChatRoom(event.chatRoomId);
+    insertOrUpdateChatRoom(chatRoom);
   }
 
   public void init() {
@@ -81,8 +85,20 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void initRecyclerView() {
     recyclerView.useVerticalLinearMode();
-    recyclerView.showDivider();
-    recyclerView.showDivider();
+    recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).build());
+    recyclerView.setOnLoadMoreListener(new OnLoadMorePageListener() {
+      @Override
+      public void onLoadMore(int i) {
+        if (hasMoreData) {
+          loadChatRoomsFromNetwork();
+        }
+      }
+
+      @Override
+      public int getThreshold() {
+        return OFF_SCREEN_CELLS_THRESHOLD;
+      }
+    });
   }
 
   private void removePendingEvents() {
@@ -91,25 +107,44 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void loadChatRooms() {
+    boolean isConnected = NetworkStateMonitor.getInstance().isConnected(getContext());
+
+    if (isConnected) {
+      loadChatRoomsFromNetwork();
+    } else {
+      loadChatRoomsFromDB();
+    }
+  }
+
+  private void loadChatRoomsFromNetwork() {
     DataManager.getInstance().getChatRooms(cursor)
       .compose(bindToLifecycle())
       .subscribe(
         response -> {
           hasMoreData = response.hasMore;
-          chatRooms.addAll(response.chatRooms);
-          bindChatRooms(response.chatRooms);
+          cursor = response.cursor;
+          bindChatRooms(sort(response.chatRooms));
         }, error -> {
-          LogUtils.e("loadChatRooms:" + error.getMessage());
+          LogUtils.e("loadChatRoomsFromNetwork:" + error.getMessage());
         });
   }
 
+  private List<ChatRoom> sort(List<ChatRoom> rooms) {
+    Collections.sort(rooms, (chatRoom, other) -> (int)(other.mtime - chatRoom.mtime));
+    return rooms;
+  }
+
   private void insertOrUpdateChatRoom(ChatRoom room) {
+    boolean hasChatRoom = false;
+
     for (BaseCell cell : recyclerView.getAllCells()) {
       ChatRoomCell chatRoomCell = (ChatRoomCell) cell;
       ChatRoom chatRoom = chatRoomCell.getChatRoom();
-      if (chatRoom.equals(room)) {
+
+      if (chatRoom.chatRoomId.equals(room.chatRoomId)) {
         chatRoomCell.increaseUnreadCount();
         chatRoomCell.updateLastMessage(room.lastMessage);
+
         recyclerView.removeCell(chatRoomCell);
         recyclerView.addCell(chatRoomCell, 0);
         int fromPos = recyclerView.getAllCells().indexOf(cell);
@@ -118,15 +153,20 @@ public class ChatRoomListFragment extends RxFragment {
         } else {
           recyclerView.getAdapter().notifyItemMoved(fromPos, 0);
         }
-        // if has this chat room, return;
-        return;
+
+        hasChatRoom = true;
+
+        break;
       }
     }
 
-    // if has no this chat room, insert this new chat room at top
-    DefaultChatRoomCell cell = new DefaultChatRoomCell(room);
-    recyclerView.addCell(cell, 0);
-    recyclerView.getAdapter().notifyItemInserted(0);
+    if (!hasChatRoom) {
+      // if has no this chat room, insert this new chat room at top
+      DefaultChatRoomCell cell = new DefaultChatRoomCell(room);
+      recyclerView.addCell(cell, 0);
+      recyclerView.getAdapter().notifyItemInserted(0);
+    }
+
   }
 
   private void loadChatRoomsFromDB() {
@@ -142,7 +182,7 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void bindChatRooms(List<ChatRoom> chatRooms) {
     for (ChatRoom chatRoom : chatRooms) {
-      DefaultChatRoomCell cell = new DefaultChatRoomCell(chatRoom);
+      ChatRoomCell cell = new DefaultChatRoomCell(chatRoom);
       cell.setCallback(room -> {
         goToChatRoomPage(room);
       });

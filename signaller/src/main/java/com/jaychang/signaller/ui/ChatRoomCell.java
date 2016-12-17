@@ -6,7 +6,12 @@ import com.jaychang.signaller.core.model.ChatRoom;
 
 public abstract class ChatRoomCell extends BaseCell{
 
-  private ChatRoom chatRoom;
+  public interface Callback {
+    void onCellClicked(ChatRoom chatroom);
+  }
+
+  protected ChatRoom chatRoom;
+  protected Callback callback;
 
   public ChatRoomCell(ChatRoom chatRoom) {
     this.chatRoom = chatRoom;
@@ -24,5 +29,8 @@ public abstract class ChatRoomCell extends BaseCell{
     chatRoom.unreadCount++;
   }
 
-  // todo default click cell to invisible unread count
+  public void setCallback(Callback callback) {
+    this.callback = callback;
+  }
+
 }

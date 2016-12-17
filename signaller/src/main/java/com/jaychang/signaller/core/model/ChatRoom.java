@@ -37,19 +37,4 @@ public class ChatRoom extends RealmObject {
     return chatRoom;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-
-    ChatRoom chatRoom = (ChatRoom) o;
-
-    return chatRoomId != null ? chatRoomId.equals(chatRoom.chatRoomId) : chatRoom.chatRoomId == null;
-
-  }
-
-  @Override
-  public int hashCode() {
-    return chatRoomId != null ? chatRoomId.hashCode() : 0;
-  }
 }

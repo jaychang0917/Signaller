@@ -3,7 +3,6 @@ package com.jaychang.demo.signaler;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
-import com.jaychang.demo.signaler.push.GcmManager;
 import com.jaychang.signaller.core.Signaller;
 
 public class MainActivity extends AppCompatActivity {
@@ -26,6 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     Signaller.getInstance().connect(accessToken, userId);
 
-    GcmManager.init(this);
+//    GcmManager.init(this);
   }
 }

@@ -24,12 +24,8 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 class DefaultChatRoomCell extends ChatRoomCell {
 
-  private ChatRoom chatroom;
-  private Callback callback;
-
   public DefaultChatRoomCell(ChatRoom chatroom) {
     super(chatroom);
-    this.chatroom = chatroom;
   }
 
   @Override
@@ -38,7 +34,10 @@ class DefaultChatRoomCell extends ChatRoomCell {
     ViewHolder viewHolder = new ViewHolder(view);
 
     if (callback != null) {
-      viewHolder.itemView.setOnClickListener(v -> callback.onCellClicked(chatroom));
+      viewHolder.itemView.setOnClickListener(v -> {
+        callback.onCellClicked(chatRoom);
+        viewHolder.unreadCountView.setVisibility(View.GONE);
+      });
     }
 
     return viewHolder;
@@ -49,7 +48,7 @@ class DefaultChatRoomCell extends ChatRoomCell {
     ViewHolder holder = (ViewHolder) viewHolder;
     Context context = holder.itemView.getContext().getApplicationContext();
 
-    Receiver receiver = chatroom.receiver;
+    Receiver receiver = chatRoom.receiver;
     boolean hasLogo = !TextUtils.isEmpty(receiver.profilePicUrl);
     Object logo = hasLogo ? receiver.profilePicUrl : R.drawable.ic_default_profile_logo;
     Glide.with(context)
@@ -59,14 +58,14 @@ class DefaultChatRoomCell extends ChatRoomCell {
 
     holder.nameView.setText(receiver.name);
 
-    if (chatroom.unreadCount > 0) {
-      holder.unreadCountView.setText(String.valueOf(chatroom.unreadCount));
+    if (chatRoom.unreadCount > 0) {
+      holder.unreadCountView.setText(String.valueOf(chatRoom.unreadCount));
       holder.unreadCountView.setVisibility(View.VISIBLE);
     } else {
       holder.unreadCountView.setVisibility(View.INVISIBLE);
     }
 
-    ChatMessage lastMessage = chatroom.lastMessage;
+    ChatMessage lastMessage = chatRoom.lastMessage;
     if (lastMessage != null) {
       if (lastMessage.isText()) {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -88,10 +87,6 @@ class DefaultChatRoomCell extends ChatRoomCell {
     }
   }
 
-  public void setCallback(Callback callback) {
-    this.callback = callback;
-  }
-
   static class ViewHolder extends BaseViewHolder {
     @BindView(R2.id.logoView)
     ImageView logoView;
@@ -108,10 +103,6 @@ class DefaultChatRoomCell extends ChatRoomCell {
       super(itemView);
       ButterKnife.bind(this, itemView);
     }
-  }
-
-  public interface Callback {
-    void onCellClicked(ChatRoom chatroom);
   }
 
 }

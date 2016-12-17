@@ -4,10 +4,8 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.google.gson.Gson;
-import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.core.model.SocketChatMessage;
+import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -92,8 +90,13 @@ public class SocketManager {
 
   public void send(SocketChatMessage message) {
     try {
-      JSONObject object = new JSONObject(new Gson().toJson(message));
-      socket.emit(SEND_MESSAGE, object);
+      JSONObject chatMsgObj = new JSONObject();
+      chatMsgObj.put("room_id", message.roomId);
+      JSONObject msgObj = new JSONObject();
+      msgObj.put("type", message.message.type);
+      msgObj.put("content", message.message.content);
+      chatMsgObj.put("message", msgObj);
+      socket.emit(SEND_MESSAGE, chatMsgObj);
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -143,13 +146,13 @@ public class SocketManager {
   };
 
   private Emitter.Listener onMsgReceived = args -> {
-    SocketChatMessage socketChatMessage = new Gson().fromJson(args[0].toString(), SocketChatMessage.class);
+    SocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SocketChatMessage.class);
+    LogUtils.d("message sent:" + socketChatMessage.message.content);
     mainThreadHandler.post(() -> {
       AsyncTask.execute(() -> {
         insertOrUpdateChatMsgInDb(socketChatMessage);
         insertOrUpdateChatRoomInDb(socketChatMessage);
-        ChatRoom chatRoom = DatabaseManager.getInstance().getChatRoom(socketChatMessage.roomId);
-        dispatchMsgEvents(chatRoom, socketChatMessage.message);
+        dispatchMsgEvents(socketChatMessage.roomId, socketChatMessage.message.msgId);
       });
     });
   };
@@ -176,20 +179,20 @@ public class SocketManager {
     DatabaseManager.getInstance().insertOrUpdateChatRoom(socketChatMessage.roomId, socketChatMessage.message);
   }
 
-  private void dispatchMsgEvents(ChatRoom chatRoom, ChatMessage chatMessage) {
+  private void dispatchMsgEvents(String chatRoomId, String msgId) {
     boolean isInChatRoomPage = UserData.getInstance().isInChatRoomPage();
 
     if (isInChatRoomPage) {
-      boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(chatRoom.chatRoomId);
+      boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(chatRoomId);
       if (isInSameChatRoom) {
-        EventBus.getDefault().postSticky(new Events.OnMsgReceivedEvent(chatMessage));
+        EventBus.getDefault().postSticky(new Events.OnMsgReceivedEvent(msgId));
       } else {
-        EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(chatMessage));
+        EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(msgId));
       }
-      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoom));
+      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
     } else {
-      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoom));
-      EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(chatMessage));
+      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
+      EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(msgId));
     }
   }
 

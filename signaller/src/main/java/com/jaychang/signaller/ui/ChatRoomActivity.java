@@ -107,8 +107,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     initRecyclerView();
     initEmojiKeyboard();
     monitorNetworkState();
-    handleInput();
-    disableInput();
+    monitorInput();
     resetUnreadCount();
   }
 
@@ -157,26 +156,29 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     NetworkStateMonitor.getInstance()
       .monitor(this)
       .subscribe(networkState -> {
-        boolean isNetworkConnected = networkState != NetworkStateMonitor.NetworkState.DISCONNECTED;
-        if (isNetworkConnected) {
-          enableInput();
-        } else {
-          disableInput();
-        }
+        handleInput();
       });
   }
 
-  private void handleInput() {
+  private void monitorInput() {
     inputMessageView.addTextChangedListener(new SimpleTextChangedListener() {
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if (!TextUtils.isEmpty(inputMessageView.getText()) && SocketManager.getInstance().isConnected()) {
-          enableInput();
-        } else {
-          disableInput();
-        }
+        handleInput();
       }
     });
+  }
+
+  private void handleInput() {
+    boolean hasEnterText = !TextUtils.isEmpty(inputMessageView.getText());
+    boolean isSocketConnected = SocketManager.getInstance().isConnected();
+    boolean isNetworkConnected = NetworkStateMonitor.getInstance().isConnected(this);
+
+    if (hasEnterText && isSocketConnected && isNetworkConnected) {
+      enableInput();
+    } else {
+      disableInput();
+    }
   }
 
   private void disableInput() {
@@ -204,7 +206,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
   public void onMsgReceived(Events.OnMsgReceivedEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    handleChatMessage(event.chatMessage);
+    ChatMessage chatMessage = DatabaseManager.getInstance().getChatMessage(event.msgId);
+    handleChatMessage(chatMessage);
   }
 
   private void handleChatMessage(ChatMessage message) {
@@ -344,8 +347,9 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     payload.timestamp = System.currentTimeMillis();
     socketChatMessage.payload = payload;
 
-    DatabaseManager.getInstance().addPendingChatMessage(socketChatMessage);
-    SocketManager.getInstance().send(socketChatMessage);
+    DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
+      SocketManager.getInstance().send(socketChatMessage);
+    });
   }
 
   private void clearInput() {
