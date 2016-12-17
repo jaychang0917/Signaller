@@ -65,6 +65,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   public static final String EXTRA_USERNAME = "EXTRA_USERNAME";
   public static final String EXTRA_CHATROOM_ID = "EXTRA_CHATROOM_ID";
 
+  private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
+
   private String userId;
   private String username;
   private String chatRoomId;
@@ -139,7 +141,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
       @Override
       public int getThreshold() {
-        return 5;
+        return OFF_SCREEN_CELLS_THRESHOLD;
       }
     });
   }

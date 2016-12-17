@@ -30,6 +30,10 @@ public final class Signaller {
     SocketManager.getInstance().connect();
   }
 
+  public void disconnect() {
+    SocketManager.getInstance().disconnect();
+  }
+
   public void chatWith(String userId, ChatRoomJoinCallback callback) {
     SocketManager.getInstance().join(userId, makeChatRoomId(userId), callback);
   }

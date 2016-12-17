@@ -36,7 +36,7 @@ public class ChatRoomListFragment extends RxFragment {
   @BindView(R2.id.recyclerView)
   NRecyclerView recyclerView;
 
-  private static final int OFF_SCREEN_CELLS_THRESHOLD = 10;
+  private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
   private String cursor;
   private boolean hasMoreData;
 
@@ -142,7 +142,10 @@ public class ChatRoomListFragment extends RxFragment {
       ChatRoom chatRoom = chatRoomCell.getChatRoom();
 
       if (chatRoom.chatRoomId.equals(room.chatRoomId)) {
-        chatRoomCell.increaseUnreadCount();
+        if (!room.lastMessage.isOwnMessage()) {
+          chatRoomCell.increaseUnreadCount();
+        }
+
         chatRoomCell.updateLastMessage(room.lastMessage);
 
         recyclerView.removeCell(chatRoomCell);
