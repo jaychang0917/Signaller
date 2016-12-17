@@ -11,6 +11,6 @@
         android:layout_gravity="center"
         android:layout_height="wrap_content"
         android:textSize="40sp"
-        android:text="@string/tab4" />
+        android:text="@string/other" />
 
 </FrameLayout>

@@ -20,4 +20,9 @@ public abstract class ChatRoomCell extends BaseCell{
     chatRoom.lastMessage = lastMsg;
   }
 
+  public void increaseUnreadCount() {
+    chatRoom.unreadCount++;
+  }
+
+  // todo default click cell to invisible unread count
 }

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:titleTextColor="@android:color/white"
-        app:title="@string/chat" />
+        app:title="@string/chatroom" />
 
     <FrameLayout
         android:id="@+id/chatRoomListFragment"

@@ -1,24 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:gravity="center"
               android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="Login as"
+        android:textSize="30sp"
+        android:layout_height="wrap_content" />
 
     <Button
         android:id="@+id/jay10Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:textAllCaps="false"
         android:text="jay10" />
 
     <Button
         android:id="@+id/jay11Button"
         android:layout_width="wrap_content"
-        android:layout_below="@id/jay10Button"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
         android:textAllCaps="false"
         android:text="jay11" />
 
-</RelativeLayout>
+    <Button
+        android:id="@+id/jay12Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="jay12" />
+
+    <Button
+        android:id="@+id/jay14Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAllCaps="false"
+        android:text="jay14" />
+</LinearLayout>

@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Signaller</string>
-    <string name="tab1">Tab 1</string>
-    <string name="tab2">Tab 2</string>
-    <string name="tab3">Tab 3</string>
-    <string name="tab4">Tab 4</string>
-    <string name="chat">Chat</string>
+    <string name="people">People</string>
+    <string name="other">Other</string>
+    <string name="chatroom">Rooms</string>
 </resources>

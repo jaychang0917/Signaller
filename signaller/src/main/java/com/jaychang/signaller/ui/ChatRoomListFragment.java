@@ -14,7 +14,6 @@ import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.DataManager;
 import com.jaychang.signaller.core.DatabaseManager;
 import com.jaychang.signaller.core.Events;
-import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.util.LogUtils;
 import com.trello.rxlifecycle.components.support.RxFragment;
@@ -23,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -35,6 +35,7 @@ public class ChatRoomListFragment extends RxFragment {
 
   private String cursor;
   private boolean hasMoreData;
+  private List<ChatRoom> chatRooms = new ArrayList<>();
 
   public static ChatRoomListFragment newInstance() {
     return new ChatRoomListFragment();
@@ -70,7 +71,7 @@ public class ChatRoomListFragment extends RxFragment {
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
   public void updateChatRoomList(Events.UpdateChatRoomListEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    updateChatRoom(event.chatMessage);
+    insertOrUpdateChatRoom(event.chatRoom);
   }
 
   public void init() {
@@ -95,20 +96,20 @@ public class ChatRoomListFragment extends RxFragment {
       .subscribe(
         response -> {
           hasMoreData = response.hasMore;
+          chatRooms.addAll(response.chatRooms);
           bindChatRooms(response.chatRooms);
         }, error -> {
           LogUtils.e("loadChatRooms:" + error.getMessage());
         });
   }
 
-  private void updateChatRoom(ChatMessage message) {
-    DatabaseManager.getInstance().updateChatRoom(message.chatroomId, message);
-
+  private void insertOrUpdateChatRoom(ChatRoom room) {
     for (BaseCell cell : recyclerView.getAllCells()) {
       ChatRoomCell chatRoomCell = (ChatRoomCell) cell;
       ChatRoom chatRoom = chatRoomCell.getChatRoom();
-      if (chatRoom.chatRoomId.equals(message.chatroomId)) {
-        chatRoomCell.updateLastMessage(message);
+      if (chatRoom.equals(room)) {
+        chatRoomCell.increaseUnreadCount();
+        chatRoomCell.updateLastMessage(room.lastMessage);
         recyclerView.removeCell(chatRoomCell);
         recyclerView.addCell(chatRoomCell, 0);
         int fromPos = recyclerView.getAllCells().indexOf(cell);
@@ -117,8 +118,15 @@ public class ChatRoomListFragment extends RxFragment {
         } else {
           recyclerView.getAdapter().notifyItemMoved(fromPos, 0);
         }
+        // if has this chat room, return;
+        return;
       }
     }
+
+    // if has no this chat room, insert this new chat room at top
+    DefaultChatRoomCell cell = new DefaultChatRoomCell(room);
+    recyclerView.addCell(cell, 0);
+    recyclerView.getAdapter().notifyItemInserted(0);
   }
 
   private void loadChatRoomsFromDB() {

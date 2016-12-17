@@ -1,5 +1,7 @@
 package com.jaychang.signaller.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -69,6 +71,14 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private boolean hasMoreData;
   private EmojiPopup emojiPopup;
 
+  public static void start(Context context, String userId, String username, String chatRoomId) {
+    Intent intent = new Intent(context, ChatRoomActivity.class);
+    intent.putExtra(EXTRA_USER_ID, userId);
+    intent.putExtra(EXTRA_USERNAME, username);
+    intent.putExtra(EXTRA_CHATROOM_ID, chatRoomId);
+    context.startActivity(intent);
+  }
+
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -98,6 +108,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     monitorNetworkState();
     handleInput();
     disableInput();
+    resetUnreadCount();
   }
 
   private void initData() {
@@ -207,6 +218,10 @@ public class ChatRoomActivity extends RxAppCompatActivity {
         addAnotherTextMessageCell(message);
       }
     }
+  }
+
+  private void resetUnreadCount() {
+    DataManager.getInstance().resetUnreadCount(chatRoomId).subscribe();
   }
 
   private void loadChatMessages() {

@@ -7,7 +7,6 @@ public final class Signaller {
   private static final Signaller INSTANCE = new Signaller();
 
 
-
   private Signaller() {
   }
 
@@ -29,6 +28,21 @@ public final class Signaller {
 
     SocketManager.getInstance().initSocket(accessToken);
     SocketManager.getInstance().connect();
+  }
+
+  public void chatWith(String userId, ChatRoomJoinCallback callback) {
+    SocketManager.getInstance().join(userId, makeChatRoomId(userId), callback);
+  }
+
+  public void leaveChatRoom(String chatRoomId, ChatRoomLeaveCallback callback) {
+    SocketManager.getInstance().leave(chatRoomId, callback);
+  }
+
+  private String makeChatRoomId(String userId) {
+    String ownUserId = UserData.getInstance().getUserId();
+    return ownUserId.compareTo(userId) < 0 ?
+      ownUserId + "_" + userId :
+      userId + "_" + ownUserId;
   }
 
 }

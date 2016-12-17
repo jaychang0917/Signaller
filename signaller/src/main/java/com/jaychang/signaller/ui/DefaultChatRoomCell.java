@@ -59,6 +59,13 @@ class DefaultChatRoomCell extends ChatRoomCell {
 
     holder.nameView.setText(receiver.name);
 
+    if (chatroom.unreadCount > 0) {
+      holder.unreadCountView.setText(String.valueOf(chatroom.unreadCount));
+      holder.unreadCountView.setVisibility(View.VISIBLE);
+    } else {
+      holder.unreadCountView.setVisibility(View.INVISIBLE);
+    }
+
     ChatMessage lastMessage = chatroom.lastMessage;
     if (lastMessage != null) {
       if (lastMessage.isText()) {
@@ -94,6 +101,8 @@ class DefaultChatRoomCell extends ChatRoomCell {
     EmojiTextView lastMsgView;
     @BindView(R2.id.dateView)
     TextView dateView;
+    @BindView(R2.id.unreadCountView)
+    TextView unreadCountView;
 
     ViewHolder(View itemView) {
       super(itemView);

@@ -15,6 +15,10 @@ public class ChooseUserActivity extends AppCompatActivity {
   Button jay10Button;
   @BindView(R.id.jay11Button)
   Button jay11Button;
+  @BindView(R.id.jay12Button)
+  Button jay12Button;
+  @BindView(R.id.jay14Button)
+  Button jay14Button;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -24,19 +28,38 @@ public class ChooseUserActivity extends AppCompatActivity {
   }
 
   @OnClick(R.id.jay10Button)
-  void openWithJay10() {
+  void loginAsJay10() {
     Intent intent = new Intent(this, MainActivity.class);
     intent.putExtra(MainActivity.EXTRA_ACCESS_TOEKN, Constant.ACCESS_TOKEN_JAY10);
     intent.putExtra(MainActivity.EXTRA_USER_ID, Constant.USER_ID_JAY10);
     startActivity(intent);
+    App.currentUserId = Constant.USER_ID_JAY10;
   }
 
   @OnClick(R.id.jay11Button)
-  void openWithJay11() {
+  void loginAsJay11() {
     Intent intent = new Intent(this, MainActivity.class);
     intent.putExtra(MainActivity.EXTRA_ACCESS_TOEKN, Constant.ACCESS_TOKEN_JAY11);
     intent.putExtra(MainActivity.EXTRA_USER_ID, Constant.USER_ID_JAY11);
     startActivity(intent);
+    App.currentUserId = Constant.USER_ID_JAY11;
   }
 
+  @OnClick(R.id.jay12Button)
+  void loginAsJay12() {
+    Intent intent = new Intent(this, MainActivity.class);
+    intent.putExtra(MainActivity.EXTRA_ACCESS_TOEKN, Constant.ACCESS_TOKEN_JAY12);
+    intent.putExtra(MainActivity.EXTRA_USER_ID, Constant.USER_ID_JAY12);
+    startActivity(intent);
+    App.currentUserId = Constant.USER_ID_JAY12;
+  }
+
+  @OnClick(R.id.jay14Button)
+  void loginAsJay14() {
+    Intent intent = new Intent(this, MainActivity.class);
+    intent.putExtra(MainActivity.EXTRA_ACCESS_TOEKN, Constant.ACCESS_TOKEN_JAY14);
+    intent.putExtra(MainActivity.EXTRA_USER_ID, Constant.USER_ID_JAY14);
+    startActivity(intent);
+    App.currentUserId = Constant.USER_ID_JAY14;
+  }
 }

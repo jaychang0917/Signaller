@@ -1,6 +1,7 @@
 package com.jaychang.signaller.core;
 
 import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.signaller.core.model.ChatRoom;
 
 public class Events {
 
@@ -21,10 +22,10 @@ public class Events {
   }
 
   public static class UpdateChatRoomListEvent {
-    public ChatMessage chatMessage;
+    public ChatRoom chatRoom;
 
-    public UpdateChatRoomListEvent(ChatMessage chatMessage) {
-      this.chatMessage = chatMessage;
+    public UpdateChatRoomListEvent(ChatRoom chatRoom) {
+      this.chatRoom = chatRoom;
     }
   }
 }

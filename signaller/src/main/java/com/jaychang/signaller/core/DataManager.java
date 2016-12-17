@@ -51,4 +51,9 @@ public class DataManager {
       .compose(new SchedulerTransformer<>());
   }
 
+  public Observable<Void> resetUnreadCount(String chatRoomId) {
+    return api.resetUnreadCount(chatRoomId, 0)
+      .compose(new SchedulerTransformer<>());
+  }
+
 }

@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.jaychang.signaller.ui.ChatRoomListFragment;
 
-public class ChatFragment extends Fragment {
+public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTabSelectListener{
 
   @Nullable
   @Override
@@ -24,11 +24,14 @@ public class ChatFragment extends Fragment {
   }
 
   public void init() {
-
-
     ChatRoomListFragment fragment = ChatRoomListFragment.newInstance();
     getChildFragmentManager().beginTransaction()
       .replace(R.id.chatRoomListFragment, fragment)
       .commitNow();
+  }
+
+  @Override
+  public void onTabSelected(int pos) {
+    init();
   }
 }

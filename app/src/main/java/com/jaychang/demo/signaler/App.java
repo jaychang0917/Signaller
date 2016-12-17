@@ -6,11 +6,13 @@ import com.jaychang.signaller.core.Signaller;
 
 public class App extends Application {
 
+  public static String currentUserId;
+
   @Override
   public void onCreate() {
     super.onCreate();
 
-    StethoUtils.init(this);
+    Utils.init(this);
 
     Signaller.init(this, Constant.SERVER_DOMAIN, Constant.SOCKETE_URL);
   }

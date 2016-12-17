@@ -25,4 +25,31 @@ public class ChatRoom extends RealmObject {
   @SerializedName("receiver")
   public Receiver receiver;
 
+  public static ChatRoom from(String chatRoomId, ChatMessage message) {
+    ChatRoom chatRoom = new ChatRoom();
+    chatRoom.chatRoomId = chatRoomId;
+    Receiver receiver = new Receiver();
+    receiver.name = message.sender.name;
+    receiver.profilePicUrl = message.sender.imageUrl;
+    chatRoom.receiver = receiver;
+    chatRoom.lastMessage = message;
+    chatRoom.unreadCount = 1;
+    return chatRoom;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    ChatRoom chatRoom = (ChatRoom) o;
+
+    return chatRoomId != null ? chatRoomId.equals(chatRoom.chatRoomId) : chatRoom.chatRoomId == null;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return chatRoomId != null ? chatRoomId.hashCode() : 0;
+  }
 }

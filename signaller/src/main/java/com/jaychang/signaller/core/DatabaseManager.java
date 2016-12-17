@@ -96,7 +96,7 @@ public class DatabaseManager {
     });
   }
 
-  public void updateChatRoom(String roomId, ChatMessage lastMsg) {
+  public void insertOrUpdateChatRoom(String roomId, ChatMessage lastMsg) {
     getRealm().executeTransaction(realm -> {
       ChatRoom chatRoom = realm.where(ChatRoom.class)
         .equalTo("chatRoomId", roomId).findFirst();
@@ -105,8 +105,15 @@ public class DatabaseManager {
           chatRoom.unreadCount++;
         }
         chatRoom.lastMessage = realm.copyToRealmOrUpdate(lastMsg);
+      } else {
+        chatRoom = ChatRoom.from(roomId, lastMsg);
+        realm.copyToRealmOrUpdate(chatRoom);
       }
     });
+  }
+
+  public ChatRoom getChatRoom(String chatRoomId) {
+    return getRealm().where(ChatRoom.class).equalTo("chatRoomId", chatRoomId).findFirst();
   }
 
   public void saveChatMessages(final List<ChatMessage> chatMessages) {
