@@ -1,6 +1,5 @@
 package com.jaychang.signaller.core;
 
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -140,21 +139,15 @@ public class SocketManager {
 
   private Emitter.Listener onConnected = args -> {
     LogUtils.d("onConnected");
-    mainThreadHandler.post(() -> {
-      sendPendingChatMsg();
-    });
+    sendPendingChatMsg();
   };
 
   private Emitter.Listener onMsgReceived = args -> {
     SocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SocketChatMessage.class);
     LogUtils.d("message sent:" + socketChatMessage.message.content);
-    mainThreadHandler.post(() -> {
-      AsyncTask.execute(() -> {
-        insertOrUpdateChatMsgInDb(socketChatMessage);
-        insertOrUpdateChatRoomInDb(socketChatMessage);
-        dispatchMsgEvents(socketChatMessage.roomId, socketChatMessage.message.msgId);
-      });
-    });
+    insertOrUpdateChatMsgInDb(socketChatMessage);
+    insertOrUpdateChatRoomInDb(socketChatMessage);
+    dispatchMsgEvents(socketChatMessage.roomId, socketChatMessage.message.msgId);
   };
 
   private void insertOrUpdateChatMsgInDb(SocketChatMessage socketChatMessage) {

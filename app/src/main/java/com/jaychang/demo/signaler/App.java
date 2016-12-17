@@ -1,10 +1,10 @@
 package com.jaychang.demo.signaler;
 
-import android.app.Application;
+import android.support.multidex.MultiDexApplication;
 
 import com.jaychang.signaller.core.Signaller;
 
-public class App extends Application {
+public class App extends MultiDexApplication {
 
   public static String currentUserId;
 

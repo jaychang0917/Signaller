@@ -42,6 +42,7 @@ dependencies {
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'
     compile project(':signaller')
+    compile 'com.google.android.gms:play-services:9.4.0'
 
     compile 'com.uphyca:stetho_realm:2.0.0'
 }
