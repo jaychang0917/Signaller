@@ -5,6 +5,7 @@ import android.content.Context;
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.core.model.SocketChatMessage;
+import com.jaychang.signaller.util.LogUtils;
 
 import java.util.List;
 
@@ -54,15 +55,15 @@ public class DatabaseManager {
 
   /**
    * chat message
-   * */
+   */
   public Observable<RealmResults<SocketChatMessage>> getPendingChatMessages() {
     Realm realm = getRealm();
 
-    return realm
-      .where(SocketChatMessage.class)
-      .findAllSorted("timestamp", Sort.ASCENDING)
-      .asObservable()
-      .doOnCompleted(realm::close);
+    return Observable.just(
+      realm
+        .where(SocketChatMessage.class)
+        .findAllSorted("timestamp", Sort.ASCENDING)
+    ).doOnCompleted(realm::close);
   }
 
   public void addPendingChatMessageAsync(SocketChatMessage msg, Realm.Transaction.OnSuccess callback) {
@@ -78,6 +79,7 @@ public class DatabaseManager {
         .equalTo("payload.timestamp", timestamp).findFirst();
       if (msg != null) {
         msg.deleteFromRealm();
+        LogUtils.d("removed pending msg:" + timestamp);
       }
     });
   }
@@ -120,7 +122,7 @@ public class DatabaseManager {
 
   /**
    * chat room
-   * */
+   */
   public void saveChatRooms(final List<ChatRoom> chatRooms) {
     getRealm().executeTransaction(realm -> {
       realm.insertOrUpdate(chatRooms);

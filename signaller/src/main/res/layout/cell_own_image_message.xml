@@ -7,7 +7,7 @@
     android:gravity="right"
     android:orientation="horizontal">
 
-    <ImageView
+    <com.inthecheesefactory.thecheeselibrary.widget.AdjustableImageView
         android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:maxWidth="150dp"

@@ -50,7 +50,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   Toolbar toolbar;
   @BindView(R2.id.recyclerView)
   NRecyclerView recyclerView;
-  @BindView(R2.id.photoView)
+//  @BindView(R2.id.photoView)
   ImageView photoView;
   @BindView(R2.id.emojiView)
   ImageView emojiView;
@@ -111,6 +111,9 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     monitorNetworkState();
     monitorInput();
     resetUnreadCount();
+
+    photoView = (ImageView) findViewById(R.id.photoView);
+    photoView.setOnClickListener(view -> showPhotoPicker());
   }
 
   private void initData() {
@@ -148,8 +151,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void initEmojiKeyboard() {
     emojiPopup = EmojiPopup.Builder.fromRootView(rootView)
-      .setOnEmojiPopupShownListener(() -> emojiView.setImageResource(android.R.drawable.star_on))
-      .setOnEmojiPopupDismissListener(() -> emojiView.setImageResource(android.R.drawable.star_off))
+      .setOnEmojiPopupShownListener(() -> emojiView.setImageResource(R.drawable.ic_keyboard))
+      .setOnEmojiPopupDismissListener(() -> emojiView.setImageResource(R.drawable.ic_emoji))
       .setOnSoftKeyboardCloseListener(() -> emojiPopup.dismiss())
       .build(inputMessageView);
   }
@@ -177,20 +180,16 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     boolean isNetworkConnected = NetworkStateMonitor.getInstance().isConnected(this);
 
     if (hasEnterText && isSocketConnected && isNetworkConnected) {
-      enableInput();
+      sendMsgView.setEnabled(true);
     } else {
-      disableInput();
+      sendMsgView.setEnabled(false);
     }
-  }
 
-  private void disableInput() {
-    photoView.setEnabled(false);
-    sendMsgView.setEnabled(false);
-  }
-
-  private void enableInput() {
-    photoView.setEnabled(true);
-    sendMsgView.setEnabled(true);
+    if (isSocketConnected && isNetworkConnected) {
+      photoView.setEnabled(true);
+    } else {
+      photoView.setEnabled(false);
+    }
   }
 
   @Override
@@ -308,8 +307,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     recyclerView.getAdapter().notifyItemRangeInserted(0, recyclerView.getCellsCount() - totalCountBefore);
   }
 
-  @OnClick(R2.id.photoView)
-  void showPhotoPickerDialog() {
+  void showPhotoPicker() {
     NPhotoPicker.with(this)
       .pickSinglePhotoFromAlbum()
       .subscribe(
@@ -361,6 +359,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private void uploadPhotoAndSendImageMsg(Uri uri) {
     DataManager.getInstance().uploadPhoto(uri)
       .subscribe(image -> {
+          LogUtils.d("photo uploaded: " + uri.toString());
           sendImageMessage(image.resourceId);
         },
         error -> {
@@ -373,11 +372,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     Image image = new Image();
     image.url = uri.toString();
     message.image = image;
-
     addOwnImageMessageCell(message);
     uploadPhotoAndSendImageMsg(uri);
-
-    inputMessageView.setText("");
   }
 
   private void sendImageMessage(String imageResourceId) {
@@ -387,7 +383,15 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     message.type = "image";
     message.content = imageResourceId;
     socketChatMessage.message = message;
-    SocketManager.getInstance().send(socketChatMessage);
+
+    Payload payload = new Payload();
+    payload.timestamp = System.currentTimeMillis();
+    socketChatMessage.payload = payload;
+
+    DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
+      LogUtils.d("send image to server.");
+      SocketManager.getInstance().send(socketChatMessage);
+    });
   }
 
   private void addOwnTextMessageCell(ChatMessage message) {

@@ -22,7 +22,7 @@ public interface Api {
   @GET("api/chats/{user_id}/messages")
   Observable<ChatMessageResponse> getChatMessages(@Path("user_id") String userId, @Query("cursor") String cursor);
 
-  @POST("createImage")
+  @POST("/api/resources/images")
   @Multipart
   Observable<Image> uploadPhoto(@Part MultipartBody.Part file);
 

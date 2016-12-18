@@ -40,6 +40,7 @@ class AnotherImageMessageCell extends ChatMessageCell {
 
     Glide.with(context)
       .load(message.image.url)
+      .thumbnail(0.1f)
       .into(holder.imageView);
   }
 

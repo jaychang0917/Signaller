@@ -144,7 +144,7 @@ public class SocketManager {
 
   private Emitter.Listener onMsgReceived = args -> {
     SocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SocketChatMessage.class);
-    LogUtils.d("message sent:" + socketChatMessage.message.content);
+    LogUtils.d("message received:" + socketChatMessage.message.content);
     insertOrUpdateChatMsgInDb(socketChatMessage);
     insertOrUpdateChatRoomInDb(socketChatMessage);
     dispatchMsgEvents(socketChatMessage.roomId, socketChatMessage.message.msgId);

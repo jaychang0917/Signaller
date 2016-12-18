@@ -72,7 +72,7 @@ class DefaultChatRoomCell extends ChatRoomCell {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         holder.lastMsgView.setText(lastMessage.content);
       } else if (lastMessage.isImage()) {
-        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_camera, 0, 0, 0);
+        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_small_camera, 0, 0, 0);
         holder.lastMsgView.setText(R.string.image);
       } else if (lastMessage.isEvent()) {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);

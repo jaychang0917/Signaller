@@ -62,6 +62,7 @@ dependencies {
     compile 'com.vanniktech:emoji:0.3.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'jp.wasabeef:glide-transformations:2.0.1'
+    compile 'com.inthecheesefactory.thecheeselibrary:adjustable-imageview:1.0.1'
 
     compile 'com.inthecheesefactory.thecheeselibrary:adjustable-imageview:1.0.1'
     compile 'com.github.jaychang0917:nPhotoPicker:1.2.1'
