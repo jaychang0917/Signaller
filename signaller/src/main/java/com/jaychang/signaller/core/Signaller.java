@@ -49,4 +49,7 @@ public final class Signaller {
       userId + "_" + ownUserId;
   }
 
+//  public void setCustomChatRoomCell(ChatRommCellProvider provider) {
+//
+//  }
 }

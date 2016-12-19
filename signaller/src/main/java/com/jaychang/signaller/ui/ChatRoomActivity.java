@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -434,7 +433,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void scrollToBottom() {
-    ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(recyclerView.getCellsCount() - 1, 0);
+    recyclerView.getLayoutManager().scrollToPosition(recyclerView.getCellsCount()-1);
   }
 
   private void scrollToBottomOnce() {

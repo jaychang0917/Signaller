@@ -11,6 +11,7 @@ import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +38,8 @@ class AnotherImageMessageCell extends ChatMessageCell {
     if (callback != null) {
       holder.itemView.setOnClickListener(view -> callback.onCellClicked(message));
     }
+
+    ViewUtils.setViewWidthHeight(holder.imageView, 150, (int) (150 / message.image.getRatio()));
 
     Glide.with(context)
       .load(message.image.url)

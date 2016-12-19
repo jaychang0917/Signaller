@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="3dp"
-        android:adjustViewBounds="true"
         android:background="#2f9d80"
         android:padding="4dp" />
 

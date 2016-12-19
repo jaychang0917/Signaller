@@ -27,8 +27,14 @@ public class Image extends RealmObject {
   public String type;
   @SerializedName("name")
   public String name;
+  @SerializedName("attributes")
+  public ImageAttribute attributes;
 
   public static Image from(String json) {
     return GsonUtils.getGson().fromJson(json, Image.class);
+  }
+
+  public float getRatio() {
+    return (float)attributes.width / (float) attributes.height;
   }
 }
