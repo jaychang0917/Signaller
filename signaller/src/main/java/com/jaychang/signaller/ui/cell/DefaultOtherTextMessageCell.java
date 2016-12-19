@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui;
+package com.jaychang.signaller.ui.cell;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,15 +14,15 @@ import com.vanniktech.emoji.EmojiTextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-class OwnTextMessageCell extends ChatMessageCell{
+public class DefaultOtherTextMessageCell extends ChatMessageCell{
 
-  OwnTextMessageCell(ChatMessage message) {
+  public DefaultOtherTextMessageCell(ChatMessage message) {
     super(message);
   }
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_own_text_message, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_other_text_message, viewGroup, false);
     return new ViewHolder(view);
   }
 

@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui;
+package com.jaychang.signaller.ui.cell;
 
 import com.jaychang.nrv.BaseCell;
 import com.jaychang.signaller.core.model.ChatMessage;
@@ -19,6 +19,10 @@ public abstract class ChatRoomCell extends BaseCell{
 
   public ChatRoom getChatRoom() {
     return chatRoom;
+  }
+
+  public void setChatRoom(ChatRoom chatRoom) {
+    this.chatRoom = chatRoom;
   }
 
   public void updateLastMessage(ChatMessage lastMsg) {

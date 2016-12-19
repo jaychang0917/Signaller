@@ -15,11 +15,14 @@ import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.DataManager;
 import com.jaychang.signaller.core.DatabaseManager;
 import com.jaychang.signaller.core.Events;
+import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.model.ChatRoom;
+import com.jaychang.signaller.ui.cell.ChatRoomCell;
+import com.jaychang.signaller.ui.cell.DefaultChatRoomCell;
+import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.signaller.util.NetworkStateMonitor;
 import com.trello.rxlifecycle.components.support.RxFragment;
-import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -39,6 +42,7 @@ public class ChatRoomListFragment extends RxFragment {
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
   private String cursor;
   private boolean hasMoreData;
+  private ChatRoomCellProvider chatRoomCellProvider;
 
   public static ChatRoomListFragment newInstance() {
     return new ChatRoomListFragment();
@@ -79,13 +83,18 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   public void init() {
+    initUIConfig();
     initRecyclerView();
     removePendingEvents();
   }
 
+  private void initUIConfig() {
+    chatRoomCellProvider = Signaller.getInstance().getUiConfig().getChatRoomCellProvider();
+  }
+
   private void initRecyclerView() {
     recyclerView.useVerticalLinearMode();
-    recyclerView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(getContext()).colorResId(R.color.divider).build());
+    recyclerView.showDivider();
     recyclerView.setOnLoadMoreListener(new OnLoadMorePageListener() {
       @Override
       public void onLoadMore(int i) {
@@ -185,7 +194,7 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void bindChatRooms(List<ChatRoom> chatRooms) {
     for (ChatRoom chatRoom : chatRooms) {
-      ChatRoomCell cell = new DefaultChatRoomCell(chatRoom);
+      ChatRoomCell cell = chatRoomCellProvider.createChatRoomCell(chatRoom);
       cell.setCallback(room -> {
         goToChatRoomPage(room);
       });

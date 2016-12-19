@@ -2,10 +2,13 @@ package com.jaychang.signaller.core;
 
 import android.content.Context;
 
+import com.jaychang.signaller.ui.config.SimpleUIConfig;
+import com.jaychang.signaller.ui.config.UIConfig;
+
 public final class Signaller {
 
   private static final Signaller INSTANCE = new Signaller();
-
+  private UIConfig uiConfig;
 
   private Signaller() {
   }
@@ -49,7 +52,14 @@ public final class Signaller {
       userId + "_" + ownUserId;
   }
 
-//  public void setCustomChatRoomCell(ChatRommCellProvider provider) {
-//
-//  }
+  public void setUIConfig(UIConfig config) {
+    this.uiConfig = config;
+  }
+
+  public UIConfig getUiConfig() {
+    if (uiConfig == null) {
+      return new SimpleUIConfig();
+    }
+    return uiConfig;
+  }
 }

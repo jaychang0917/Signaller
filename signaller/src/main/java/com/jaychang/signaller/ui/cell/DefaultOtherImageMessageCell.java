@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui;
+package com.jaychang.signaller.ui.cell;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -16,17 +16,15 @@ import com.jaychang.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-class OwnImageMessageCell extends ChatMessageCell {
+public class DefaultOtherImageMessageCell extends ChatMessageCell {
 
-  private Callback callback;
-
-  OwnImageMessageCell(ChatMessage message) {
+  public DefaultOtherImageMessageCell(ChatMessage message) {
     super(message);
   }
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_own_image_message, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_other_image_message, viewGroup, false);
     return new ViewHolder(view);
   }
 
@@ -44,11 +42,6 @@ class OwnImageMessageCell extends ChatMessageCell {
     Glide.with(context)
       .load(message.image.url)
       .into(holder.imageView);
-
-  }
-
-  void setCallback(Callback callback) {
-    this.callback = callback;
   }
 
   static class ViewHolder extends BaseViewHolder {
@@ -61,7 +54,4 @@ class OwnImageMessageCell extends ChatMessageCell {
     }
   }
 
-  interface Callback {
-    void onCellClicked(ChatMessage message);
-  }
 }

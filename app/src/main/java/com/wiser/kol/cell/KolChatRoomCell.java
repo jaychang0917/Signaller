@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui;
+package com.wiser.kol.cell;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -10,11 +10,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jaychang.nrv.BaseViewHolder;
-import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.core.model.Receiver;
+import com.jaychang.signaller.ui.cell.ChatRoomCell;
 import com.jaychang.utils.DateTimeFormatUtils;
 import com.vanniktech.emoji.EmojiTextView;
 
@@ -22,15 +22,15 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
-class DefaultChatRoomCell extends ChatRoomCell {
+public class KolChatRoomCell extends ChatRoomCell {
 
-  public DefaultChatRoomCell(ChatRoom chatroom) {
+  public KolChatRoomCell(ChatRoom chatroom) {
     super(chatroom);
   }
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_chatroom, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(com.jaychang.signaller.R.layout.cell_chatroom, viewGroup, false);
     ViewHolder viewHolder = new ViewHolder(view);
 
     if (callback != null) {
@@ -51,7 +51,7 @@ class DefaultChatRoomCell extends ChatRoomCell {
 
     Receiver receiver = chatRoom.receiver;
     boolean hasLogo = !TextUtils.isEmpty(receiver.profilePicUrl);
-    Object logo = hasLogo ? receiver.profilePicUrl : R.drawable.ic_default_profile_logo;
+    Object logo = hasLogo ? receiver.profilePicUrl : com.jaychang.signaller.R.drawable.ic_default_profile_logo;
     Glide.with(context)
       .load(logo)
       .bitmapTransform(new CropCircleTransformation(context))
@@ -72,13 +72,13 @@ class DefaultChatRoomCell extends ChatRoomCell {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
         holder.lastMsgView.setText(lastMessage.content);
       } else if (lastMessage.isImage()) {
-        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_small_camera, 0, 0, 0);
-        holder.lastMsgView.setText(R.string.image);
+        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(com.jaychang.signaller.R.drawable.ic_small_camera, 0, 0, 0);
+        holder.lastMsgView.setText(com.jaychang.signaller.R.string.image);
       } else if (lastMessage.isEvent()) {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
       }
 
-      String yesterday = "'" + context.getString(R.string.yesterday) + "'";
+      String yesterday = "'" + context.getString(com.jaychang.signaller.R.string.yesterday) + "'";
       String date = DateTimeFormatUtils.translate(
         String.valueOf(lastMessage.mtime),
         "hh:mm a",
