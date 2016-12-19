@@ -91,10 +91,16 @@ public class SocketManager {
     try {
       JSONObject chatMsgObj = new JSONObject();
       chatMsgObj.put("room_id", message.roomId);
+
       JSONObject msgObj = new JSONObject();
       msgObj.put("type", message.message.type);
       msgObj.put("content", message.message.content);
       chatMsgObj.put("message", msgObj);
+
+      JSONObject payload = new JSONObject();
+      payload.put("timestamp", message.payload.timestamp);
+      chatMsgObj.put("payload", payload);
+
       socket.emit(SEND_MESSAGE, chatMsgObj);
     } catch (JSONException e) {
       e.printStackTrace();

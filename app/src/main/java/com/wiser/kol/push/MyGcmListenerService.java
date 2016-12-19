@@ -1,4 +1,4 @@
-package com.jaychang.demo.signaler.push;
+package com.wiser.kol.push;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,9 +11,10 @@ import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.jaychang.demo.signaler.MainActivity;
-import com.jaychang.demo.signaler.R;
 import com.jaychang.signaller.ui.ChatRoomActivity;
+import com.jaychang.signaller.util.LogUtils;
+import com.wiser.kol.MainActivity;
+import com.wiser.kol.R;
 
 public class MyGcmListenerService extends GcmListenerService {
 
@@ -28,9 +29,10 @@ public class MyGcmListenerService extends GcmListenerService {
   public void onMessageReceived(String from, Bundle data) {
     String message = data.getString("content");
     for (String key : data.keySet()) {
-      System.out.println("GCM:data->key:" + key + " value:" + data.get(key));
+      LogUtils.d("GCM:data->key:" + key + " value:" + data.get(key));
     }
     showNotification(message);
+    LogUtils.d("show push notification:" + message);
   }
 
   private void showNotification(String message) {

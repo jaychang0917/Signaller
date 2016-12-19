@@ -1,4 +1,4 @@
-package com.jaychang.demo.signaler.push;
+package com.wiser.kol.push;
 
 import android.content.Intent;
 

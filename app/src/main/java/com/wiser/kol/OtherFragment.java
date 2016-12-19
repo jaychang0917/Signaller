@@ -1,4 +1,4 @@
-package com.jaychang.demo.signaler;
+package com.wiser.kol;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

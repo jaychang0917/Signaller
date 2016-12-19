@@ -4,9 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.inthecheesefactory.thecheeselibrary.widget.AdjustableImageView;
 import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
@@ -40,7 +40,6 @@ class OwnImageMessageCell extends ChatMessageCell {
 
     Glide.with(context)
       .load(message.image.url)
-      .thumbnail(0.1f)
       .into(holder.imageView);
 
   }
@@ -51,7 +50,7 @@ class OwnImageMessageCell extends ChatMessageCell {
 
   static class ViewHolder extends BaseViewHolder {
     @BindView(R2.id.imageView)
-    AdjustableImageView imageView;
+    ImageView imageView;
 
     ViewHolder(View itemView) {
       super(itemView);

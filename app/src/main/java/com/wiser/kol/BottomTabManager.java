@@ -1,4 +1,4 @@
-package com.jaychang.demo.signaler;
+package com.wiser.kol;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;

@@ -8,6 +8,7 @@ import com.jaychang.signaller.util.GsonUtils;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -36,6 +37,10 @@ public class ApiManager {
     if (DebugUtils.debug) {
       okHttpClientBuilder.addNetworkInterceptor(new StethoInterceptor());
     }
+
+    okHttpClientBuilder.connectTimeout(1, TimeUnit.MINUTES);
+    okHttpClientBuilder.readTimeout(1, TimeUnit.MINUTES);
+    okHttpClientBuilder.writeTimeout(1, TimeUnit.MINUTES);
 
     okHttpClientBuilder.addInterceptor(new Interceptor() {
       @Override

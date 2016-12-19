@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -50,7 +51,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   Toolbar toolbar;
   @BindView(R2.id.recyclerView)
   NRecyclerView recyclerView;
-//  @BindView(R2.id.photoView)
+  @BindView(R2.id.photoView)
   ImageView photoView;
   @BindView(R2.id.emojiView)
   ImageView emojiView;
@@ -73,6 +74,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private String cursor;
   private boolean hasMoreData;
   private EmojiPopup emojiPopup;
+  private boolean questScrollToBottom = true;
 
   public static void start(Context context, String userId, String username, String chatRoomId) {
     Intent intent = new Intent(context, ChatRoomActivity.class);
@@ -111,9 +113,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     monitorNetworkState();
     monitorInput();
     resetUnreadCount();
-
-    photoView = (ImageView) findViewById(R.id.photoView);
-    photoView.setOnClickListener(view -> showPhotoPicker());
   }
 
   private void initData() {
@@ -188,7 +187,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     if (isSocketConnected && isNetworkConnected) {
       photoView.setEnabled(true);
     } else {
-      photoView.setEnabled(false);
+//      photoView.setEnabled(false);
     }
   }
 
@@ -235,9 +234,10 @@ public class ChatRoomActivity extends RxAppCompatActivity {
           cursor = response.cursor;
           hasMoreData = response.hasMore;
           bindChatMessages(response.chatMessages);
+          scrollToBottomOnce();
         },
         error -> {
-          LogUtils.d(error.getMessage());
+//          LogUtils.d(error.getMessage());
         });
   }
 
@@ -307,6 +307,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     recyclerView.getAdapter().notifyItemRangeInserted(0, recyclerView.getCellsCount() - totalCountBefore);
   }
 
+  @OnClick(R2.id.photoView)
   void showPhotoPicker() {
     NPhotoPicker.with(this)
       .pickSinglePhotoFromAlbum()
@@ -328,6 +329,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   @OnClick(R2.id.sendMsgView)
   void addTextMessage() {
     ChatMessage chatMessage = new ChatMessage();
+    chatMessage.mtime = System.currentTimeMillis();
     chatMessage.type = "text";
     chatMessage.content = inputMessageView.getText().toString();
     addOwnTextMessageCell(chatMessage);
@@ -338,13 +340,17 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private void sendTextMessage() {
     SocketChatMessage socketChatMessage = new SocketChatMessage();
     socketChatMessage.roomId = chatRoomId;
+
+    long curTimestamp = System.currentTimeMillis();
+
     ChatMessage message = new ChatMessage();
+    message.timestamp = curTimestamp;
     message.type = "text";
     message.content = inputMessageView.getText().toString();
     socketChatMessage.message = message;
 
     Payload payload = new Payload();
-    payload.timestamp = System.currentTimeMillis();
+    payload.timestamp = curTimestamp;
     socketChatMessage.payload = payload;
 
     DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
@@ -369,6 +375,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void addImageMessage(Uri uri) {
     ChatMessage message = new ChatMessage();
+    message.mtime = System.currentTimeMillis();
     Image image = new Image();
     image.url = uri.toString();
     message.image = image;
@@ -379,13 +386,17 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private void sendImageMessage(String imageResourceId) {
     SocketChatMessage socketChatMessage = new SocketChatMessage();
     socketChatMessage.roomId = chatRoomId;
+
+    long curTimestamp = System.currentTimeMillis();
+
     ChatMessage message = new ChatMessage();
+    message.timestamp = curTimestamp;
     message.type = "image";
     message.content = imageResourceId;
     socketChatMessage.message = message;
 
     Payload payload = new Payload();
-    payload.timestamp = System.currentTimeMillis();
+    payload.timestamp = curTimestamp;
     socketChatMessage.payload = payload;
 
     DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
@@ -423,7 +434,14 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void scrollToBottom() {
-    recyclerView.getLayoutManager().scrollToPosition(recyclerView.getCellsCount() - 1);
+    ((LinearLayoutManager) recyclerView.getLayoutManager()).scrollToPositionWithOffset(recyclerView.getCellsCount() - 1, 0);
+  }
+
+  private void scrollToBottomOnce() {
+    if (recyclerView.getCellsCount() > 0 && questScrollToBottom) {
+      questScrollToBottom = false;
+      scrollToBottom();
+    }
   }
 
   private void goToPhotoPage(String url) {

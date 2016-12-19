@@ -100,6 +100,9 @@ public class DatabaseManager {
 
   public void saveChatMessages(final List<ChatMessage> chatMessages) {
     getRealm().executeTransaction(realm -> {
+      for (ChatMessage chatMessage : chatMessages) {
+        chatMessage.isSent = true;
+      }
       realm.insertOrUpdate(chatMessages);
     });
   }
@@ -114,8 +117,10 @@ public class DatabaseManager {
     getRealm().executeTransaction(realm -> {
       ChatMessage msg = realm.where(ChatMessage.class)
         .equalTo("timestamp", timestamp).findFirst();
+      LogUtils.d("try to remove temp chat msg:" + timestamp + " msg:" + msg);
       if (msg != null) {
         msg.deleteFromRealm();
+        LogUtils.d("remove temp chat msg:" + timestamp);
       }
     });
   }

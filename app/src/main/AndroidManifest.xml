@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.jaychang.demo.signaler"
+<manifest package="com.wiser.kol"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name=".App"
+        android:name="com.wiser.kol.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChooseUserActivity">
+        <activity android:name="com.wiser.kol.ChooseUserActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
+        <activity android:name="com.wiser.kol.MainActivity" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -31,21 +31,21 @@
         </receiver>
 
         <service
-            android:name=".push.MyGcmListenerService"
+            android:name="com.wiser.kol.push.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
         </service>
         <service
-            android:name=".push.GcmInstanceIDListenerService"
+            android:name="com.wiser.kol.push.GcmInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
             </intent-filter>
         </service>
         <service
-            android:name=".push.GcmRegistrationService"
+            android:name="com.wiser.kol.push.GcmRegistrationService"
             android:exported="false">
         </service>
     </application>

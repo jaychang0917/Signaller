@@ -1,4 +1,4 @@
-package com.jaychang.demo.signaler.widget;
+package com.wiser.kol.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

@@ -1,4 +1,4 @@
-package com.jaychang.demo.signaler.push;
+package com.wiser.kol.push;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -8,7 +8,8 @@ import android.preference.PreferenceManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.jaychang.demo.signaler.Constant;
+import com.wiser.kol.Constant;
+import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.AppUtils;
 import com.jaychang.utils.DeviceUtils;
 
@@ -38,7 +39,7 @@ public class GcmRegistrationService extends IntentService {
         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
       sendRegistrationToServer(token);
     } catch (Exception e) {
-      System.out.println("GCM: error to get token from gcm server.");
+      LogUtils.d("GCM: error to get token from gcm server.");
     }
   }
 
@@ -57,7 +58,7 @@ public class GcmRegistrationService extends IntentService {
       .addQueryParameter("deviceid", DeviceUtils.getDeviceId(getApplicationContext()))
       .addQueryParameter("client_os", "android")
       .addQueryParameter("enable_push", "1")
-      .addQueryParameter("userid", Constant.USER_ID_JAY11)
+      .addQueryParameter("userid", Constant.USER_ID_JAY10)
       .build();
 
     Request request = new Request.Builder().get()
@@ -68,13 +69,13 @@ public class GcmRegistrationService extends IntentService {
       @Override
       public void onFailure(Call call, IOException e) {
         sharedPreferences.edit().putBoolean(GcmManager.IS_GCM_REGISTERED, false).apply();
-        System.out.println("GCM:fail to send gcm token to server.");
+        LogUtils.d("GCM:fail to send gcm token to server.");
       }
 
       @Override
       public void onResponse(Call call, Response response) throws IOException {
         sharedPreferences.edit().putBoolean(GcmManager.IS_GCM_REGISTERED, true).apply();
-        System.out.println("GCM: sent gcm token(" + token +  ") to server successfully.");
+        LogUtils.d("GCM: sent gcm token(" + token +  ") to server successfully.");
       }
     });
   }
