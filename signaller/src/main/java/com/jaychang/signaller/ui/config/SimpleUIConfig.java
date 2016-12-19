@@ -1,20 +1,12 @@
 package com.jaychang.signaller.ui.config;
 
-public class SimpleUIConfig implements UIConfig{
+public class SimpleUIConfig extends UIConfig {
 
-  @Override
-  public ChatRoomCellProvider getChatRoomCellProvider() {
-    return new DefaultChatRoomCellProvider();
-  }
-
-  @Override
-  public ChatMessageCellProvider getChatMessageCellProvider() {
-    return new DefaultChatMessageCellProvider();
-  }
-
-  @Override
-  public ChatMessageDateSeparatorCellProvider getChatMessageDateSeparatorCellProvider() {
-    return new DefaultChatMessageDateSeparatorCellProvider();
+  public SimpleUIConfig() {
+    setChatRoomCellProvider(new DefaultChatRoomCellProvider());
+    setChatMessageCellProvider(new DefaultChatMessageCellProvider());
+    setChatMessageDateSeparatorCellProvider(new DefaultChatMessageDateSeparatorCellProvider());
+    setShowChatMessageDateSeparator(true);
   }
 
 }
