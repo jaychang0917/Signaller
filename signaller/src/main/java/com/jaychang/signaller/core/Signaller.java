@@ -17,7 +17,7 @@ public final class Signaller {
                           String socketUrl) {
     UserData.getInstance().setServerDomain(serverDomain);
     UserData.getInstance().setSocketUrl(socketUrl);
-    DatabaseManager.getInstance().init(appContext);
+    SignallerDbManager.getInstance().init(appContext);
   }
 
   public static Signaller getInstance() {

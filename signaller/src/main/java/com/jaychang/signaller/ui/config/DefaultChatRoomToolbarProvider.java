@@ -7,7 +7,7 @@ import android.view.View;
 import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.ui.part.DefaultChatRoomToolbar;
 
-public class DefaultChatRoomToolbarProvider implements ChatRoomToolbarProvider {
+class DefaultChatRoomToolbarProvider implements ChatRoomToolbarProvider {
 
   @NonNull
   @Override

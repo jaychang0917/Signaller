@@ -27,5 +27,6 @@ public class MainActivity extends AppCompatActivity {
     Signaller.getInstance().connect(accessToken, userId);
 
     GcmManager.init(this);
+
   }
 }

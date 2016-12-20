@@ -50,28 +50,12 @@ public class ChatRoom extends RealmObject {
     this.chatRoomId = chatRoomId;
   }
 
-  public long getLastUpdateTime() {
-    return lastUpdateTime;
-  }
-
-  public void setLastUpdateTime(long lastUpdateTime) {
-    this.lastUpdateTime = lastUpdateTime;
-  }
-
   public ChatRoomInfo getInfo() {
     return info;
   }
 
   public void setInfo(ChatRoomInfo info) {
     this.info = info;
-  }
-
-  public long getCtime() {
-    return ctime;
-  }
-
-  public void setCtime(long ctime) {
-    this.ctime = ctime;
   }
 
   public ChatMessage getLastMessage() {
@@ -82,12 +66,12 @@ public class ChatRoom extends RealmObject {
     this.lastMessage = lastMessage;
   }
 
-  public long getMtime() {
-    return mtime;
+  public long getLastUpdateTime() {
+    return lastUpdateTime;
   }
 
-  public void setMtime(long mtime) {
-    this.mtime = mtime;
+  public void setLastUpdateTime(long lastUpdateTime) {
+    this.lastUpdateTime = lastUpdateTime;
   }
 
   public int getUnreadCount() {

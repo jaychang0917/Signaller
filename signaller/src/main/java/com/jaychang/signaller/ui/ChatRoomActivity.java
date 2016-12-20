@@ -17,9 +17,9 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.DataManager;
-import com.jaychang.signaller.core.DatabaseManager;
-import com.jaychang.signaller.core.Events;
+import com.jaychang.signaller.core.SignallerDataManager;
+import com.jaychang.signaller.core.SignallerDbManager;
+import com.jaychang.signaller.core.SignallerEvents;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.UserData;
@@ -128,7 +128,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     initEmojiKeyboard();
     monitorNetworkState();
     monitorInput();
-    resetUnreadCount();
   }
 
   private void initUIConfig() {
@@ -141,7 +140,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void initData() {
     chatRoomId = getIntent().getStringExtra(EXTRA_CHATROOM_ID);
-    chatRoom = DatabaseManager.getInstance().getChatRoom(chatRoomId);
+    chatRoom = SignallerDbManager.getInstance().getChatRoom(chatRoomId);
 
     UserData.getInstance().setCurrentChatRoomId(chatRoomId);
   }
@@ -253,9 +252,9 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void onMsgReceived(Events.OnMsgReceivedEvent event) {
+  public void onMsgReceived(SignallerEvents.OnMsgReceivedEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    ChatMessage chatMessage = DatabaseManager.getInstance().getChatMessage(event.msgId);
+    ChatMessage chatMessage = SignallerDbManager.getInstance().getChatMessage(event.msgId);
     handleChatMessage(chatMessage);
   }
 
@@ -275,12 +274,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     }
   }
 
-  private void resetUnreadCount() {
-    DataManager.getInstance().resetUnreadCount(chatRoomId).subscribe();
-  }
-
   private void loadChatMessages() {
-    DataManager.getInstance().getChatMessages(chatRoom.getReceiver().getUserId(), cursor)
+    SignallerDataManager.getInstance().getChatMessages(chatRoom.getReceiver().getUserId(), cursor)
       .subscribe(response -> {
           cursor = response.cursor;
           hasMoreData = response.hasMore;
@@ -404,7 +399,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     payload.setTimestamp(curTimestamp);
     socketChatMessage.setPayload(payload);
 
-    DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
+    SignallerDbManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
       SocketManager.getInstance().send(socketChatMessage);
     });
   }
@@ -414,7 +409,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void uploadPhotoAndSendImageMsg(Uri uri) {
-    DataManager.getInstance().uploadPhoto(uri)
+    SignallerDataManager.getInstance().uploadPhoto(uri)
       .subscribe(image -> {
           LogUtils.d("photo uploaded: " + uri.toString());
           sendImageMessage(image.getResourceId());
@@ -452,7 +447,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     payload.setTimestamp(curTimestamp);
     socketChatMessage.setPayload(payload);
 
-    DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
+    SignallerDbManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
       LogUtils.d("send image to server.");
       SocketManager.getInstance().send(socketChatMessage);
     });

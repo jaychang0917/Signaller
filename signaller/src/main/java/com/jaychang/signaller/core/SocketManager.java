@@ -160,22 +160,22 @@ public class SocketManager {
     // update own just sent msg
     if (socketChatMessage.getPayload() != null && socketChatMessage.getPayload().getTimestamp() != 0L) {
       // remove temp msg
-      DatabaseManager.getInstance().removeTempChatMessage(socketChatMessage.getPayload().getTimestamp());
+      SignallerDbManager.getInstance().removeTempChatMessage(socketChatMessage.getPayload().getTimestamp());
       // save real msg with local timestamp
       socketChatMessage.getMessage().setSent(true);
       socketChatMessage.getMessage().setMtime(socketChatMessage.getPayload().getTimestamp());
-      DatabaseManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
+      SignallerDbManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
       // remove msg from pending queue
-      DatabaseManager.getInstance().removePendingChatMsg(socketChatMessage.getPayload().getTimestamp());
+      SignallerDbManager.getInstance().removePendingChatMsg(socketChatMessage.getPayload().getTimestamp());
     }
     // save another received msg
     else {
-      DatabaseManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
+      SignallerDbManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
     }
   }
 
   private void insertOrUpdateChatRoomInDb(SocketChatMessage socketChatMessage) {
-    DatabaseManager.getInstance().insertOrUpdateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
+    SignallerDbManager.getInstance().insertOrUpdateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
   }
 
   private void dispatchMsgEvents(String chatRoomId, String msgId) {
@@ -184,19 +184,19 @@ public class SocketManager {
     if (isInChatRoomPage) {
       boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(chatRoomId);
       if (isInSameChatRoom) {
-        EventBus.getDefault().postSticky(new Events.OnMsgReceivedEvent(msgId));
+        EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(msgId));
       } else {
-        EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(msgId));
+        EventBus.getDefault().postSticky(new SignallerEvents.ShowPushNotificationEvent(msgId));
       }
-      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
+      EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
     } else {
-      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
-      EventBus.getDefault().postSticky(new Events.ShowPushNotificationEvent(msgId));
+      EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
+      EventBus.getDefault().postSticky(new SignallerEvents.ShowPushNotificationEvent(msgId));
     }
   }
 
   private void sendPendingChatMsg() {
-    DatabaseManager.getInstance().getPendingChatMessages()
+    SignallerDbManager.getInstance().getPendingChatMessages()
       .subscribe(
         pendingChatMessages -> {
           for (SocketChatMessage pendingChatMessage : pendingChatMessages) {

@@ -1,6 +1,5 @@
 package com.jaychang.signaller.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,14 +11,14 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.DataManager;
-import com.jaychang.signaller.core.DatabaseManager;
-import com.jaychang.signaller.core.Events;
+import com.jaychang.signaller.core.ChatRoomJoinCallback;
+import com.jaychang.signaller.core.SignallerDataManager;
+import com.jaychang.signaller.core.SignallerDbManager;
+import com.jaychang.signaller.core.SignallerEvents;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.model.ChatRoom;
-import com.jaychang.signaller.ui.part.ChatRoomCell;
-import com.jaychang.signaller.ui.part.DefaultChatRoomCell;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
+import com.jaychang.signaller.ui.part.ChatRoomCell;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.signaller.util.NetworkStateMonitor;
 import com.trello.rxlifecycle.components.support.RxFragment;
@@ -76,9 +75,9 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void updateChatRoomList(Events.UpdateChatRoomListEvent event) {
+  public void updateChatRoomList(SignallerEvents.UpdateChatRoomListEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    ChatRoom chatRoom = DatabaseManager.getInstance().getChatRoom(event.chatRoomId);
+    ChatRoom chatRoom = SignallerDbManager.getInstance().getChatRoom(event.chatRoomId);
     insertOrUpdateChatRoom(chatRoom);
   }
 
@@ -112,7 +111,7 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void removePendingEvents() {
     // remove all extra events that no subscribers, prevent duplicate chatroom list loading
-    EventBus.getDefault().removeStickyEvent(Events.UpdateChatRoomListEvent.class);
+    EventBus.getDefault().removeStickyEvent(SignallerEvents.UpdateChatRoomListEvent.class);
   }
 
   private void loadChatRooms() {
@@ -126,7 +125,7 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void loadChatRoomsFromNetwork() {
-    DataManager.getInstance().getChatRooms(cursor)
+    SignallerDataManager.getInstance().getChatRooms(cursor)
       .compose(bindToLifecycle())
       .subscribe(
         response -> {
@@ -139,7 +138,7 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private List<ChatRoom> sort(List<ChatRoom> rooms) {
-    Collections.sort(rooms, (chatRoom, other) -> (int)(other.getMtime() - chatRoom.getMtime()));
+    Collections.sort(rooms, (chatRoom, other) -> (int)(other.getLastUpdateTime() - chatRoom.getLastUpdateTime()));
     return rooms;
   }
 
@@ -174,7 +173,7 @@ public class ChatRoomListFragment extends RxFragment {
 
     if (!hasChatRoom) {
       // if has no this chat room, insert this new chat room at top
-      DefaultChatRoomCell cell = new DefaultChatRoomCell(room);
+      ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(room);
       recyclerView.addCell(cell, 0);
       recyclerView.getAdapter().notifyItemInserted(0);
     }
@@ -182,7 +181,7 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void loadChatRoomsFromDB() {
-    DatabaseManager.getInstance().getChatRooms()
+    SignallerDbManager.getInstance().getChatRooms()
       .subscribe(chatRooms -> {
           recyclerView.removeAllCells();
           bindChatRooms(chatRooms);
@@ -196,17 +195,20 @@ public class ChatRoomListFragment extends RxFragment {
     for (ChatRoom chatRoom : chatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
       cell.setCallback(room -> {
-        goToChatRoomPage(room);
+        chatWith(room.getReceiver().getUserId());
       });
       recyclerView.addCell(cell);
     }
     recyclerView.getAdapter().notifyDataSetChanged();
   }
 
-  private void goToChatRoomPage(ChatRoom room) {
-    Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
-    intent.putExtra(ChatRoomActivity.EXTRA_CHATROOM_ID, room.getInfo().getChatRoomId());
-    startActivity(intent);
+  private void chatWith(String userId) {
+    Signaller.getInstance().chatWith(userId, new ChatRoomJoinCallback() {
+      @Override
+      public void onChatRoomJoined(String chatRoomId) {
+        ChatRoomActivity.start(getContext(), chatRoomId);
+      }
+    });
   }
 
 }

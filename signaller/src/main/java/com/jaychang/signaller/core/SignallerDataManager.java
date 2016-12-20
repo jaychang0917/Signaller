@@ -13,18 +13,18 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 
-public class DataManager {
+public class SignallerDataManager {
 
-  private static final DataManager INSTANCE = new DataManager();
-  private DatabaseManager databaseManager;
+  private static final SignallerDataManager INSTANCE = new SignallerDataManager();
+  private SignallerDbManager databaseManager;
   private Api api;
 
-  private DataManager() {
-    databaseManager = DatabaseManager.getInstance();
+  private SignallerDataManager() {
+    databaseManager = SignallerDbManager.getInstance();
     api = ApiManager.getApi();
   }
 
-  public static DataManager getInstance() {
+  public static SignallerDataManager getInstance() {
     return INSTANCE;
   }
 
@@ -48,11 +48,6 @@ public class DataManager {
     File file = new File(photoUri.getPath());
     MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
     return api.uploadPhoto(filePart)
-      .compose(new SchedulerTransformer<>());
-  }
-
-  public Observable<Void> resetUnreadCount(String chatRoomId) {
-    return api.resetUnreadCount(chatRoomId, 0)
       .compose(new SchedulerTransformer<>());
   }
 

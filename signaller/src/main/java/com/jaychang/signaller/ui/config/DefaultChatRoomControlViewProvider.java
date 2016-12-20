@@ -4,7 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.jaychang.signaller.R;
 
-public class DefaultChatRoomControlViewProvider implements ChatRoomControlViewProvider {
+class DefaultChatRoomControlViewProvider implements ChatRoomControlViewProvider {
 
   @NonNull
   @Override

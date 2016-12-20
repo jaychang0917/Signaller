@@ -77,15 +77,15 @@ public class DefaultChatRoomCell extends ChatRoomCell {
       } else {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
       }
-
-      String yesterday = "'" + context.getString(R.string.yesterday) + "'";
-      String date = DateTimeFormatUtils.translate(
-        String.valueOf(chatRoom.getMtime()),
-        "hh:mm a",
-        yesterday,
-        "dd/MM/yyyy");
-      holder.dateView.setText(date);
     }
+
+    String yesterday = "'" + context.getString(R.string.yesterday) + "'";
+    String date = DateTimeFormatUtils.translate(
+      String.valueOf(chatRoom.getLastUpdateTime()),
+      "hh:mm a",
+      yesterday,
+      "dd/MM/yyyy");
+    holder.dateView.setText(date);
   }
 
   static class ViewHolder extends BaseViewHolder {

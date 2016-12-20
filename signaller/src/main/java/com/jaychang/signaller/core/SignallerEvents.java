@@ -1,6 +1,6 @@
 package com.jaychang.signaller.core;
 
-public class Events {
+public class SignallerEvents {
 
   public static class OnMsgReceivedEvent {
     public String msgId;

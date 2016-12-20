@@ -18,17 +18,17 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 import rx.Observable;
 
-public class DatabaseManager {
+public class SignallerDbManager {
 
   private static final int DB_VERSION = 1;
-  private static final DatabaseManager INSTANCE = new DatabaseManager();
+  private static final SignallerDbManager INSTANCE = new SignallerDbManager();
 
   private RealmConfiguration realmConfig;
 
-  private DatabaseManager() {
+  private SignallerDbManager() {
   }
 
-  public static DatabaseManager getInstance() {
+  public static SignallerDbManager getInstance() {
     return INSTANCE;
   }
 
@@ -156,7 +156,7 @@ public class DatabaseManager {
 
     return realm
       .where(ChatRoom.class)
-      .findAllSorted("mtime", Sort.DESCENDING)
+      .findAllSorted("lastUpdateTime", Sort.DESCENDING)
       .asObservable()
       .doOnCompleted(realm::close);
   }

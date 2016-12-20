@@ -80,7 +80,7 @@ public class KolChatRoomCell extends ChatRoomCell {
 
       String yesterday = "'" + context.getString(com.jaychang.signaller.R.string.yesterday) + "'";
       String date = DateTimeFormatUtils.translate(
-        String.valueOf(chatRoom.getMtime()),
+        String.valueOf(chatRoom.getLastUpdateTime()),
         "hh:mm a",
         yesterday,
         "dd/MM/yyyy");
