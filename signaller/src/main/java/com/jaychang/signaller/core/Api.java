@@ -17,10 +17,13 @@ import rx.Observable;
 public interface Api {
 
   @GET("api/chats")
-  Observable<ChatRoomResponse> getChatRooms(@Query("cursor") String cursor);
+  Observable<ChatRoomResponse> getChatRooms(@Query("cursor") String cursor,
+                                            @Query("hits") int hits);
 
   @GET("api/chats/{user_id}/messages")
-  Observable<ChatMessageResponse> getChatMessages(@Path("user_id") String userId, @Query("cursor") String cursor);
+  Observable<ChatMessageResponse> getChatMessages(@Path("user_id") String userId,
+                                                  @Query("cursor") String cursor,
+                                                  @Query("hits") int hits);
 
   @POST("/api/resources/images")
   @Multipart

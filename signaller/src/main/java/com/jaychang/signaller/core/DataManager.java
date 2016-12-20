@@ -29,7 +29,7 @@ public class DataManager {
   }
 
   public Observable<ChatRoomResponse> getChatRooms(String cursor) {
-    return api.getChatRooms(cursor)
+    return api.getChatRooms(cursor, 24)
       .compose(new SchedulerTransformer<>())
       .doOnNext(response -> {
         databaseManager.saveChatRooms(response.chatRooms);
@@ -37,7 +37,7 @@ public class DataManager {
   }
 
   public Observable<ChatMessageResponse> getChatMessages(String userId, String cursor) {
-    return api.getChatMessages(userId, cursor)
+    return api.getChatMessages(userId, cursor, 24)
       .compose(new SchedulerTransformer<>())
       .doOnNext(response -> {
         databaseManager.saveChatMessages(response.chatMessages);
