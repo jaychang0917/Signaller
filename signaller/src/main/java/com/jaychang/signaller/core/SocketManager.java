@@ -24,6 +24,7 @@ public class SocketManager {
 
   private static final String CONNECT = "connect";
   private static final String CONNECTED = "connected";
+  private static final String DISCONNECTED = Socket.EVENT_DISCONNECT;
   private static final String JOIN = "join";
   private static final String LEAVE = "leave";
   private static final String SEND_MESSAGE = "send_message";
@@ -57,6 +58,7 @@ public class SocketManager {
 
     socket.on(CONNECT, onConnect);
     socket.on(CONNECTED, onConnected);
+    socket.on(DISCONNECTED, onDisconnected);
     socket.on(RECEIVE_MESSAGE, onMsgReceived);
 
     isSocketInitialized = true;
@@ -83,6 +85,7 @@ public class SocketManager {
     if (isConnected()) {
       socket.off(CONNECT);
       socket.off(CONNECTED);
+      socket.off(DISCONNECTED);
       socket.off(RECEIVE_MESSAGE);
     }
   }
@@ -143,8 +146,14 @@ public class SocketManager {
     LogUtils.d("onConnect");
   };
 
+  private Emitter.Listener onDisconnected = args -> {
+    LogUtils.d("onDisconnected");
+    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketDisconnectedEvent());
+  };
+
   private Emitter.Listener onConnected = args -> {
     LogUtils.d("onConnected");
+    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectedEvent());
     sendPendingChatMsg();
   };
 
@@ -178,6 +187,7 @@ public class SocketManager {
     SignallerDbManager.getInstance().insertOrUpdateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
   }
 
+  // todo how to handle push??
   private void dispatchMsgEvents(String chatRoomId, String msgId) {
     boolean isInChatRoomPage = UserData.getInstance().isInChatRoomPage();
 

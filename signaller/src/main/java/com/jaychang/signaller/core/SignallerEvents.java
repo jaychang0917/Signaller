@@ -5,7 +5,7 @@ public class SignallerEvents {
   public static class OnMsgReceivedEvent {
     public String msgId;
 
-    public OnMsgReceivedEvent(String msgId) {
+    OnMsgReceivedEvent(String msgId) {
       this.msgId = msgId;
     }
   }
@@ -21,8 +21,14 @@ public class SignallerEvents {
   public static class UpdateChatRoomListEvent {
     public String chatRoomId;
 
-    public UpdateChatRoomListEvent(String chatRoomId) {
+    UpdateChatRoomListEvent(String chatRoomId) {
       this.chatRoomId = chatRoomId;
     }
+  }
+
+  public static class OnSocketConnectedEvent {
+  }
+
+  public static class OnSocketDisconnectedEvent {
   }
 }
