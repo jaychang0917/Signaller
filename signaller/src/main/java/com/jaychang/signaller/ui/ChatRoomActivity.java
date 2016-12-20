@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.widget.Button;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -23,18 +24,26 @@ import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.core.model.Image;
+import com.jaychang.signaller.core.model.ImageAttribute;
 import com.jaychang.signaller.core.model.Payload;
 import com.jaychang.signaller.core.model.SocketChatMessage;
-import com.jaychang.signaller.ui.cell.ChatMessageCell;
-import com.jaychang.signaller.ui.cell.DefaultChatMessageDateSeparatorCell;
-import com.jaychang.signaller.ui.cell.DefaultOtherImageMessageCell;
-import com.jaychang.signaller.ui.cell.DefaultOtherTextMessageCell;
-import com.jaychang.signaller.ui.cell.DefaultOwnImageMessageCell;
-import com.jaychang.signaller.ui.cell.DefaultOwnTextMessageCell;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
+import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
+import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
+import com.jaychang.signaller.ui.config.UIConfig;
+import com.jaychang.signaller.ui.part.ChatMessageCell;
+import com.jaychang.signaller.ui.part.DefaultChatMessageDateSeparatorCell;
+import com.jaychang.signaller.ui.part.DefaultOtherImageMessageCell;
+import com.jaychang.signaller.ui.part.DefaultOtherTextMessageCell;
+import com.jaychang.signaller.ui.part.DefaultOwnImageMessageCell;
+import com.jaychang.signaller.ui.part.DefaultOwnTextMessageCell;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.signaller.util.NetworkStateMonitor;
+import com.jaychang.utils.AppUtils;
+import com.jaychang.utils.ImageDimension;
+import com.jaychang.utils.ImageUtils;
 import com.jaychang.utils.SimpleTextChangedListener;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 import com.vanniktech.emoji.EmojiEditText;
@@ -50,47 +59,42 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.jaychang.signaller.ui.config.ChatMessageType.IMAGE;
 import static com.jaychang.signaller.ui.config.ChatMessageType.TEXT;
 
 public class ChatRoomActivity extends RxAppCompatActivity {
 
-  @BindView(R2.id.toolbar)
-  Toolbar toolbar;
+  @BindView(R2.id.toolbarHolder)
+  FrameLayout toolbarHolder;
+  @BindView(R2.id.controlViewHolder)
+  FrameLayout controlViewHolder;
   @BindView(R2.id.recyclerView)
   NRecyclerView recyclerView;
-  @BindView(R2.id.photoView)
-  ImageView photoView;
-  @BindView(R2.id.emojiView)
-  ImageView emojiView;
-  @BindView(R2.id.inputMessageView)
-  EmojiEditText inputMessageView;
-  @BindView(R2.id.sendMsgView)
-  Button sendMsgView;
   @BindView(R2.id.rootView)
   RelativeLayout rootView;
+  ImageView photoIconView;
+  ImageView emojiIconView;
+  EmojiEditText inputEditText;
+  View sendMsgView;
 
-  public static final String EXTRA_USER_ID = "EXTRA_USER_ID";
-  public static final String EXTRA_USERNAME = "EXTRA_USERNAME";
   public static final String EXTRA_CHATROOM_ID = "EXTRA_CHATROOM_ID";
 
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
 
-  private String userId;
-  private String username;
   private String chatRoomId;
+  private ChatRoom chatRoom;
   private String cursor;
   private boolean hasMoreData;
   private boolean questScrollToBottom = true;
   private EmojiPopup emojiPopup;
   private ChatMessageCellProvider chatMessageCellProvider;
+  private ChatRoomToolbarProvider chatRoomToolbarProvider;
+  private ChatRoomControlViewProvider chatRoomControlViewProvider;
+  private UIConfig uiConfig;
 
-  public static void start(Context context, String userId, String username, String chatRoomId) {
+  public static void start(Context context, String chatRoomId) {
     Intent intent = new Intent(context, ChatRoomActivity.class);
-    intent.putExtra(EXTRA_USER_ID, userId);
-    intent.putExtra(EXTRA_USERNAME, username);
     intent.putExtra(EXTRA_CHATROOM_ID, chatRoomId);
     context.startActivity(intent);
   }
@@ -117,10 +121,12 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   public void init() {
-    initUIConfig();
     initData();
+    initUIConfig();
     initToolbar();
+    setStatusBarColor();
     initRecyclerView();
+    initControlView();
     initEmojiKeyboard();
     monitorNetworkState();
     monitorInput();
@@ -128,22 +134,26 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void initUIConfig() {
-    chatMessageCellProvider = Signaller.getInstance().getUiConfig().getChatMessageCellProvider();
+    uiConfig = Signaller.getInstance().getUiConfig();
+    chatMessageCellProvider = uiConfig.getChatMessageCellProvider();
+    chatRoomToolbarProvider = uiConfig.getChatRoomToolbarProvider();
+    chatRoomControlViewProvider = uiConfig.getChatRoomControlViewProvider();
   }
 
   private void initData() {
-    userId = getIntent().getStringExtra(EXTRA_USER_ID);
-    username = getIntent().getStringExtra(EXTRA_USERNAME);
     chatRoomId = getIntent().getStringExtra(EXTRA_CHATROOM_ID);
+    chatRoom = DatabaseManager.getInstance().getChatRoom(chatRoomId);
 
     UserData.getInstance().setCurrentChatRoomId(chatRoomId);
   }
 
   private void initToolbar() {
-    toolbar.setNavigationOnClickListener(view -> {
-      finish();
-    });
-    toolbar.setTitle(username);
+    View toolbar = chatRoomToolbarProvider.getToolbar(this, chatRoom);
+    toolbarHolder.addView(toolbar);
+  }
+
+  private void setStatusBarColor() {
+    AppUtils.setStatusBarColor(this, uiConfig.getToolbarBackgroundColor());
   }
 
   private void initRecyclerView() {
@@ -164,12 +174,34 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     });
   }
 
+  private void initControlView() {
+    View controlView = LayoutInflater.from(this).inflate(chatRoomControlViewProvider.getLayoutRes(), null);
+    inputEditText = (EmojiEditText) controlView.findViewById(chatRoomControlViewProvider.getInputEditTextId());
+    emojiIconView = (ImageView) controlView.findViewById(chatRoomControlViewProvider.getEmojiIconViewId());
+    photoIconView = (ImageView) controlView.findViewById(chatRoomControlViewProvider.getPhotoIconViewId());
+    sendMsgView = controlView.findViewById(chatRoomControlViewProvider.getSendViewId());
+
+    emojiIconView.setOnClickListener(view -> {
+      showEmojiKeyboard();
+    });
+
+    photoIconView.setOnClickListener(view -> {
+      showPhotoPicker();
+    });
+
+    sendMsgView.setOnClickListener(view -> {
+      addTextMessage();
+    });
+
+    controlViewHolder.addView(controlView);
+  }
+
   private void initEmojiKeyboard() {
     emojiPopup = EmojiPopup.Builder.fromRootView(rootView)
-      .setOnEmojiPopupShownListener(() -> emojiView.setImageResource(R.drawable.ic_keyboard))
-      .setOnEmojiPopupDismissListener(() -> emojiView.setImageResource(R.drawable.ic_emoji))
+      .setOnEmojiPopupShownListener(() -> emojiIconView.setImageResource(R.drawable.ic_keyboard))
+      .setOnEmojiPopupDismissListener(() -> emojiIconView.setImageResource(R.drawable.ic_emoji))
       .setOnSoftKeyboardCloseListener(() -> emojiPopup.dismiss())
-      .build(inputMessageView);
+      .build(inputEditText);
   }
 
   private void monitorNetworkState() {
@@ -181,7 +213,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void monitorInput() {
-    inputMessageView.addTextChangedListener(new SimpleTextChangedListener() {
+    inputEditText.addTextChangedListener(new SimpleTextChangedListener() {
       @Override
       public void onTextChanged(CharSequence s, int start, int before, int count) {
         handleInput();
@@ -190,7 +222,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void handleInput() {
-    boolean hasEnterText = !TextUtils.isEmpty(inputMessageView.getText());
+    boolean hasEnterText = !TextUtils.isEmpty(inputEditText.getText());
     boolean isSocketConnected = SocketManager.getInstance().isConnected();
     boolean isNetworkConnected = NetworkStateMonitor.getInstance().isConnected(this);
 
@@ -201,9 +233,11 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     }
 
     if (isSocketConnected && isNetworkConnected) {
-      photoView.setEnabled(true);
+      photoIconView.setEnabled(true);
+      photoIconView.setAlpha(1f);
     } else {
-//      photoView.setEnabled(false);
+      photoIconView.setEnabled(false);
+      photoIconView.setAlpha(0.7f);
     }
   }
 
@@ -245,7 +279,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void loadChatMessages() {
-    DataManager.getInstance().getChatMessages(userId, cursor)
+    DataManager.getInstance().getChatMessages(chatRoom.getReceiver().getUserId(), cursor)
       .subscribe(response -> {
           cursor = response.cursor;
           hasMoreData = response.hasMore;
@@ -295,7 +329,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
       if (cell != null) {
         cell.setCallback(msg -> {
-          goToPhotoPage(msg.image.url);
+          goToPhotoPage(msg.getImage().getUrl());
         });
       }
 
@@ -310,16 +344,24 @@ public class ChatRoomActivity extends RxAppCompatActivity {
       }
 
       if (!isSameDate) {
-        recyclerView.addCell(new DefaultChatMessageDateSeparatorCell(message.mtime), 0);
+        recyclerView.addCell(new DefaultChatMessageDateSeparatorCell(message.getMtime()), 0);
       }
     }
 
     recyclerView.getAdapter().notifyItemRangeInserted(0, recyclerView.getCellsCount() - totalCountBefore);
   }
 
-  @OnClick(R2.id.photoView)
-  void showPhotoPicker() {
+  private void showEmojiKeyboard() {
+    emojiPopup.toggle();
+  }
+
+  private void showPhotoPicker() {
+    int colorPrimary = uiConfig.getToolbarBackgroundColor();
+
     NPhotoPicker.with(this)
+      .toolbarColor(colorPrimary)
+      .statusBarColor(colorPrimary)
+      .selectedBorderColor(colorPrimary)
       .pickSinglePhotoFromAlbum()
       .subscribe(
         uri -> {
@@ -331,17 +373,11 @@ public class ChatRoomActivity extends RxAppCompatActivity {
       );
   }
 
-  @OnClick(R2.id.emojiView)
-  void showEmojiKeyboard() {
-    emojiPopup.toggle();
-  }
-
-  @OnClick(R2.id.sendMsgView)
-  void addTextMessage() {
+  private void addTextMessage() {
     ChatMessage chatMessage = new ChatMessage();
-    chatMessage.mtime = System.currentTimeMillis();
-    chatMessage.type = "text";
-    chatMessage.content = inputMessageView.getText().toString();
+    chatMessage.setMtime(System.currentTimeMillis());
+    chatMessage.setType("text");
+    chatMessage.setContent(inputEditText.getText().toString());
     addOwnTextMessageCell(chatMessage);
     sendTextMessage();
     clearInput();
@@ -349,19 +385,19 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void sendTextMessage() {
     SocketChatMessage socketChatMessage = new SocketChatMessage();
-    socketChatMessage.roomId = chatRoomId;
+    socketChatMessage.setRoomId(chatRoomId);
 
     long curTimestamp = System.currentTimeMillis();
 
     ChatMessage message = new ChatMessage();
-    message.timestamp = curTimestamp;
-    message.type = "text";
-    message.content = inputMessageView.getText().toString();
-    socketChatMessage.message = message;
+    message.setTimestamp(curTimestamp);
+    message.setType("text");
+    message.setContent(inputEditText.getText().toString());
+    socketChatMessage.setMessage(message);
 
     Payload payload = new Payload();
-    payload.timestamp = curTimestamp;
-    socketChatMessage.payload = payload;
+    payload.setTimestamp(curTimestamp);
+    socketChatMessage.setPayload(payload);
 
     DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
       SocketManager.getInstance().send(socketChatMessage);
@@ -369,14 +405,14 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void clearInput() {
-    inputMessageView.setText("");
+    inputEditText.setText("");
   }
 
   private void uploadPhotoAndSendImageMsg(Uri uri) {
     DataManager.getInstance().uploadPhoto(uri)
       .subscribe(image -> {
           LogUtils.d("photo uploaded: " + uri.toString());
-          sendImageMessage(image.resourceId);
+          sendImageMessage(image.getResourceId());
         },
         error -> {
           LogUtils.d(error.getMessage());
@@ -385,29 +421,31 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void addImageMessage(Uri uri) {
     ChatMessage message = new ChatMessage();
-    message.mtime = System.currentTimeMillis();
+    message.setMtime(System.currentTimeMillis());
     Image image = new Image();
-    image.url = uri.toString();
-    message.image = image;
+    ImageDimension dimension = ImageUtils.getImageDimensionFromUri(uri);
+    image.setAttributes(new ImageAttribute(dimension.getWidth(), dimension.getHeight()));
+    image.setUrl(uri.toString());
+    message.setImage(image);
     addOwnImageMessageCell(message);
     uploadPhotoAndSendImageMsg(uri);
   }
 
   private void sendImageMessage(String imageResourceId) {
     SocketChatMessage socketChatMessage = new SocketChatMessage();
-    socketChatMessage.roomId = chatRoomId;
+    socketChatMessage.setRoomId(chatRoomId);
 
     long curTimestamp = System.currentTimeMillis();
 
     ChatMessage message = new ChatMessage();
-    message.timestamp = curTimestamp;
-    message.type = "image";
-    message.content = imageResourceId;
-    socketChatMessage.message = message;
+    message.setTimestamp(curTimestamp);
+    message.setType("image");
+    message.setContent(imageResourceId);
+    socketChatMessage.setMessage(message);
 
     Payload payload = new Payload();
-    payload.timestamp = curTimestamp;
-    socketChatMessage.payload = payload;
+    payload.setTimestamp(curTimestamp);
+    socketChatMessage.setPayload(payload);
 
     DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
       LogUtils.d("send image to server.");

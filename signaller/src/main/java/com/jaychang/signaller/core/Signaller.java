@@ -2,7 +2,6 @@ package com.jaychang.signaller.core;
 
 import android.content.Context;
 
-import com.jaychang.signaller.ui.config.SimpleUIConfig;
 import com.jaychang.signaller.ui.config.UIConfig;
 
 public final class Signaller {
@@ -58,7 +57,7 @@ public final class Signaller {
 
   public UIConfig getUiConfig() {
     if (uiConfig == null) {
-      return new SimpleUIConfig();
+      return UIConfig.create();
     }
     return uiConfig;
   }

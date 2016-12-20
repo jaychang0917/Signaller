@@ -90,15 +90,15 @@ public class SocketManager {
   public void send(SocketChatMessage message) {
     try {
       JSONObject chatMsgObj = new JSONObject();
-      chatMsgObj.put("room_id", message.roomId);
+      chatMsgObj.put("room_id", message.getRoomId());
 
       JSONObject msgObj = new JSONObject();
-      msgObj.put("type", message.message.type);
-      msgObj.put("content", message.message.content);
+      msgObj.put("type", message.getMessage().getType());
+      msgObj.put("content", message.getMessage().getContent());
       chatMsgObj.put("message", msgObj);
 
       JSONObject payload = new JSONObject();
-      payload.put("timestamp", message.payload.timestamp);
+      payload.put("timestamp", message.getPayload().getTimestamp());
       chatMsgObj.put("payload", payload);
 
       socket.emit(SEND_MESSAGE, chatMsgObj);
@@ -115,7 +115,7 @@ public class SocketManager {
       socket.emit(JOIN, object, (Ack) args -> {
         LogUtils.d("onJoined");
         mainThreadHandler.post(() -> {
-          callback.onChatRoomJoined(userId, chatRoomId);
+          callback.onChatRoomJoined(chatRoomId);
         });
       });
     } catch (JSONException e) {
@@ -150,32 +150,32 @@ public class SocketManager {
 
   private Emitter.Listener onMsgReceived = args -> {
     SocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SocketChatMessage.class);
-    LogUtils.d("message received:" + socketChatMessage.message.content);
+    LogUtils.d("message received:" + socketChatMessage.getMessage().getContent());
     insertOrUpdateChatMsgInDb(socketChatMessage);
     insertOrUpdateChatRoomInDb(socketChatMessage);
-    dispatchMsgEvents(socketChatMessage.roomId, socketChatMessage.message.msgId);
+    dispatchMsgEvents(socketChatMessage.getRoomId(), socketChatMessage.getMessage().getMsgId());
   };
 
   private void insertOrUpdateChatMsgInDb(SocketChatMessage socketChatMessage) {
     // update own just sent msg
-    if (socketChatMessage.payload != null && socketChatMessage.payload.timestamp != 0L) {
+    if (socketChatMessage.getPayload() != null && socketChatMessage.getPayload().getTimestamp() != 0L) {
       // remove temp msg
-      DatabaseManager.getInstance().removeTempChatMessage(socketChatMessage.payload.timestamp);
+      DatabaseManager.getInstance().removeTempChatMessage(socketChatMessage.getPayload().getTimestamp());
       // save real msg with local timestamp
-      socketChatMessage.message.isSent = true;
-      socketChatMessage.message.mtime = socketChatMessage.payload.timestamp;
-      DatabaseManager.getInstance().saveChatMessage(socketChatMessage.message);
+      socketChatMessage.getMessage().setSent(true);
+      socketChatMessage.getMessage().setMtime(socketChatMessage.getPayload().getTimestamp());
+      DatabaseManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
       // remove msg from pending queue
-      DatabaseManager.getInstance().removePendingChatMsg(socketChatMessage.payload.timestamp);
+      DatabaseManager.getInstance().removePendingChatMsg(socketChatMessage.getPayload().getTimestamp());
     }
     // save another received msg
     else {
-      DatabaseManager.getInstance().saveChatMessage(socketChatMessage.message);
+      DatabaseManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
     }
   }
 
   private void insertOrUpdateChatRoomInDb(SocketChatMessage socketChatMessage) {
-    DatabaseManager.getInstance().insertOrUpdateChatRoom(socketChatMessage.roomId, socketChatMessage.message);
+    DatabaseManager.getInstance().insertOrUpdateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
   }
 
   private void dispatchMsgEvents(String chatRoomId, String msgId) {
@@ -201,7 +201,7 @@ public class SocketManager {
         pendingChatMessages -> {
           for (SocketChatMessage pendingChatMessage : pendingChatMessages) {
             send(pendingChatMessage);
-            LogUtils.d("sent pending chat message:" + pendingChatMessage.message);
+            LogUtils.d("sent pending chat message:" + pendingChatMessage.getMessage());
           }
         },
         error -> {

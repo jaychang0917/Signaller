@@ -1,11 +1,11 @@
 package com.jaychang.signaller.ui.config;
 
 import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.ui.cell.ChatMessageCell;
-import com.jaychang.signaller.ui.cell.DefaultOtherImageMessageCell;
-import com.jaychang.signaller.ui.cell.DefaultOtherTextMessageCell;
-import com.jaychang.signaller.ui.cell.DefaultOwnImageMessageCell;
-import com.jaychang.signaller.ui.cell.DefaultOwnTextMessageCell;
+import com.jaychang.signaller.ui.part.ChatMessageCell;
+import com.jaychang.signaller.ui.part.DefaultOtherImageMessageCell;
+import com.jaychang.signaller.ui.part.DefaultOtherTextMessageCell;
+import com.jaychang.signaller.ui.part.DefaultOwnImageMessageCell;
+import com.jaychang.signaller.ui.part.DefaultOwnTextMessageCell;
 
 import static com.jaychang.signaller.ui.config.ChatMessageType.IMAGE;
 import static com.jaychang.signaller.ui.config.ChatMessageType.TEXT;

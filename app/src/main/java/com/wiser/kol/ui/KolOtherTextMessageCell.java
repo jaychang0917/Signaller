@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui.cell;
+package com.wiser.kol.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,14 +9,15 @@ import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.vanniktech.emoji.EmojiTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DefaultOtherTextMessageCell extends ChatMessageCell{
+public class KolOtherTextMessageCell extends ChatMessageCell{
 
-  public DefaultOtherTextMessageCell(ChatMessage message) {
+  public KolOtherTextMessageCell(ChatMessage message) {
     super(message);
   }
 
@@ -31,7 +32,7 @@ public class DefaultOtherTextMessageCell extends ChatMessageCell{
     ViewHolder holder = (ViewHolder) viewHolder;
     Context context = holder.itemView.getContext();
 
-    holder.messageView.setText(message.content);
+    holder.messageView.setText(message.getContent());
   }
 
   static class ViewHolder extends BaseViewHolder {

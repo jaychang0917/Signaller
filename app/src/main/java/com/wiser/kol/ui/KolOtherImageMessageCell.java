@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui.cell;
+package com.wiser.kol.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,20 +11,21 @@ import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DefaultOwnImageMessageCell extends ChatMessageCell {
+public class KolOtherImageMessageCell extends ChatMessageCell {
 
-  public DefaultOwnImageMessageCell(ChatMessage message) {
+  public KolOtherImageMessageCell(ChatMessage message) {
     super(message);
   }
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_own_image_message, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_other_image_message, viewGroup, false);
     return new ViewHolder(view);
   }
 
@@ -37,12 +38,11 @@ public class DefaultOwnImageMessageCell extends ChatMessageCell {
       holder.itemView.setOnClickListener(view -> callback.onCellClicked(message));
     }
 
-    ViewUtils.setViewWidthHeight(holder.imageView, 150, (int) (150 / message.image.getRatio()));
+    ViewUtils.setViewWidthHeight(holder.imageView, 150, (int) (150 / message.getImage().getRatio()));
 
     Glide.with(context)
-      .load(message.image.url)
+      .load(message.getImage().getUrl())
       .into(holder.imageView);
-
   }
 
   static class ViewHolder extends BaseViewHolder {

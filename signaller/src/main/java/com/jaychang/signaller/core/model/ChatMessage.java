@@ -12,32 +12,32 @@ public class ChatMessage extends RealmObject {
 
   @PrimaryKey
   @SerializedName("id")
-  public String msgId;
+  private String msgId;
   @SerializedName("chatroom_id")
-  public String chatroomId;
+  private String chatroomId;
   @SerializedName("ctime")
-  public long ctime;
+  private long ctime;
   @SerializedName("content")
-  public String content;
+  private String content;
   @SerializedName("image")
-  public Image image;
+  private Image image;
   @SerializedName("event")
-  public Event event;
+  private Event event;
   @SerializedName("mtime")
-  public long mtime;
+  private long mtime;
   @SerializedName("type")
-  public String type;
+  private String type;
   @SerializedName("sender")
-  public Sender sender;
-  public boolean isSent;
-  public long timestamp;
+  private Sender sender;
+  private boolean isSent;
+  private long timestamp;
 
   public boolean isSameSender(ChatMessage message) {
-    return sender.userId.equals(message.sender.userId);
+    return sender.getUserId().equals(message.sender.getUserId());
   }
 
   public boolean isOwnMessage() {
-    return sender.userId.equals(UserData.getInstance().getUserId());
+    return sender.getUserId().equals(UserData.getInstance().getUserId());
   }
 
   public boolean isSameDate(ChatMessage message) {
@@ -60,6 +60,96 @@ public class ChatMessage extends RealmObject {
   public boolean isEvent() {
     return type.equals("event");
   }
+
+  //region getters & setters
+  public String getMsgId() {
+    return msgId;
+  }
+
+  public void setMsgId(String msgId) {
+    this.msgId = msgId;
+  }
+
+  public String getChatroomId() {
+    return chatroomId;
+  }
+
+  public void setChatroomId(String chatroomId) {
+    this.chatroomId = chatroomId;
+  }
+
+  public long getCtime() {
+    return ctime;
+  }
+
+  public void setCtime(long ctime) {
+    this.ctime = ctime;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  public Image getImage() {
+    return image;
+  }
+
+  public void setImage(Image image) {
+    this.image = image;
+  }
+
+  public Event getEvent() {
+    return event;
+  }
+
+  public void setEvent(Event event) {
+    this.event = event;
+  }
+
+  public long getMtime() {
+    return mtime;
+  }
+
+  public void setMtime(long mtime) {
+    this.mtime = mtime;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public Sender getSender() {
+    return sender;
+  }
+
+  public void setSender(Sender sender) {
+    this.sender = sender;
+  }
+
+  public boolean isSent() {
+    return isSent;
+  }
+
+  public void setSent(boolean sent) {
+    isSent = sent;
+  }
+
+  public long getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(long timestamp) {
+    this.timestamp = timestamp;
+  }
+  //endregion
 
 }
 

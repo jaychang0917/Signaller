@@ -17,8 +17,8 @@ import com.jaychang.signaller.core.DatabaseManager;
 import com.jaychang.signaller.core.Events;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.model.ChatRoom;
-import com.jaychang.signaller.ui.cell.ChatRoomCell;
-import com.jaychang.signaller.ui.cell.DefaultChatRoomCell;
+import com.jaychang.signaller.ui.part.ChatRoomCell;
+import com.jaychang.signaller.ui.part.DefaultChatRoomCell;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.signaller.util.NetworkStateMonitor;
@@ -139,7 +139,7 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private List<ChatRoom> sort(List<ChatRoom> rooms) {
-    Collections.sort(rooms, (chatRoom, other) -> (int)(other.mtime - chatRoom.mtime));
+    Collections.sort(rooms, (chatRoom, other) -> (int)(other.getMtime() - chatRoom.getMtime()));
     return rooms;
   }
 
@@ -150,12 +150,12 @@ public class ChatRoomListFragment extends RxFragment {
       ChatRoomCell chatRoomCell = (ChatRoomCell) cell;
       ChatRoom chatRoom = chatRoomCell.getChatRoom();
 
-      if (chatRoom.chatRoomId.equals(room.chatRoomId)) {
-        if (!room.lastMessage.isOwnMessage()) {
+      if (chatRoom.getChatRoomId().equals(room.getChatRoomId())) {
+        if (!room.getLastMessage().isOwnMessage()) {
           chatRoomCell.increaseUnreadCount();
         }
 
-        chatRoomCell.updateLastMessage(room.lastMessage);
+        chatRoomCell.updateLastMessage(room.getLastMessage());
 
         recyclerView.removeCell(chatRoomCell);
         recyclerView.addCell(chatRoomCell, 0);
@@ -205,9 +205,7 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void goToChatRoomPage(ChatRoom room) {
     Intent intent = new Intent(getActivity(), ChatRoomActivity.class);
-    intent.putExtra(ChatRoomActivity.EXTRA_USER_ID, room.receiver.userId);
-    intent.putExtra(ChatRoomActivity.EXTRA_USERNAME, room.receiver.name);
-    intent.putExtra(ChatRoomActivity.EXTRA_CHATROOM_ID, room.info.chatRoomId);
+    intent.putExtra(ChatRoomActivity.EXTRA_CHATROOM_ID, room.getInfo().getChatRoomId());
     startActivity(intent);
   }
 

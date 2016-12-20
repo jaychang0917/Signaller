@@ -49,8 +49,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay10() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY10, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String userId, String chatRoomId) {
-        ChatRoomActivity.start(getContext(), userId, "jay10", chatRoomId);
+      public void onChatRoomJoined(String chatRoomId) {
+        ChatRoomActivity.start(getContext(), chatRoomId);
       }
     });
   }
@@ -59,8 +59,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay11() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY11, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String userId, String chatRoomId) {
-        ChatRoomActivity.start(getContext(), userId, "jay11", chatRoomId);
+      public void onChatRoomJoined(String chatRoomId) {
+        ChatRoomActivity.start(getContext(), chatRoomId);
       }
     });
   }
@@ -69,8 +69,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay12() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY12, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String userId, String chatRoomId) {
-        ChatRoomActivity.start(getContext(), userId, "jay12", chatRoomId);
+      public void onChatRoomJoined(String chatRoomId) {
+        ChatRoomActivity.start(getContext(), chatRoomId);
       }
     });
   }
@@ -79,8 +79,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay13() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY13, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String userId, String chatRoomId) {
-        ChatRoomActivity.start(getContext(), userId, "jay13", chatRoomId);
+      public void onChatRoomJoined(String chatRoomId) {
+        ChatRoomActivity.start(getContext(), chatRoomId);
       }
     });
   }
@@ -89,8 +89,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay14() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY14, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String userId, String chatRoomId) {
-        ChatRoomActivity.start(getContext(), userId, "jay14", chatRoomId);
+      public void onChatRoomJoined(String chatRoomId) {
+        ChatRoomActivity.start(getContext(), chatRoomId);
       }
     });
   }

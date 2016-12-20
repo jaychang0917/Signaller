@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.ChatRoom;
+import com.jaychang.signaller.core.model.Receiver;
 import com.jaychang.signaller.core.model.SocketChatMessage;
 import com.jaychang.signaller.util.LogUtils;
 
@@ -68,7 +69,7 @@ public class DatabaseManager {
 
   public void addPendingChatMessageAsync(SocketChatMessage msg, Realm.Transaction.OnSuccess callback) {
     getRealm().executeTransactionAsync(realm -> {
-      msg.timestamp = msg.payload.timestamp;
+      msg.setTimestamp(msg.getPayload().getTimestamp());
       realm.insertOrUpdate(msg);
     }, callback);
   }
@@ -101,7 +102,7 @@ public class DatabaseManager {
   public void saveChatMessages(final List<ChatMessage> chatMessages) {
     getRealm().executeTransaction(realm -> {
       for (ChatMessage chatMessage : chatMessages) {
-        chatMessage.isSent = true;
+        chatMessage.setSent(true);
       }
       realm.insertOrUpdate(chatMessages);
     });
@@ -140,9 +141,9 @@ public class DatabaseManager {
         .equalTo("chatRoomId", roomId).findFirst();
       if (chatRoom != null) {
         if (!lastMsg.isOwnMessage()) {
-          chatRoom.unreadCount++;
+          chatRoom.increaseUnreadCount();
         }
-        chatRoom.lastMessage = realm.copyToRealmOrUpdate(lastMsg);
+        chatRoom.setLastMessage(realm.copyToRealmOrUpdate(lastMsg));
       } else {
         chatRoom = ChatRoom.from(roomId, lastMsg);
         realm.copyToRealmOrUpdate(chatRoom);
@@ -164,4 +165,7 @@ public class DatabaseManager {
     return getRealm().where(ChatRoom.class).equalTo("chatRoomId", chatRoomId).findFirst();
   }
 
+  public Receiver getReceiver(String userId) {
+    return getRealm().where(Receiver.class).equalTo("userId", userId).findFirst();
+  }
 }

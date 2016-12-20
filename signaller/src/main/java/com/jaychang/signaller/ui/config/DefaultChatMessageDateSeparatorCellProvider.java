@@ -1,7 +1,7 @@
 package com.jaychang.signaller.ui.config;
 
-import com.jaychang.signaller.ui.cell.ChatMessageDateSeparatorCell;
-import com.jaychang.signaller.ui.cell.DefaultChatMessageDateSeparatorCell;
+import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
+import com.jaychang.signaller.ui.part.DefaultChatMessageDateSeparatorCell;
 
 public class DefaultChatMessageDateSeparatorCellProvider implements ChatMessageDateSeparatorCellProvider {
 

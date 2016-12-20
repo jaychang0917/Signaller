@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui.cell;
+package com.jaychang.signaller.ui.part;
 
 import com.jaychang.nrv.BaseCell;
 import com.jaychang.signaller.core.model.ChatMessage;

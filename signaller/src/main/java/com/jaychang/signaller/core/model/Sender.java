@@ -9,12 +9,46 @@ public class Sender extends RealmObject {
 
   @PrimaryKey
   @SerializedName("id")
-  public String userId;
+  private String userId;
   @SerializedName("is_brand")
-  public boolean isBrand;
+  private boolean isBrand;
   @SerializedName("image_url")
-  public String imageUrl;
+  private String imageUrl;
   @SerializedName("name")
-  public String name;
+  private String name;
+
+  //region getters & setters
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  public boolean isBrand() {
+    return isBrand;
+  }
+
+  public void setBrand(boolean brand) {
+    isBrand = brand;
+  }
+
+  public String getImageUrl() {
+    return imageUrl;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+  //endregion
 
 }

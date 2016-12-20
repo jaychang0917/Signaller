@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui.cell;
+package com.jaychang.signaller.ui.part;
 
 import com.jaychang.nrv.BaseCell;
 import com.jaychang.signaller.core.model.ChatMessage;
@@ -26,11 +26,11 @@ public abstract class ChatRoomCell extends BaseCell{
   }
 
   public void updateLastMessage(ChatMessage lastMsg) {
-    chatRoom.lastMessage = lastMsg;
+    chatRoom.setLastMessage(lastMsg);
   }
 
   public void increaseUnreadCount() {
-    chatRoom.unreadCount++;
+    chatRoom.increaseUnreadCount();
   }
 
   public void setCallback(Callback callback) {

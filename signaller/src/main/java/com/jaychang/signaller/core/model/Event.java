@@ -10,20 +10,86 @@ public class Event extends RealmObject {
 
   @PrimaryKey
   @SerializedName("event_id")
-  public String eventId;
+  private String eventId;
   @SerializedName("ctime")
-  public long ctime;
+  private long ctime;
   @SerializedName("title")
-  public String title;
+  private String title;
   @SerializedName("content")
-  public String content;
+  private String content;
   @SerializedName("image_url")
-  public String imageUrl;
+  private String imageUrl;
   @SerializedName("mtime")
-  public long mtime;
+  private long mtime;
   @SerializedName("hashtags")
-  public RealmList<RealmString> hashtags;
+  private RealmList<RealmString> hashtags;
   @SerializedName("options")
-  public RealmList<RealmString> options;
+  private RealmList<RealmString> options;
+
+  //region getters & setters
+  public String getEventId() {
+    return eventId;
+  }
+
+  public void setEventId(String eventId) {
+    this.eventId = eventId;
+  }
+
+  public long getCtime() {
+    return ctime;
+  }
+
+  public void setCtime(long ctime) {
+    this.ctime = ctime;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getContent() {
+    return content;
+  }
+
+  public void setContent(String content) {
+    this.content = content;
+  }
+
+  public String getImageUrl() {
+    return imageUrl;
+  }
+
+  public void setImageUrl(String imageUrl) {
+    this.imageUrl = imageUrl;
+  }
+
+  public long getMtime() {
+    return mtime;
+  }
+
+  public void setMtime(long mtime) {
+    this.mtime = mtime;
+  }
+
+  public RealmList<RealmString> getHashtags() {
+    return hashtags;
+  }
+
+  public void setHashtags(RealmList<RealmString> hashtags) {
+    this.hashtags = hashtags;
+  }
+
+  public RealmList<RealmString> getOptions() {
+    return options;
+  }
+
+  public void setOptions(RealmList<RealmString> options) {
+    this.options = options;
+  }
+  //endregion
 
 }

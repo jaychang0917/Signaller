@@ -1,48 +1,47 @@
-package com.wiser.kol.cell;
+package com.jaychang.signaller.ui.part;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.ui.cell.ChatMessageCell;
-import com.vanniktech.emoji.EmojiTextView;
+import com.jaychang.utils.DateTimeFormatUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class KolOwnTextMessageCell extends ChatMessageCell{
+public class DefaultChatMessageDateSeparatorCell extends ChatMessageDateSeparatorCell {
 
-  public KolOwnTextMessageCell(ChatMessage message) {
-    super(message);
+  public DefaultChatMessageDateSeparatorCell(long date) {
+    super(date);
   }
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_own_text_message, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_chat_message_date, viewGroup, false);
     return new ViewHolder(view);
   }
 
   @Override
-  public void onBindViewHolder(BaseViewHolder viewHolder, int i, View.OnTouchListener onTouchListener) {
+  public void onBindViewHolder(BaseViewHolder viewHolder, int position, View.OnTouchListener handleTouchListener) {
     ViewHolder holder = (ViewHolder) viewHolder;
     Context context = holder.itemView.getContext();
 
-    holder.messageView.setText(message.content);
+    String text = DateTimeFormatUtils.format(String.valueOf(timestamp), format);
+    holder.dateView.setText(text);
   }
 
   static class ViewHolder extends BaseViewHolder {
-    @BindView(R2.id.messageView)
-    EmojiTextView messageView;
+    @BindView(R2.id.dateView)
+    TextView dateView;
 
     ViewHolder(View itemView) {
       super(itemView);
       ButterKnife.bind(this, itemView);
     }
   }
-
 }

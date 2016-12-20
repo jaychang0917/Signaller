@@ -1,4 +1,4 @@
-package com.jaychang.signaller.ui.cell;
+package com.wiser.kol.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,14 +9,15 @@ import android.widget.TextView;
 import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
+import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
 import com.jaychang.utils.DateTimeFormatUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class DefaultChatMessageDateSeparatorCell extends ChatMessageDateSeparatorCell {
+public class KolChatMessageDateSeparatorCell extends ChatMessageDateSeparatorCell {
 
-  public DefaultChatMessageDateSeparatorCell(long date) {
+  public KolChatMessageDateSeparatorCell(long date) {
     super(date);
   }
 

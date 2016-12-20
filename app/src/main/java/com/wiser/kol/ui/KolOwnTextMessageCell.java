@@ -1,4 +1,4 @@
-package com.wiser.kol.cell;
+package com.wiser.kol.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,21 +9,21 @@ import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.ui.cell.ChatMessageCell;
+import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.vanniktech.emoji.EmojiTextView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class KolOtherTextMessageCell extends ChatMessageCell{
+public class KolOwnTextMessageCell extends ChatMessageCell{
 
-  public KolOtherTextMessageCell(ChatMessage message) {
+  public KolOwnTextMessageCell(ChatMessage message) {
     super(message);
   }
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_other_text_message, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_own_text_message, viewGroup, false);
     return new ViewHolder(view);
   }
 
@@ -32,7 +32,7 @@ public class KolOtherTextMessageCell extends ChatMessageCell{
     ViewHolder holder = (ViewHolder) viewHolder;
     Context context = holder.itemView.getContext();
 
-    holder.messageView.setText(message.content);
+    holder.messageView.setText(message.getContent());
   }
 
   static class ViewHolder extends BaseViewHolder {

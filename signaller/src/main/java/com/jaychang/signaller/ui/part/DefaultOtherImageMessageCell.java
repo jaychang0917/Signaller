@@ -1,4 +1,4 @@
-package com.wiser.kol.cell;
+package com.jaychang.signaller.ui.part;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,15 +11,14 @@ import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.ui.cell.ChatMessageCell;
 import com.jaychang.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class KolOtherImageMessageCell extends ChatMessageCell {
+public class DefaultOtherImageMessageCell extends ChatMessageCell {
 
-  public KolOtherImageMessageCell(ChatMessage message) {
+  public DefaultOtherImageMessageCell(ChatMessage message) {
     super(message);
   }
 
@@ -38,10 +37,10 @@ public class KolOtherImageMessageCell extends ChatMessageCell {
       holder.itemView.setOnClickListener(view -> callback.onCellClicked(message));
     }
 
-    ViewUtils.setViewWidthHeight(holder.imageView, 150, (int) (150 / message.image.getRatio()));
+    ViewUtils.setViewWidthHeight(holder.imageView, 150, (int) (150 / message.getImage().getRatio()));
 
     Glide.with(context)
-      .load(message.image.url)
+      .load(message.getImage().getUrl())
       .into(holder.imageView);
   }
 

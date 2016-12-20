@@ -9,14 +9,56 @@ public class ChatRoomInfo extends RealmObject {
 
   @PrimaryKey
   @SerializedName("id")
-  public String chatRoomId;
+  private String chatRoomId;
   @SerializedName("last_update_time")
-  public long lastUpdateTime;
+  private long lastUpdateTime;
   @SerializedName("total_messages")
-  public int totalMessages;
+  private int totalMessages;
   @SerializedName("ctime")
-  public long ctime;
+  private long ctime;
   @SerializedName("mtime")
-  public long mtime;
+  private long mtime;
+
+  //region getters & setters
+  public String getChatRoomId() {
+    return chatRoomId;
+  }
+
+  public void setChatRoomId(String chatRoomId) {
+    this.chatRoomId = chatRoomId;
+  }
+
+  public long getLastUpdateTime() {
+    return lastUpdateTime;
+  }
+
+  public void setLastUpdateTime(long lastUpdateTime) {
+    this.lastUpdateTime = lastUpdateTime;
+  }
+
+  public int getTotalMessages() {
+    return totalMessages;
+  }
+
+  public void setTotalMessages(int totalMessages) {
+    this.totalMessages = totalMessages;
+  }
+
+  public long getCtime() {
+    return ctime;
+  }
+
+  public void setCtime(long ctime) {
+    this.ctime = ctime;
+  }
+
+  public long getMtime() {
+    return mtime;
+  }
+
+  public void setMtime(long mtime) {
+    this.mtime = mtime;
+  }
+  //endregion
 
 }

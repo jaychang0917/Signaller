@@ -9,32 +9,102 @@ public class ChatRoom extends RealmObject {
 
   @PrimaryKey
   @SerializedName("parent_id")
-  public String chatRoomId;
+  private String chatRoomId;
   @SerializedName("last_update_time")
-  public long lastUpdateTime;
+  private long lastUpdateTime;
   @SerializedName("info")
-  public ChatRoomInfo info;
+  private ChatRoomInfo info;
   @SerializedName("ctime")
-  public long ctime;
+  private long ctime;
   @SerializedName("last_message")
-  public ChatMessage lastMessage;
+  private ChatMessage lastMessage;
   @SerializedName("mtime")
-  public long mtime;
+  private long mtime;
   @SerializedName("unread_count")
-  public int unreadCount;
+  private int unreadCount;
   @SerializedName("receiver")
-  public Receiver receiver;
+  private Receiver receiver;
 
   public static ChatRoom from(String chatRoomId, ChatMessage message) {
     ChatRoom chatRoom = new ChatRoom();
-    chatRoom.chatRoomId = chatRoomId;
+    chatRoom.setChatRoomId(chatRoomId);
     Receiver receiver = new Receiver();
-    receiver.name = message.sender.name;
-    receiver.profilePicUrl = message.sender.imageUrl;
-    chatRoom.receiver = receiver;
-    chatRoom.lastMessage = message;
-    chatRoom.unreadCount = 1;
+    receiver.setName(message.getSender().getName());
+    receiver.setProfilePhotoUrl(message.getSender().getImageUrl());
+    chatRoom.setReceiver(receiver);
+    chatRoom.setLastMessage(message);
+    chatRoom.setUnreadCount(1);
     return chatRoom;
   }
+
+  public void increaseUnreadCount() {
+    unreadCount++;
+  }
+
+  //region getters & setters
+  public String getChatRoomId() {
+    return chatRoomId;
+  }
+
+  public void setChatRoomId(String chatRoomId) {
+    this.chatRoomId = chatRoomId;
+  }
+
+  public long getLastUpdateTime() {
+    return lastUpdateTime;
+  }
+
+  public void setLastUpdateTime(long lastUpdateTime) {
+    this.lastUpdateTime = lastUpdateTime;
+  }
+
+  public ChatRoomInfo getInfo() {
+    return info;
+  }
+
+  public void setInfo(ChatRoomInfo info) {
+    this.info = info;
+  }
+
+  public long getCtime() {
+    return ctime;
+  }
+
+  public void setCtime(long ctime) {
+    this.ctime = ctime;
+  }
+
+  public ChatMessage getLastMessage() {
+    return lastMessage;
+  }
+
+  public void setLastMessage(ChatMessage lastMessage) {
+    this.lastMessage = lastMessage;
+  }
+
+  public long getMtime() {
+    return mtime;
+  }
+
+  public void setMtime(long mtime) {
+    this.mtime = mtime;
+  }
+
+  public int getUnreadCount() {
+    return unreadCount;
+  }
+
+  public void setUnreadCount(int unreadCount) {
+    this.unreadCount = unreadCount;
+  }
+
+  public Receiver getReceiver() {
+    return receiver;
+  }
+
+  public void setReceiver(Receiver receiver) {
+    this.receiver = receiver;
+  }
+  //endregion
 
 }
