@@ -14,17 +14,19 @@ import com.jaychang.signaller.ui.config.ChatMessageType;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
 import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
+import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
-import com.jaychang.signaller.ui.part.DefaultOtherImageMessageCell;
-import com.jaychang.signaller.ui.part.DefaultOtherTextMessageCell;
-import com.jaychang.signaller.ui.part.DefaultOwnImageMessageCell;
-import com.jaychang.signaller.ui.part.DefaultOwnTextMessageCell;
 import com.wiser.kol.ui.KolChatMessageDateSeparatorCell;
 import com.wiser.kol.ui.KolChatRoomCell;
 import com.wiser.kol.ui.KolChatRoomToolbar;
+import com.wiser.kol.ui.KolEventMessageCell;
+import com.wiser.kol.ui.KolOtherImageMessageCell;
+import com.wiser.kol.ui.KolOtherTextMessageCell;
+import com.wiser.kol.ui.KolOwnImageMessageCell;
+import com.wiser.kol.ui.KolOwnTextMessageCell;
 
 public class App extends MultiDexApplication {
 
@@ -42,35 +44,42 @@ public class App extends MultiDexApplication {
       .chatRoomCellProvider(new ChatRoomCellProvider() {
         @NonNull
         @Override
-        public ChatRoomCell createChatRoomCell(ChatRoom chatRoom) {
+        public ChatRoomCell getChatRoomCell(ChatRoom chatRoom) {
           return new KolChatRoomCell(chatRoom);
         }
       })
       .chatMessageCellProvider(new ChatMessageCellProvider() {
         @NonNull
         @Override
-        public ChatMessageCell createOwnChatMessageCell(ChatMessageType type, ChatMessage message) {
+        public ChatMessageCell getOwnChatMessageCell(ChatMessageType type, ChatMessage message) {
           if (type.equals(ChatMessageType.TEXT)) {
-            return new DefaultOwnTextMessageCell(message);
+            return new KolOwnTextMessageCell(message);
           } else {
-            return new DefaultOwnImageMessageCell(message);
+            return new KolOwnImageMessageCell(message);
           }
         }
 
         @NonNull
         @Override
-        public ChatMessageCell createOtherChatMessageCell(ChatMessageType type, ChatMessage message) {
+        public ChatMessageCell getOtherChatMessageCell(ChatMessageType type, ChatMessage message) {
           if (type.equals(ChatMessageType.TEXT)) {
-            return new DefaultOtherTextMessageCell(message);
+            return new KolOtherTextMessageCell(message);
           } else {
-            return new DefaultOtherImageMessageCell(message);
+            return new KolOtherImageMessageCell(message);
           }
+        }
+      })
+      .customChatMessageCellProvider(new CustomChatMessageCellProvider() {
+        @NonNull
+        @Override
+        public ChatMessageCell getCustomChatMessageCells(ChatMessage message) {
+          return new KolEventMessageCell(message);
         }
       })
       .chatMessageDateSeparatorCellProvider(new ChatMessageDateSeparatorCellProvider() {
         @NonNull
         @Override
-        public ChatMessageDateSeparatorCell createChatMessageDateSeparatorCell(long timestampMillis) {
+        public ChatMessageDateSeparatorCell getChatMessageDateSeparatorCell(long timestampMillis) {
           return new KolChatMessageDateSeparatorCell(timestampMillis);
         }
       })

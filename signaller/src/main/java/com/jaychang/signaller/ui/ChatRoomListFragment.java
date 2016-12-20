@@ -194,7 +194,7 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void bindChatRooms(List<ChatRoom> chatRooms) {
     for (ChatRoom chatRoom : chatRooms) {
-      ChatRoomCell cell = chatRoomCellProvider.createChatRoomCell(chatRoom);
+      ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
       cell.setCallback(room -> {
         goToChatRoomPage(room);
       });

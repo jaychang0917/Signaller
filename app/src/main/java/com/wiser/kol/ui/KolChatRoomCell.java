@@ -74,13 +74,13 @@ public class KolChatRoomCell extends ChatRoomCell {
       } else if (lastMessage.isImage()) {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(com.jaychang.signaller.R.drawable.ic_small_camera, 0, 0, 0);
         holder.lastMsgView.setText(com.jaychang.signaller.R.string.image);
-      } else if (lastMessage.isEvent()) {
+      } else {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
       }
 
       String yesterday = "'" + context.getString(com.jaychang.signaller.R.string.yesterday) + "'";
       String date = DateTimeFormatUtils.translate(
-        String.valueOf(lastMessage.getMtime()),
+        String.valueOf(chatRoom.getMtime()),
         "hh:mm a",
         yesterday,
         "dd/MM/yyyy");

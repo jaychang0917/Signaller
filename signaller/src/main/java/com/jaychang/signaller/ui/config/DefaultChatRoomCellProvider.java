@@ -7,7 +7,7 @@ import com.jaychang.signaller.ui.part.DefaultChatRoomCell;
 public class DefaultChatRoomCellProvider implements ChatRoomCellProvider {
 
   @Override
-  public ChatRoomCell createChatRoomCell(ChatRoom chatRoom) {
+  public ChatRoomCell getChatRoomCell(ChatRoom chatRoom) {
     return new DefaultChatRoomCell(chatRoom);
   }
 

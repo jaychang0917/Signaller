@@ -13,7 +13,7 @@ import static com.jaychang.signaller.ui.config.ChatMessageType.TEXT;
 public class DefaultChatMessageCellProvider implements ChatMessageCellProvider {
 
   @Override
-  public ChatMessageCell createOwnChatMessageCell(ChatMessageType type, ChatMessage message) {
+  public ChatMessageCell getOwnChatMessageCell(ChatMessageType type, ChatMessage message) {
     if (type.equals(TEXT)) {
       return new DefaultOwnTextMessageCell(message);
     } else if (type.equals(IMAGE)) {
@@ -24,7 +24,7 @@ public class DefaultChatMessageCellProvider implements ChatMessageCellProvider {
   }
 
   @Override
-  public ChatMessageCell createOtherChatMessageCell(ChatMessageType type, ChatMessage message) {
+  public ChatMessageCell getOtherChatMessageCell(ChatMessageType type, ChatMessage message) {
     if (type.equals(TEXT)) {
       return new DefaultOtherTextMessageCell(message);
     } else if (type.equals(IMAGE)) {

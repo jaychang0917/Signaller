@@ -6,7 +6,7 @@ import com.jaychang.signaller.ui.part.DefaultChatMessageDateSeparatorCell;
 public class DefaultChatMessageDateSeparatorCellProvider implements ChatMessageDateSeparatorCellProvider {
 
   @Override
-  public ChatMessageDateSeparatorCell createChatMessageDateSeparatorCell(long timestampMillis) {
+  public ChatMessageDateSeparatorCell getChatMessageDateSeparatorCell(long timestampMillis) {
     return new DefaultChatMessageDateSeparatorCell(timestampMillis);
   }
 

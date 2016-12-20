@@ -32,13 +32,10 @@ import com.jaychang.signaller.core.model.SocketChatMessage;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
 import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
+import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.signaller.ui.part.DefaultChatMessageDateSeparatorCell;
-import com.jaychang.signaller.ui.part.DefaultOtherImageMessageCell;
-import com.jaychang.signaller.ui.part.DefaultOtherTextMessageCell;
-import com.jaychang.signaller.ui.part.DefaultOwnImageMessageCell;
-import com.jaychang.signaller.ui.part.DefaultOwnTextMessageCell;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.signaller.util.NetworkStateMonitor;
 import com.jaychang.utils.AppUtils;
@@ -91,6 +88,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private ChatMessageCellProvider chatMessageCellProvider;
   private ChatRoomToolbarProvider chatRoomToolbarProvider;
   private ChatRoomControlViewProvider chatRoomControlViewProvider;
+  private CustomChatMessageCellProvider customChatMessageCellProvider;
   private UIConfig uiConfig;
 
   public static void start(Context context, String chatRoomId) {
@@ -138,6 +136,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     chatMessageCellProvider = uiConfig.getChatMessageCellProvider();
     chatRoomToolbarProvider = uiConfig.getChatRoomToolbarProvider();
     chatRoomControlViewProvider = uiConfig.getChatRoomControlViewProvider();
+    customChatMessageCellProvider = uiConfig.getCustomChatMessageCellProvider();
   }
 
   private void initData() {
@@ -263,13 +262,15 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private void handleChatMessage(ChatMessage message) {
     if (message.isImage()) {
       if (!message.isOwnMessage()) {
-        addAnotherImageMessageCell(message);
+        addOtherImageMessageCell(message);
       }
-    } else if (message.isEvent()) {
-
-    } else {
+    } else if (message.isText()) {
       if (!message.isOwnMessage()) {
-        addAnotherTextMessageCell(message);
+        addOtherTextMessageCell(message);
+      }
+    } else {
+      if (customChatMessageCellProvider != null) {
+        addCustomMessageCell(message);
       }
     }
   }
@@ -309,29 +310,33 @@ public class ChatRoomActivity extends RxAppCompatActivity {
       }
 
       ChatMessageCell cell = null;
-      if (message.isOwnMessage() && message.isImage() && isSameSender) {
-        cell = chatMessageCellProvider.createOwnChatMessageCell(IMAGE, message);
+      if (message.isCustomType() && customChatMessageCellProvider != null) {
+        cell = customChatMessageCellProvider.getCustomChatMessageCells(message);
+      } else if (message.isOwnMessage() && message.isImage() && isSameSender) {
+        cell = chatMessageCellProvider.getOwnChatMessageCell(IMAGE, message);
       } else if (message.isOwnMessage() && message.isImage() && !isSameSender) {
-        cell = chatMessageCellProvider.createOwnChatMessageCell(IMAGE, message);
+        cell = chatMessageCellProvider.getOwnChatMessageCell(IMAGE, message);
       } else if (message.isOwnMessage() && !message.isImage() && isSameSender) {
-        cell = chatMessageCellProvider.createOwnChatMessageCell(TEXT, message);
+        cell = chatMessageCellProvider.getOwnChatMessageCell(TEXT, message);
       } else if (message.isOwnMessage() && !message.isImage() && !isSameSender) {
-        cell = chatMessageCellProvider.createOwnChatMessageCell(TEXT, message);
+        cell = chatMessageCellProvider.getOwnChatMessageCell(TEXT, message);
       } else if (!message.isOwnMessage() && message.isImage() && isSameSender) {
-        cell = chatMessageCellProvider.createOtherChatMessageCell(IMAGE, message);
+        cell = chatMessageCellProvider.getOtherChatMessageCell(IMAGE, message);
       } else if (!message.isOwnMessage() && message.isImage() && !isSameSender) {
-        cell = chatMessageCellProvider.createOtherChatMessageCell(IMAGE, message);
+        cell = chatMessageCellProvider.getOtherChatMessageCell(IMAGE, message);
       } else if (!message.isOwnMessage() && !message.isImage() && isSameSender) {
-        cell = chatMessageCellProvider.createOtherChatMessageCell(TEXT, message);
+        cell = chatMessageCellProvider.getOtherChatMessageCell(TEXT, message);
       } else if (!message.isOwnMessage() && !message.isImage() && !isSameSender) {
-        cell = chatMessageCellProvider.createOtherChatMessageCell(TEXT, message);
+        cell = chatMessageCellProvider.getOtherChatMessageCell(TEXT, message);
       }
 
-      if (cell != null) {
-        cell.setCallback(msg -> {
-          goToPhotoPage(msg.getImage().getUrl());
-        });
+      if (cell == null) {
+        return;
       }
+
+      cell.setCallback(msg -> {
+        goToPhotoPage(msg.getImage().getUrl());
+      });
 
       recyclerView.addCell(cell, 0);
 
@@ -454,28 +459,35 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void addOwnTextMessageCell(ChatMessage message) {
-    DefaultOwnTextMessageCell cell = new DefaultOwnTextMessageCell(message);
+    ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(TEXT, message);
     recyclerView.addCell(cell);
     recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
     scrollToBottom();
   }
 
   private void addOwnImageMessageCell(ChatMessage message) {
-    DefaultOwnImageMessageCell cell = new DefaultOwnImageMessageCell(message);
+    ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(IMAGE, message);
     recyclerView.addCell(cell);
     recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
     scrollToBottom();
   }
 
-  private void addAnotherTextMessageCell(ChatMessage message) {
-    DefaultOtherTextMessageCell cell = new DefaultOtherTextMessageCell(message);
+  private void addOtherTextMessageCell(ChatMessage message) {
+    ChatMessageCell cell = chatMessageCellProvider.getOtherChatMessageCell(TEXT, message);
     recyclerView.addCell(cell);
     recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
     scrollToBottom();
   }
 
-  private void addAnotherImageMessageCell(ChatMessage message) {
-    DefaultOtherImageMessageCell cell = new DefaultOtherImageMessageCell(message);
+  private void addOtherImageMessageCell(ChatMessage message) {
+    ChatMessageCell cell = chatMessageCellProvider.getOtherChatMessageCell(IMAGE, message);
+    recyclerView.addCell(cell);
+    recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
+    scrollToBottom();
+  }
+
+  private void addCustomMessageCell(ChatMessage message) {
+    ChatMessageCell cell = customChatMessageCellProvider.getCustomChatMessageCells(message);
     recyclerView.addCell(cell);
     recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
     scrollToBottom();

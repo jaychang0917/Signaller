@@ -5,5 +5,5 @@ import android.support.annotation.NonNull;
 import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
 
 public interface ChatMessageDateSeparatorCellProvider {
-  @NonNull ChatMessageDateSeparatorCell createChatMessageDateSeparatorCell(long timestampMillis);
+  @NonNull ChatMessageDateSeparatorCell getChatMessageDateSeparatorCell(long timestampMillis);
 }

@@ -57,8 +57,8 @@ public class ChatMessage extends RealmObject {
     return type.equals("image");
   }
 
-  public boolean isEvent() {
-    return type.equals("event");
+  public boolean isCustomType() {
+    return !isText() && !isImage();
   }
 
   //region getters & setters

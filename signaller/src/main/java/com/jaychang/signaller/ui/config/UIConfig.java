@@ -10,6 +10,7 @@ public class UIConfig {
   private ChatRoomToolbarProvider chatRoomToolbarProvider;
   private ChatRoomControlViewProvider chatRoomControlViewProvider;
   private ChatMessageCellProvider chatMessageCellProvider;
+  private CustomChatMessageCellProvider customChatMessageCellProvider;
   private ChatMessageDateSeparatorCellProvider chatMsgDateSeparatorCellProvider;
   private boolean showChatMsgDateSeparator = true;
   private int toolbarBackgroundColor = R.color.toolbar_background;
@@ -71,6 +72,15 @@ public class UIConfig {
   public UIConfig showChatMessageDateSeparator(boolean showChatMsgDateSeparator) {
     this.showChatMsgDateSeparator = showChatMsgDateSeparator;
     return this;
+  }
+
+  public UIConfig customChatMessageCellProvider(CustomChatMessageCellProvider provider) {
+    customChatMessageCellProvider = provider;
+    return this;
+  }
+
+  public CustomChatMessageCellProvider getCustomChatMessageCellProvider() {
+    return customChatMessageCellProvider;
   }
 
   public UIConfig chatRoomControlViewProvider(ChatRoomControlViewProvider provider) {

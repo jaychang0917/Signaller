@@ -6,5 +6,5 @@ import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
 
 public interface ChatRoomCellProvider {
-  @NonNull ChatRoomCell createChatRoomCell(ChatRoom chatRoom);
+  @NonNull ChatRoomCell getChatRoomCell(ChatRoom chatRoom);
 }
