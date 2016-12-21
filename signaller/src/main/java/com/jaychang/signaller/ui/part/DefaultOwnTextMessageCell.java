@@ -22,7 +22,7 @@ public class DefaultOwnTextMessageCell extends ChatMessageCell{
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_own_text_message, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.sig_cell_own_text_message, viewGroup, false);
     return new ViewHolder(view);
   }
 

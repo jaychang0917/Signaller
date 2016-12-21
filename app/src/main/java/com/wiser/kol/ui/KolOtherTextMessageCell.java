@@ -6,11 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jaychang.nrv.BaseViewHolder;
-import com.jaychang.signaller.R;
-import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.vanniktech.emoji.EmojiTextView;
+import com.wiser.kol.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,7 +35,7 @@ public class KolOtherTextMessageCell extends ChatMessageCell{
   }
 
   static class ViewHolder extends BaseViewHolder {
-    @BindView(R2.id.messageView)
+    @BindView(R.id.messageView)
     EmojiTextView messageView;
 
     ViewHolder(View itemView) {

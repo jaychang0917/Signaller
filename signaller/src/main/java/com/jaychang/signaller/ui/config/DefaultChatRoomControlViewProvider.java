@@ -9,7 +9,7 @@ class DefaultChatRoomControlViewProvider implements ChatRoomControlViewProvider 
   @NonNull
   @Override
   public int getLayoutRes() {
-    return R.layout.view_chatroom_control;
+    return R.layout.sig_view_chatroom_control;
   }
 
   @NonNull

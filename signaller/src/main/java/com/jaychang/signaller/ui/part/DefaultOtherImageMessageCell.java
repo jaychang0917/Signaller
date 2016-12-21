@@ -24,7 +24,7 @@ public class DefaultOtherImageMessageCell extends ChatMessageCell {
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_other_image_message, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.sig_cell_other_image_message, viewGroup, false);
     return new ViewHolder(view);
   }
 

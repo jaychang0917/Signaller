@@ -27,7 +27,7 @@ public class DefaultChatRoomToolbar extends Toolbar {
 
   private void setupWithChatRoom(ChatRoom chatRoom) {
     setTitle(chatRoom.getReceiver().getName());
-    setBackgroundColor(ContextCompat.getColor(getContext(), Signaller.getInstance().getUiConfig().getToolbarBackgroundColor()));
+    setBackgroundColor(ContextCompat.getColor(getContext(), Signaller.getInstance().getUiConfig().getChatRoomToolbarBackgroundColor()));
     setNavigationIcon(R.drawable.ic_toolbar_back);
     setMinimumHeight(AppUtils.dp2px(getContext(), 48));
     setNavigationOnClickListener(v -> {

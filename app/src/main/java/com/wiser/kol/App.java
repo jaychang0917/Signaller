@@ -93,7 +93,7 @@ public class App extends MultiDexApplication {
       .chatRoomControlViewProvider(new ChatRoomControlViewProvider() {
         @Override
         public int getLayoutRes() {
-          return R.layout.view_chatroom_control;
+          return R.layout.sig_view_chatroom_control;
         }
 
         @Override
@@ -116,7 +116,7 @@ public class App extends MultiDexApplication {
           return R.id.sendView;
         }
       })
-      .toolbarBackgroundColor(R.color.colorPrimary)
+      .chatRoomToolbarBackgroundColor(R.color.white)
       .build();
 
     Signaller.getInstance().setUIConfig(uiConfig);

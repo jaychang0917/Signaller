@@ -26,6 +26,12 @@ public class SignallerEvents {
     }
   }
 
+  public static class OnSocketConnectEvent {
+  }
+
+  public static class OnSocketConnectingEvent {
+  }
+
   public static class OnSocketConnectedEvent {
   }
 

@@ -45,7 +45,7 @@
         android:layout_height="wrap_content"
         android:background="@null"
         android:enabled="false"
-        android:text="@string/send"
+        android:text="@string/sig_send"
         android:textAllCaps="false" />
 
 </LinearLayout>

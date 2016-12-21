@@ -13,7 +13,7 @@ public class UIConfig {
   private CustomChatMessageCellProvider customChatMessageCellProvider;
   private ChatMessageDateSeparatorCellProvider chatMsgDateSeparatorCellProvider;
   private boolean showChatMsgDateSeparator;
-  private @ColorRes int toolbarBackgroundColor;
+  private @ColorRes int chatRoomToolbarBackgroundColor;
 
   private UIConfig(Builder builder) {
     chatRoomCellProvider = builder.chatRoomCellProvider;
@@ -23,7 +23,7 @@ public class UIConfig {
     customChatMessageCellProvider = builder.customChatMessageCellProvider;
     chatMsgDateSeparatorCellProvider = builder.chatMsgDateSeparatorCellProvider;
     showChatMsgDateSeparator = builder.showChatMsgDateSeparator;
-    toolbarBackgroundColor = builder.toolbarBackgroundColor;
+    chatRoomToolbarBackgroundColor = builder.chatRoomToolbarBackgroundColor;
   }
 
   public static Builder newBuilder() {
@@ -58,8 +58,8 @@ public class UIConfig {
     return showChatMsgDateSeparator;
   }
 
-  public int getToolbarBackgroundColor() {
-    return toolbarBackgroundColor;
+  public int getChatRoomToolbarBackgroundColor() {
+    return chatRoomToolbarBackgroundColor;
   }
 
   public static final class Builder {
@@ -70,7 +70,7 @@ public class UIConfig {
     private CustomChatMessageCellProvider customChatMessageCellProvider;
     private ChatMessageDateSeparatorCellProvider chatMsgDateSeparatorCellProvider;
     private boolean showChatMsgDateSeparator = true;
-    private int toolbarBackgroundColor = R.color.toolbar_background;
+    private int chatRoomToolbarBackgroundColor = R.color.sig_toolbar_bg;
 
     private Builder() {
     }
@@ -110,8 +110,8 @@ public class UIConfig {
       return this;
     }
 
-    public Builder toolbarBackgroundColor(@ColorRes int colorRes) {
-      toolbarBackgroundColor = colorRes;
+    public Builder chatRoomToolbarBackgroundColor(@ColorRes int colorRes) {
+      chatRoomToolbarBackgroundColor = colorRes;
       return this;
     }
 

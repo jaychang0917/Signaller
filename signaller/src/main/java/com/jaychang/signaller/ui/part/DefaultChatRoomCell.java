@@ -30,7 +30,7 @@ public class DefaultChatRoomCell extends ChatRoomCell {
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_chatroom, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.sig_cell_chatroom, viewGroup, false);
     ViewHolder viewHolder = new ViewHolder(view);
 
     if (callback != null) {
@@ -73,13 +73,13 @@ public class DefaultChatRoomCell extends ChatRoomCell {
         holder.lastMsgView.setText(lastMessage.getContent());
       } else if (lastMessage.isImage()) {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_small_camera, 0, 0, 0);
-        holder.lastMsgView.setText(R.string.image);
+        holder.lastMsgView.setText(R.string.sig_image);
       } else {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
       }
     }
 
-    String yesterday = "'" + context.getString(R.string.yesterday) + "'";
+    String yesterday = "'" + context.getString(R.string.sig_yesterday) + "'";
     String date = DateTimeFormatUtils.translate(
       String.valueOf(chatRoom.getLastUpdateTime()),
       "hh:mm a",

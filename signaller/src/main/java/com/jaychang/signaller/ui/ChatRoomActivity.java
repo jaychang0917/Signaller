@@ -38,7 +38,7 @@ import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
 import com.jaychang.signaller.util.LogUtils;
-import com.jaychang.signaller.util.NetworkStateMonitor;
+import com.jaychang.signaller.core.NetworkStateMonitor;
 import com.jaychang.utils.AppUtils;
 import com.jaychang.utils.ImageDimension;
 import com.jaychang.utils.ImageUtils;
@@ -103,7 +103,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_chatroom);
+    setContentView(R.layout.sig_activity_chatroom);
     ButterKnife.bind(this);
     init();
     loadChatMessages();
@@ -156,12 +156,12 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void setStatusBarColor() {
-    AppUtils.setStatusBarColor(this, uiConfig.getToolbarBackgroundColor());
+    AppUtils.setStatusBarColor(this, R.color.sig_toolbar_bg);
   }
 
   private void initRecyclerView() {
     recyclerView.useVerticalLinearMode();
-    recyclerView.setCellSpacing(8);
+    recyclerView.setCellSpacingIncludeEdge(8);
     recyclerView.setOnLoadMoreListener(true, new OnLoadMorePageListener() {
       @Override
       public void onLoadMore(int page) {
@@ -265,6 +265,24 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     handleChatMessage(chatMessage);
   }
 
+  @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+  public void onSocketConnected(SignallerEvents.OnSocketConnectedEvent event) {
+    EventBus.getDefault().removeStickyEvent(event);
+    handleInput();
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+  public void onSocketDisconnected(SignallerEvents.OnSocketDisconnectedEvent event) {
+    EventBus.getDefault().removeStickyEvent(event);
+    handleInput();
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+  public void onSocketConnecting(SignallerEvents.OnSocketConnectingEvent event) {
+    EventBus.getDefault().removeStickyEvent(event);
+    handleInput();
+  }
+
   private void handleChatMessage(ChatMessage message) {
     if (message.isImage()) {
       if (!message.isOwnMessage()) {
@@ -364,7 +382,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void showPhotoPicker() {
-    int colorPrimary = uiConfig.getToolbarBackgroundColor();
+    int colorPrimary = uiConfig.getChatRoomToolbarBackgroundColor();
 
     NPhotoPicker.with(this)
       .toolbarColor(colorPrimary)

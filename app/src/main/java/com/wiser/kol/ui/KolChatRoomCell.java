@@ -1,22 +1,21 @@
 package com.wiser.kol.ui;
 
 import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jaychang.nrv.BaseViewHolder;
-import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.core.model.Receiver;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
-import com.jaychang.utils.DateTimeFormatUtils;
-import com.vanniktech.emoji.EmojiTextView;
+import com.wiser.kol.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,14 +29,12 @@ public class KolChatRoomCell extends ChatRoomCell {
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(com.jaychang.signaller.R.layout.cell_chatroom, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.cell_chatroom, viewGroup, false);
     ViewHolder viewHolder = new ViewHolder(view);
 
     if (callback != null) {
       viewHolder.itemView.setOnClickListener(v -> {
         callback.onCellClicked(chatRoom);
-        chatRoom.setUnreadCount(0);
-        viewHolder.unreadCountView.setVisibility(View.GONE);
       });
     }
 
@@ -47,58 +44,59 @@ public class KolChatRoomCell extends ChatRoomCell {
   @Override
   public void onBindViewHolder(BaseViewHolder viewHolder, int position, View.OnTouchListener handleTouchListener) {
     ViewHolder holder = (ViewHolder) viewHolder;
-    Context context = holder.itemView.getContext().getApplicationContext();
+    Context context = holder.itemView.getContext();
+
+    if (callback != null) {
+      holder.itemView.setOnClickListener(v -> callback.onCellClicked(chatRoom));
+    }
 
     Receiver receiver = chatRoom.getReceiver();
-    boolean hasLogo = !TextUtils.isEmpty(receiver.getProfilePhotoUrl());
-    Object logo = hasLogo ? receiver.getProfilePhotoUrl() : com.jaychang.signaller.R.drawable.ic_default_profile_logo;
-    Glide.with(context)
-      .load(logo)
-      .bitmapTransform(new CropCircleTransformation(context))
-      .into(holder.logoView);
+    String userLogoUrl = receiver.getProfilePhotoUrl();
+    if (!TextUtils.isEmpty(userLogoUrl)) {
+      holder.logoImageView.setVisibility(View.VISIBLE);
+      holder.logoTextView.setVisibility(View.GONE);
+      Glide.with(context)
+        .load(userLogoUrl)
+        .bitmapTransform(new CropCircleTransformation(context))
+        .into(holder.logoImageView);
+    } else {
+      holder.logoImageView.setVisibility(View.GONE);
+      holder.logoTextView.setVisibility(View.VISIBLE);
+      holder.logoTextView.setText(receiver.getName().substring(0, 1).toUpperCase());
+    }
 
     holder.nameView.setText(receiver.getName());
 
-    if (chatRoom.getUnreadCount() > 0) {
-      holder.unreadCountView.setText(String.valueOf(chatRoom.getUnreadCount()));
-      holder.unreadCountView.setVisibility(View.VISIBLE);
+    if ("brand".equals(receiver.getUserType())) {
+      holder.brandLabelView.setVisibility(View.VISIBLE);
+      holder.nameView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
     } else {
-      holder.unreadCountView.setVisibility(View.INVISIBLE);
+      holder.brandLabelView.setVisibility(View.GONE);
+      holder.nameView.setTextColor(ContextCompat.getColor(context, R.color.text_color));
     }
 
-    ChatMessage lastMessage = chatRoom.getLastMessage();
-    if (lastMessage != null) {
-      if (lastMessage.isText()) {
-        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        holder.lastMsgView.setText(lastMessage.getContent());
-      } else if (lastMessage.isImage()) {
-        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(com.jaychang.signaller.R.drawable.ic_small_camera, 0, 0, 0);
-        holder.lastMsgView.setText(com.jaychang.signaller.R.string.image);
-      } else {
-        holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-      }
-
-      String yesterday = "'" + context.getString(com.jaychang.signaller.R.string.yesterday) + "'";
-      String date = DateTimeFormatUtils.translate(
-        String.valueOf(chatRoom.getLastUpdateTime()),
-        "hh:mm a",
-        yesterday,
-        "dd/MM/yyyy");
-      holder.dateView.setText(date);
+    if (!TextUtils.isEmpty(receiver.getFacebookId()) ||
+      !TextUtils.isEmpty(receiver.getYoutubeId()) ||
+      !TextUtils.isEmpty(receiver.getInstagramId())) {
+      holder.chatBubbleView.setImageResource(R.drawable.btn_msg_on);
+    } else {
+      holder.chatBubbleView.setImageResource(R.drawable.btn_msg_off);
     }
   }
 
   static class ViewHolder extends BaseViewHolder {
-    @BindView(R2.id.logoView)
-    ImageView logoView;
-    @BindView(R2.id.nameView)
-    EmojiTextView nameView;
-    @BindView(R2.id.lastMsgView)
-    EmojiTextView lastMsgView;
-    @BindView(R2.id.dateView)
-    TextView dateView;
-    @BindView(R2.id.unreadCountView)
-    TextView unreadCountView;
+    @BindView(R.id.logoImageView)
+    ImageView logoImageView;
+    @BindView(R.id.logoTextView)
+    TextView logoTextView;
+    @BindView(R.id.logoView)
+    FrameLayout logoView;
+    @BindView(R.id.nameView)
+    TextView nameView;
+    @BindView(R.id.brandLabelView)
+    TextView brandLabelView;
+    @BindView(R.id.chatBubbleView)
+    ImageView chatBubbleView;
 
     ViewHolder(View itemView) {
       super(itemView);

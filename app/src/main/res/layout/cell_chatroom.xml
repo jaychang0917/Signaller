@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/selectableItemBackground"
+    android:orientation="horizontal"
+    android:paddingBottom="12dp"
+    android:paddingLeft="16dp"
+    android:paddingRight="14dp"
+    android:paddingTop="12dp">
+
+    <FrameLayout
+        android:id="@+id/logoView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true">
+
+        <ImageView
+            android:id="@+id/logoImageView"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:scaleType="centerCrop"
+            android:visibility="gone"
+            tools:background="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/logoTextView"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:background="@drawable/shape_green_circle"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="E"
+            tools:visibility="visible" />
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/nameView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/logoView"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="16dp"
+        android:layout_toRightOf="@id/logoView"
+        android:textColor="#262626"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        tools:text="HeSheEat" />
+
+    <TextView
+        android:id="@+id/brandLabelView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@id/nameView"
+        android:background="@drawable/shape_round_green_small"
+        android:paddingBottom="1dp"
+        android:paddingLeft="2dp"
+        android:paddingRight="2dp"
+        android:paddingTop="1dp"
+        android:text="@string/TXT_Edit_Profile_Brand"
+        android:textColor="@color/white"
+        android:textSize="10sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/chatBubbleView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:src="@drawable/btn_msg_off" />
+
+</RelativeLayout>
+

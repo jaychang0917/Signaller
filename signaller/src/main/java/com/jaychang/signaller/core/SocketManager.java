@@ -23,6 +23,7 @@ public class SocketManager {
   private static final SocketManager INSTANCE = new SocketManager();
 
   private static final String CONNECT = "connect";
+  private static final String CONNECTING = Socket.EVENT_CONNECTING;
   private static final String CONNECTED = "connected";
   private static final String DISCONNECTED = Socket.EVENT_DISCONNECT;
   private static final String JOIN = "join";
@@ -57,6 +58,7 @@ public class SocketManager {
     }
 
     socket.on(CONNECT, onConnect);
+    socket.on(CONNECTING, onConnecting);
     socket.on(CONNECTED, onConnected);
     socket.on(DISCONNECTED, onDisconnected);
     socket.on(RECEIVE_MESSAGE, onMsgReceived);
@@ -84,6 +86,7 @@ public class SocketManager {
   private void offEvents() {
     if (isConnected()) {
       socket.off(CONNECT);
+      socket.off(CONNECTING);
       socket.off(CONNECTED);
       socket.off(DISCONNECTED);
       socket.off(RECEIVE_MESSAGE);
@@ -144,17 +147,23 @@ public class SocketManager {
 
   private Emitter.Listener onConnect = args -> {
     LogUtils.d("onConnect");
+    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectEvent());
   };
 
-  private Emitter.Listener onDisconnected = args -> {
-    LogUtils.d("onDisconnected");
-    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketDisconnectedEvent());
+  private Emitter.Listener onConnecting = args -> {
+    LogUtils.d("onConnecting");
+    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectingEvent());
   };
 
   private Emitter.Listener onConnected = args -> {
     LogUtils.d("onConnected");
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectedEvent());
     sendPendingChatMsg();
+  };
+
+  private Emitter.Listener onDisconnected = args -> {
+    LogUtils.d("onDisconnected");
+    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketDisconnectedEvent());
   };
 
   private Emitter.Listener onMsgReceived = args -> {

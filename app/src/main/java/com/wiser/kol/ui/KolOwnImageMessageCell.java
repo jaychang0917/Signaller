@@ -8,11 +8,11 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.jaychang.nrv.BaseViewHolder;
-import com.jaychang.signaller.R;
-import com.jaychang.signaller.R2;
 import com.jaychang.signaller.core.model.ChatMessage;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
+import com.jaychang.utils.AppUtils;
 import com.jaychang.utils.ViewUtils;
+import com.wiser.kol.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,16 +38,19 @@ public class KolOwnImageMessageCell extends ChatMessageCell {
       holder.itemView.setOnClickListener(view -> callback.onCellClicked(message));
     }
 
-    ViewUtils.setViewWidthHeight(holder.imageView, 150, (int) (150 / message.getImage().getRatio()));
+    int photoWidthDp = 150;
+    int photoHeightDp = (int) (150 / message.getImage().getRatio());
+    ViewUtils.setViewWidthHeight(holder.imageView, photoWidthDp, photoHeightDp);
 
     Glide.with(context)
       .load(message.getImage().getUrl())
+      .override(AppUtils.dp2px(context, photoWidthDp), AppUtils.dp2px(context, photoHeightDp))
       .into(holder.imageView);
 
   }
 
   static class ViewHolder extends BaseViewHolder {
-    @BindView(R2.id.imageView)
+    @BindView(R.id.imageView)
     ImageView imageView;
 
     ViewHolder(View itemView) {

@@ -20,30 +20,24 @@ public class Receiver extends RealmObject {
   private long mtime;
   @SerializedName("name")
   private String name;
+  @SerializedName("sns_facebook")
+  private String facebookId;
+  @SerializedName("sns_youtube")
+  private String youtubeId;
+  @SerializedName("sns_instagram")
+  private String instagramId;
 
   //region getters & setters
   public String getUserId() {
     return userId;
   }
 
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
-
   public long getCtime() {
     return ctime;
   }
 
-  public void setCtime(long ctime) {
-    this.ctime = ctime;
-  }
-
   public String getUserType() {
     return userType;
-  }
-
-  public void setUserType(String userType) {
-    this.userType = userType;
   }
 
   public String getProfilePhotoUrl() {
@@ -57,14 +51,6 @@ public class Receiver extends RealmObject {
     profilePhoto.setUrl(url);
   }
 
-  public long getMtime() {
-    return mtime;
-  }
-
-  public void setMtime(long mtime) {
-    this.mtime = mtime;
-  }
-
   public String getName() {
     return name;
   }
@@ -72,6 +58,19 @@ public class Receiver extends RealmObject {
   public void setName(String name) {
     this.name = name;
   }
+
+  public String getFacebookId() {
+    return facebookId;
+  }
+
+  public String getYoutubeId() {
+    return youtubeId;
+  }
+
+  public String getInstagramId() {
+    return instagramId;
+  }
+
   //endregion
 
 }

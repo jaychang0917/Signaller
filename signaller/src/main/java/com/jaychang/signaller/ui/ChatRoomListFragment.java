@@ -21,7 +21,7 @@ import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
 import com.jaychang.signaller.util.LogUtils;
-import com.jaychang.signaller.util.NetworkStateMonitor;
+import com.jaychang.signaller.core.NetworkStateMonitor;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,7 +51,7 @@ public class ChatRoomListFragment extends RxFragment {
   @Nullable
   @Override
   public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-    View view = inflater.inflate(R.layout.fragment_chatroom_list, container, false);
+    View view = inflater.inflate(R.layout.sig_fragment_chatroom_list, container, false);
     ButterKnife.bind(this, view);
     return view;
   }
@@ -120,11 +120,13 @@ public class ChatRoomListFragment extends RxFragment {
   private void loadChatRooms() {
     boolean isConnected = NetworkStateMonitor.getInstance().isConnected(getContext());
 
-    if (isConnected) {
-      loadChatRoomsFromNetwork();
-    } else {
-      loadChatRoomsFromDB();
-    }
+    loadChatRoomsFromNetwork();
+
+//    if (isConnected) {
+//      loadChatRoomsFromNetwork();
+//    } else {
+//      loadChatRoomsFromDB();
+//    }
   }
 
   private void loadChatRoomsFromNetwork() {

@@ -6,20 +6,15 @@
               android:layout_height="wrap_content"
               android:gravity="right"
               android:minHeight="42dp"
+              android:layout_marginRight="8dp"
               android:orientation="horizontal">
 
     <com.vanniktech.emoji.EmojiTextView
         android:id="@+id/messageView"
-        android:layout_width="wrap_content"
+        android:layout_width="266dp"
         android:layout_height="wrap_content"
-        android:background="#555"
+        android:background="@drawable/ic_bubble_own"
         android:gravity="right"
-        android:maxWidth="266dp"
-        android:minWidth="43dp"
-        android:paddingBottom="9dp"
-        android:paddingLeft="17dp"
-        android:paddingRight="12dp"
-        android:paddingTop="7dp"
         android:textColor="@android:color/black"
         android:textSize="17sp"
         app:emojiSize="17sp"

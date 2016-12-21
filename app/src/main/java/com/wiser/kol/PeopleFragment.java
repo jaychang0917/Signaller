@@ -50,7 +50,7 @@ public class PeopleFragment extends Fragment {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY10, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getContext(), chatRoomId);
+        ChatRoomActivity.start(getActivity(), chatRoomId);
       }
     });
   }
@@ -60,7 +60,7 @@ public class PeopleFragment extends Fragment {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY11, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getContext(), chatRoomId);
+        ChatRoomActivity.start(getActivity(), chatRoomId);
       }
     });
   }
@@ -70,7 +70,7 @@ public class PeopleFragment extends Fragment {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY12, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getContext(), chatRoomId);
+        ChatRoomActivity.start(getActivity(), chatRoomId);
       }
     });
   }
@@ -80,7 +80,7 @@ public class PeopleFragment extends Fragment {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY13, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getContext(), chatRoomId);
+        ChatRoomActivity.start(getActivity(), chatRoomId);
       }
     });
   }
@@ -90,7 +90,7 @@ public class PeopleFragment extends Fragment {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY14, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getContext(), chatRoomId);
+        ChatRoomActivity.start(getActivity(), chatRoomId);
       }
     });
   }
