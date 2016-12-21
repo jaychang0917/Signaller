@@ -68,13 +68,13 @@ public class SocketManager {
     return socket != null && socket.connected();
   }
 
-  void connect() {
+  public void connect() {
     if (!isConnected()) {
       socket.connect();
     }
   }
 
-  void disconnect() {
+  public void disconnect() {
     if (isConnected()) {
       offEvents();
       socket.disconnect();
@@ -172,7 +172,7 @@ public class SocketManager {
       SignallerDbManager.getInstance().removeTempChatMessage(socketChatMessage.getPayload().getTimestamp());
       // save real msg with local timestamp
       socketChatMessage.getMessage().setSent(true);
-      socketChatMessage.getMessage().setMtime(socketChatMessage.getPayload().getTimestamp());
+      socketChatMessage.getMessage().setMsgTime(socketChatMessage.getPayload().getTimestamp());
       SignallerDbManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
       // remove msg from pending queue
       SignallerDbManager.getInstance().removePendingChatMsg(socketChatMessage.getPayload().getTimestamp());

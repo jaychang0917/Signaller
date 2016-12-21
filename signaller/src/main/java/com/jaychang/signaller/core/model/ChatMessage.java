@@ -110,12 +110,12 @@ public class ChatMessage extends RealmObject {
     this.event = event;
   }
 
-  public long getMtime() {
+  public long getMsgTime() {
     return mtime;
   }
 
-  public void setMtime(long mtime) {
-    this.mtime = mtime;
+  public void setMsgTime(long time) {
+    this.mtime = time;
   }
 
   public String getType() {

@@ -57,7 +57,7 @@ public final class Signaller {
 
   public UIConfig getUiConfig() {
     if (uiConfig == null) {
-      return UIConfig.create();
+      return UIConfig.newBuilder().build();
     }
     return uiConfig;
   }

@@ -17,10 +17,10 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
+import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerDataManager;
 import com.jaychang.signaller.core.SignallerDbManager;
 import com.jaychang.signaller.core.SignallerEvents;
-import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.core.model.ChatMessage;
@@ -30,12 +30,13 @@ import com.jaychang.signaller.core.model.ImageAttribute;
 import com.jaychang.signaller.core.model.Payload;
 import com.jaychang.signaller.core.model.SocketChatMessage;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
+import com.jaychang.signaller.ui.config.ChatMessageDateSeparatorCellProvider;
 import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
 import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
 import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
-import com.jaychang.signaller.ui.part.DefaultChatMessageDateSeparatorCell;
+import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.signaller.util.NetworkStateMonitor;
 import com.jaychang.utils.AppUtils;
@@ -89,6 +90,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private ChatRoomToolbarProvider chatRoomToolbarProvider;
   private ChatRoomControlViewProvider chatRoomControlViewProvider;
   private CustomChatMessageCellProvider customChatMessageCellProvider;
+  private ChatMessageDateSeparatorCellProvider chatMessageDateSeparatorCellProvider;
+  private boolean isShowChatMessageDateSeparator;
   private UIConfig uiConfig;
 
   public static void start(Context context, String chatRoomId) {
@@ -132,10 +135,12 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void initUIConfig() {
     uiConfig = Signaller.getInstance().getUiConfig();
-    chatMessageCellProvider = uiConfig.getChatMessageCellProvider();
     chatRoomToolbarProvider = uiConfig.getChatRoomToolbarProvider();
     chatRoomControlViewProvider = uiConfig.getChatRoomControlViewProvider();
+    chatMessageCellProvider = uiConfig.getChatMessageCellProvider();
     customChatMessageCellProvider = uiConfig.getCustomChatMessageCellProvider();
+    chatMessageDateSeparatorCellProvider = uiConfig.getChatMsgDateSeparatorCellProvider();
+    isShowChatMessageDateSeparator = uiConfig.isShowChatMessageDateSeparator();
   }
 
   private void initData() {
@@ -243,12 +248,14 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   public void onStart() {
     super.onStart();
     EventBus.getDefault().register(this);
+    SocketManager.getInstance().connect();
   }
 
   @Override
   public void onStop() {
     super.onStop();
     EventBus.getDefault().unregister(this);
+    SocketManager.getInstance().disconnect();
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -343,8 +350,9 @@ public class ChatRoomActivity extends RxAppCompatActivity {
         isSameDate = true;
       }
 
-      if (!isSameDate) {
-        recyclerView.addCell(new DefaultChatMessageDateSeparatorCell(message.getMtime()), 0);
+      if (!isSameDate && isShowChatMessageDateSeparator) {
+        ChatMessageDateSeparatorCell separatorCell = chatMessageDateSeparatorCellProvider.getChatMessageDateSeparatorCell(message.getMsgTime());
+        recyclerView.addCell(separatorCell, 0);
       }
     }
 
@@ -375,7 +383,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void addTextMessage() {
     ChatMessage chatMessage = new ChatMessage();
-    chatMessage.setMtime(System.currentTimeMillis());
+    chatMessage.setMsgTime(System.currentTimeMillis());
     chatMessage.setType("text");
     chatMessage.setContent(inputEditText.getText().toString());
     addOwnTextMessageCell(chatMessage);
@@ -421,7 +429,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void addImageMessage(Uri uri) {
     ChatMessage message = new ChatMessage();
-    message.setMtime(System.currentTimeMillis());
+    message.setMsgTime(System.currentTimeMillis());
     Image image = new Image();
     ImageDimension dimension = ImageUtils.getImageDimensionFromUri(uri);
     image.setAttributes(new ImageAttribute(dimension.getWidth(), dimension.getHeight()));
