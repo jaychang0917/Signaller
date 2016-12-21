@@ -68,7 +68,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   @BindView(R2.id.controlViewHolder)
   FrameLayout controlViewHolder;
   @BindView(R2.id.recyclerView)
-  NRecyclerView recyclerView;
+  NRecyclerView messageList;
   @BindView(R2.id.rootView)
   RelativeLayout rootView;
   ImageView photoIconView;
@@ -160,9 +160,9 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void initRecyclerView() {
-    recyclerView.useVerticalLinearMode();
-    recyclerView.setCellSpacingIncludeEdge(8);
-    recyclerView.setOnLoadMoreListener(true, new OnLoadMorePageListener() {
+    messageList.useVerticalLinearMode();
+    messageList.setCellSpacing(8);
+    messageList.setOnLoadMoreListener(true, new OnLoadMorePageListener() {
       @Override
       public void onLoadMore(int page) {
         if (hasMoreData) {
@@ -316,7 +316,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     List<ChatMessage> reversedMessages = new ArrayList<>(chatMessages);
     Collections.reverse(reversedMessages);
 
-    int totalCountBefore = recyclerView.getCellsCount();
+    int totalCountBefore = messageList.getCellsCount();
 
     for (int i = 0; i < reversedMessages.size(); i++) {
       ChatMessage message = reversedMessages.get(i);
@@ -358,7 +358,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
         goToPhotoPage(msg.getImage().getUrl());
       });
 
-      recyclerView.addCell(cell, 0);
+      messageList.addCell(cell, 0);
 
       // date cell
       boolean isSameDate = false;
@@ -370,11 +370,11 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
       if (!isSameDate && isShowChatMessageDateSeparator) {
         ChatMessageDateSeparatorCell separatorCell = chatMessageDateSeparatorCellProvider.getChatMessageDateSeparatorCell(message.getMsgTime());
-        recyclerView.addCell(separatorCell, 0);
+        messageList.addCell(separatorCell, 0);
       }
     }
 
-    recyclerView.getAdapter().notifyItemRangeInserted(0, recyclerView.getCellsCount() - totalCountBefore);
+    messageList.getAdapter().notifyItemRangeInserted(0, messageList.getCellsCount() - totalCountBefore);
   }
 
   private void showEmojiKeyboard() {
@@ -481,45 +481,45 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void addOwnTextMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(TEXT, message);
-    recyclerView.addCell(cell);
-    recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
+    messageList.addCell(cell);
+    messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
   private void addOwnImageMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(IMAGE, message);
-    recyclerView.addCell(cell);
-    recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
+    messageList.addCell(cell);
+    messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
   private void addOtherTextMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOtherChatMessageCell(TEXT, message);
-    recyclerView.addCell(cell);
-    recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
+    messageList.addCell(cell);
+    messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
   private void addOtherImageMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOtherChatMessageCell(IMAGE, message);
-    recyclerView.addCell(cell);
-    recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
+    messageList.addCell(cell);
+    messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
   private void addCustomMessageCell(ChatMessage message) {
     ChatMessageCell cell = customChatMessageCellProvider.getCustomChatMessageCells(message);
-    recyclerView.addCell(cell);
-    recyclerView.getAdapter().notifyItemInserted(recyclerView.getCellsCount() - 1);
+    messageList.addCell(cell);
+    messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
   private void scrollToBottom() {
-    recyclerView.getLayoutManager().scrollToPosition(recyclerView.getCellsCount() - 1);
+    messageList.getLayoutManager().scrollToPosition(messageList.getCellsCount() - 1);
   }
 
   private void scrollToBottomOnce() {
-    if (recyclerView.getCellsCount() > 0 && questScrollToBottom) {
+    if (messageList.getCellsCount() > 0 && questScrollToBottom) {
       questScrollToBottom = false;
       scrollToBottom();
     }
