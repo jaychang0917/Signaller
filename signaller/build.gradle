@@ -15,6 +15,9 @@ apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'com.jakewharton.butterknife'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group='com.github.jaychang0917'
 
 android {
     compileSdkVersion 25
