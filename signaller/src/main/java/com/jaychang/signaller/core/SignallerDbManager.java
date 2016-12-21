@@ -45,7 +45,7 @@ public class SignallerDbManager {
     realmConfig = new RealmConfiguration.Builder()
       .schemaVersion(DB_VERSION)
       .migration(migration)
-//      .name("signaller.realm")   // todo uncomment
+      .name("signaller.realm")
       .modules(new SignallerModule())
       .build();
   }

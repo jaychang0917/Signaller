@@ -11,17 +11,16 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.ChatRoomJoinCallback;
+import com.jaychang.signaller.core.NetworkStateMonitor;
+import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerDataManager;
 import com.jaychang.signaller.core.SignallerDbManager;
 import com.jaychang.signaller.core.SignallerEvents;
-import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.model.ChatRoom;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
 import com.jaychang.signaller.util.LogUtils;
-import com.jaychang.signaller.core.NetworkStateMonitor;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -200,20 +199,21 @@ public class ChatRoomListFragment extends RxFragment {
     for (ChatRoom chatRoom : chatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
       cell.setCallback(room -> {
-        chatWith(room.getReceiver().getUserId());
+        chatWith(room.getChatRoomId());
       });
       recyclerView.addCell(cell);
     }
     recyclerView.getAdapter().notifyDataSetChanged();
   }
 
-  private void chatWith(String userId) {
-    Signaller.getInstance().chatWith(userId, new ChatRoomJoinCallback() {
-      @Override
-      public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getContext(), chatRoomId);
-      }
-    });
+  private void chatWith(String chatRoomId) {
+//    Signaller.getInstance().chatWith(userId, new ChatRoomJoinCallback() {
+//      @Override
+//      public void onChatRoomJoined(String chatRoomId) {
+//        ChatRoomActivity.start(getContext(), chatRoomId);
+//      }
+//    });
+    ChatRoomActivity.start(getContext(), chatRoomId);
   }
 
 }

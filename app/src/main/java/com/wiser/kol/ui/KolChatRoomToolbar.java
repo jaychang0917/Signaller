@@ -26,9 +26,9 @@ public class KolChatRoomToolbar extends Toolbar {
 
   private void setupWithChatRoom(ChatRoom chatRoom) {
     setTitle(chatRoom.getReceiver().getName());
-    setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
+    setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
     setNavigationIcon(R.drawable.ic_toolbar_back);
-    setTitleTextColor(Color.WHITE);
+    setTitleTextColor(Color.BLACK);
     setNavigationOnClickListener(v -> {
       activity.finish();
     });

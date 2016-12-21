@@ -18,6 +18,6 @@ public class Constant {
   public static final String USER_ID_JAY14 = "5739719937753088";
 
   public static final String SERVER_DOMAIN = "http://kol-pro.appspot.com/";
-  public static final String SOCKETE_URL = "http://kol-chat.redso.com.hk:5000";
+  public static final String SOCKET_URL = "http://kol-chat.redso.com.hk:5000";
 
 }

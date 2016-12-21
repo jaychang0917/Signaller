@@ -38,7 +38,7 @@ public class App extends MultiDexApplication {
 
     Utils.init(this);
 
-    Signaller.init(this, Constant.SERVER_DOMAIN, Constant.SOCKETE_URL);
+    Signaller.init(this, Constant.SERVER_DOMAIN, Constant.SOCKET_URL);
 
     UIConfig uiConfig = UIConfig.newBuilder()
       .chatRoomCellProvider(new ChatRoomCellProvider() {
@@ -117,6 +117,7 @@ public class App extends MultiDexApplication {
         }
       })
       .chatRoomToolbarBackgroundColor(R.color.white)
+      .chatRoomStatusBarBackgroundColor(R.color.colorPrimary)
       .build();
 
     Signaller.getInstance().setUIConfig(uiConfig);

@@ -156,7 +156,10 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void setStatusBarColor() {
-    AppUtils.setStatusBarColor(this, R.color.sig_toolbar_bg);
+    int statusBarColor = Signaller.getInstance().getUiConfig().getChatRoomStatusBarBackgroundColor();
+    if (statusBarColor != 0) {
+      AppUtils.setStatusBarColor(this, statusBarColor);
+    }
   }
 
   private void initRecyclerView() {
