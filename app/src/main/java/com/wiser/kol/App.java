@@ -28,10 +28,6 @@ import com.wiser.kol.ui.KolOtherTextMessageCell;
 import com.wiser.kol.ui.KolOwnImageMessageCell;
 import com.wiser.kol.ui.KolOwnTextMessageCell;
 
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
-import io.realm.RealmMigration;
-
 public class App extends MultiDexApplication {
 
   public static String currentUserId;
@@ -43,8 +39,6 @@ public class App extends MultiDexApplication {
     Utils.init(this);
 
     initSignaller();
-
-    initDb();
   }
 
   private void initSignaller() {
@@ -133,14 +127,4 @@ public class App extends MultiDexApplication {
     Signaller.getInstance().setUIConfig(uiConfig);
   }
 
-  private static RealmMigration migration = (realm, oldVersion, newVersion) -> {
-  };
-
-  private void initDb() {
-    RealmConfiguration realmConfig = new RealmConfiguration.Builder()
-      .schemaVersion(1)
-      .migration(migration)
-      .build();
-    Realm.setDefaultConfiguration(realmConfig);
-  }
 }
