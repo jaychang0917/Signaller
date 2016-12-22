@@ -18,7 +18,7 @@ import com.jaychang.signaller.core.SignallerDataManager;
 import com.jaychang.signaller.core.SignallerDbManager;
 import com.jaychang.signaller.core.SignallerEvents;
 import com.jaychang.signaller.core.SocketManager;
-import com.jaychang.signaller.core.model.ChatRoom;
+import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
 import com.jaychang.signaller.util.LogUtils;
@@ -80,7 +80,7 @@ public class ChatRoomListFragment extends RxFragment {
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
   public void updateChatRoomList(SignallerEvents.UpdateChatRoomListEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    ChatRoom chatRoom = SignallerDbManager.getInstance().getChatRoom(event.chatRoomId);
+    SignallerChatRoom chatRoom = SignallerDbManager.getInstance().getChatRoom(event.chatRoomId);
     insertOrUpdateChatRoom(chatRoom);
   }
 
@@ -142,17 +142,17 @@ public class ChatRoomListFragment extends RxFragment {
         });
   }
 
-  private List<ChatRoom> sort(List<ChatRoom> rooms) {
-    Collections.sort(rooms, (chatRoom, other) -> (int)(other.getLastUpdateTime() - chatRoom.getLastUpdateTime()));
+  private List<SignallerChatRoom> sort(List<SignallerChatRoom> rooms) {
+    Collections.sort(rooms, (chatRoom, other) -> (int)(other.getLastMessageTime() - chatRoom.getLastMessageTime()));
     return rooms;
   }
 
-  private void insertOrUpdateChatRoom(ChatRoom room) {
+  private void insertOrUpdateChatRoom(SignallerChatRoom room) {
     boolean hasChatRoom = false;
 
     for (BaseCell cell : recyclerView.getAllCells()) {
       ChatRoomCell chatRoomCell = (ChatRoomCell) cell;
-      ChatRoom chatRoom = chatRoomCell.getChatRoom();
+      SignallerChatRoom chatRoom = chatRoomCell.getChatRoom();
 
       if (chatRoom.getChatRoomId().equals(room.getChatRoomId())) {
         if (!room.getLastMessage().isOwnMessage()) {
@@ -196,8 +196,8 @@ public class ChatRoomListFragment extends RxFragment {
         });
   }
 
-  private void bindChatRooms(List<ChatRoom> chatRooms) {
-    for (ChatRoom chatRoom : chatRooms) {
+  private void bindChatRooms(List<SignallerChatRoom> chatRooms) {
+    for (SignallerChatRoom chatRoom : chatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
       cell.setCallback(room -> {
         chatWith(room.getReceiver().getUserId());

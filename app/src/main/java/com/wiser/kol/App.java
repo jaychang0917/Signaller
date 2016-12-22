@@ -6,8 +6,8 @@ import android.support.multidex.MultiDexApplication;
 import android.view.View;
 
 import com.jaychang.signaller.core.Signaller;
-import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.core.model.ChatRoom;
+import com.jaychang.signaller.core.model.SignallerChatMessage;
+import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.ChatMessageDateSeparatorCellProvider;
 import com.jaychang.signaller.ui.config.ChatMessageType;
@@ -28,6 +28,10 @@ import com.wiser.kol.ui.KolOtherTextMessageCell;
 import com.wiser.kol.ui.KolOwnImageMessageCell;
 import com.wiser.kol.ui.KolOwnTextMessageCell;
 
+import io.realm.Realm;
+import io.realm.RealmConfiguration;
+import io.realm.RealmMigration;
+
 public class App extends MultiDexApplication {
 
   public static String currentUserId;
@@ -38,20 +42,26 @@ public class App extends MultiDexApplication {
 
     Utils.init(this);
 
+    initSignaller();
+
+    initDb();
+  }
+
+  private void initSignaller() {
     Signaller.init(this, Constant.SERVER_DOMAIN, Constant.SOCKET_URL);
 
     UIConfig uiConfig = UIConfig.newBuilder()
       .chatRoomCellProvider(new ChatRoomCellProvider() {
         @NonNull
         @Override
-        public ChatRoomCell getChatRoomCell(ChatRoom chatRoom) {
+        public ChatRoomCell getChatRoomCell(SignallerChatRoom chatRoom) {
           return new KolChatRoomCell(chatRoom);
         }
       })
       .chatMessageCellProvider(new ChatMessageCellProvider() {
         @NonNull
         @Override
-        public ChatMessageCell getOwnChatMessageCell(ChatMessageType type, ChatMessage message) {
+        public ChatMessageCell getOwnChatMessageCell(ChatMessageType type, SignallerChatMessage message) {
           if (type.equals(ChatMessageType.TEXT)) {
             return new KolOwnTextMessageCell(message);
           } else {
@@ -61,7 +71,7 @@ public class App extends MultiDexApplication {
 
         @NonNull
         @Override
-        public ChatMessageCell getOtherChatMessageCell(ChatMessageType type, ChatMessage message) {
+        public ChatMessageCell getOtherChatMessageCell(ChatMessageType type, SignallerChatMessage message) {
           if (type.equals(ChatMessageType.TEXT)) {
             return new KolOtherTextMessageCell(message);
           } else {
@@ -72,7 +82,7 @@ public class App extends MultiDexApplication {
       .customChatMessageCellProvider(new CustomChatMessageCellProvider() {
         @NonNull
         @Override
-        public ChatMessageCell getCustomChatMessageCells(ChatMessage message) {
+        public ChatMessageCell getCustomChatMessageCells(SignallerChatMessage message) {
           return new KolEventMessageCell(message);
         }
       })
@@ -86,7 +96,7 @@ public class App extends MultiDexApplication {
       .chatRoomToolbarProvider(new ChatRoomToolbarProvider() {
         @NonNull
         @Override
-        public View getToolbar(Activity activity, ChatRoom chatRoom) {
+        public View getToolbar(Activity activity, SignallerChatRoom chatRoom) {
           return KolChatRoomToolbar.create(activity, chatRoom);
         }
       })
@@ -121,5 +131,16 @@ public class App extends MultiDexApplication {
       .build();
 
     Signaller.getInstance().setUIConfig(uiConfig);
+  }
+
+  private static RealmMigration migration = (realm, oldVersion, newVersion) -> {
+  };
+
+  private void initDb() {
+    RealmConfiguration realmConfig = new RealmConfiguration.Builder()
+      .schemaVersion(1)
+      .migration(migration)
+      .build();
+    Realm.setDefaultConfiguration(realmConfig);
   }
 }

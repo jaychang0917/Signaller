@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jaychang.nrv.BaseViewHolder;
-import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.core.model.Event;
+import com.jaychang.signaller.core.model.SignallerChatMessage;
+import com.jaychang.signaller.core.model.SignallerEvent;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.toolbox.widget.NButton;
 import com.wiser.kol.R;
@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 
 public class KolEventMessageCell extends ChatMessageCell {
 
-  public KolEventMessageCell(ChatMessage message) {
+  public KolEventMessageCell(SignallerChatMessage message) {
     super(message);
   }
 
@@ -35,7 +35,7 @@ public class KolEventMessageCell extends ChatMessageCell {
     ViewHolder holder = (ViewHolder) viewHolder;
     Context context = holder.itemView.getContext().getApplicationContext();
 
-    Event event = message.getEvent();
+    SignallerEvent event = message.getEvent();
 
     Glide.with(context)
       .load(event.getImageUrl())

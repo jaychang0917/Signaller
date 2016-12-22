@@ -8,7 +8,7 @@ import java.util.Calendar;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class ChatMessage extends RealmObject {
+public class SignallerChatMessage extends RealmObject {
 
   @PrimaryKey
   @SerializedName("id")
@@ -20,19 +20,19 @@ public class ChatMessage extends RealmObject {
   @SerializedName("content")
   private String content;
   @SerializedName("image")
-  private Image image;
+  private SignallerImage image;
   @SerializedName("event")
-  private Event event;
+  private SignallerEvent event;
   @SerializedName("mtime")
   private long mtime;
   @SerializedName("type")
   private String type;
   @SerializedName("sender")
-  private Sender sender;
+  private SignallerSender sender;
   private boolean isSent;
   private long timestamp;
 
-  public boolean isSameSender(ChatMessage message) {
+  public boolean isSameSender(SignallerChatMessage message) {
     return sender.getUserId().equals(message.sender.getUserId());
   }
 
@@ -40,7 +40,7 @@ public class ChatMessage extends RealmObject {
     return sender.getUserId().equals(UserData.getInstance().getUserId());
   }
 
-  public boolean isSameDate(ChatMessage message) {
+  public boolean isSameDate(SignallerChatMessage message) {
     Calendar cal1 = Calendar.getInstance();
     Calendar cal2 = Calendar.getInstance();
     cal1.setTimeInMillis(mtime);
@@ -94,19 +94,19 @@ public class ChatMessage extends RealmObject {
     this.content = content;
   }
 
-  public Image getImage() {
+  public SignallerImage getImage() {
     return image;
   }
 
-  public void setImage(Image image) {
+  public void setImage(SignallerImage image) {
     this.image = image;
   }
 
-  public Event getEvent() {
+  public SignallerEvent getEvent() {
     return event;
   }
 
-  public void setEvent(Event event) {
+  public void setEvent(SignallerEvent event) {
     this.event = event;
   }
 
@@ -126,11 +126,11 @@ public class ChatMessage extends RealmObject {
     this.type = type;
   }
 
-  public Sender getSender() {
+  public SignallerSender getSender() {
     return sender;
   }
 
-  public void setSender(Sender sender) {
+  public void setSender(SignallerSender sender) {
     this.sender = sender;
   }
 

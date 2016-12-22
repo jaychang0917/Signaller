@@ -23,12 +23,12 @@ import com.jaychang.signaller.core.SignallerDbManager;
 import com.jaychang.signaller.core.SignallerEvents;
 import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.UserData;
-import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.core.model.ChatRoom;
-import com.jaychang.signaller.core.model.Image;
-import com.jaychang.signaller.core.model.ImageAttribute;
-import com.jaychang.signaller.core.model.Payload;
-import com.jaychang.signaller.core.model.SocketChatMessage;
+import com.jaychang.signaller.core.model.SignallerChatMessage;
+import com.jaychang.signaller.core.model.SignallerChatRoom;
+import com.jaychang.signaller.core.model.SignallerImage;
+import com.jaychang.signaller.core.model.SignallerImageAttribute;
+import com.jaychang.signaller.core.model.SignallerPayload;
+import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.ChatMessageDateSeparatorCellProvider;
 import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
@@ -81,7 +81,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
 
   private String chatRoomId;
-  private ChatRoom chatRoom;
+  private SignallerChatRoom chatRoom;
   private String cursor;
   private boolean hasMoreData;
   private boolean questScrollToBottom = true;
@@ -264,7 +264,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
   public void onMsgReceived(SignallerEvents.OnMsgReceivedEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    ChatMessage chatMessage = SignallerDbManager.getInstance().getChatMessage(event.msgId);
+    SignallerChatMessage chatMessage = SignallerDbManager.getInstance().getChatMessage(event.msgId);
     handleChatMessage(chatMessage);
   }
 
@@ -286,7 +286,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     handleInput();
   }
 
-  private void handleChatMessage(ChatMessage message) {
+  private void handleChatMessage(SignallerChatMessage message) {
     if (message.isImage()) {
       if (!message.isOwnMessage()) {
         addOtherImageMessageCell(message);
@@ -315,14 +315,14 @@ public class ChatRoomActivity extends RxAppCompatActivity {
         });
   }
 
-  private void bindChatMessages(List<ChatMessage> chatMessages) {
-    List<ChatMessage> reversedMessages = new ArrayList<>(chatMessages);
+  private void bindChatMessages(List<SignallerChatMessage> chatMessages) {
+    List<SignallerChatMessage> reversedMessages = new ArrayList<>(chatMessages);
     Collections.reverse(reversedMessages);
 
     int totalCountBefore = messageList.getCellsCount();
 
     for (int i = 0; i < reversedMessages.size(); i++) {
-      ChatMessage message = reversedMessages.get(i);
+      SignallerChatMessage message = reversedMessages.get(i);
 
       int nextPos = i + 1;
       boolean isSameSender = false;
@@ -403,7 +403,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void addTextMessage() {
-    ChatMessage chatMessage = new ChatMessage();
+    SignallerChatMessage chatMessage = new SignallerChatMessage();
     chatMessage.setMsgTime(System.currentTimeMillis());
     chatMessage.setType("text");
     chatMessage.setContent(inputEditText.getText().toString());
@@ -413,18 +413,18 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void sendTextMessage() {
-    SocketChatMessage socketChatMessage = new SocketChatMessage();
+    SignallerSocketChatMessage socketChatMessage = new SignallerSocketChatMessage();
     socketChatMessage.setRoomId(chatRoomId);
 
     long curTimestamp = System.currentTimeMillis();
 
-    ChatMessage message = new ChatMessage();
+    SignallerChatMessage message = new SignallerChatMessage();
     message.setTimestamp(curTimestamp);
     message.setType("text");
     message.setContent(inputEditText.getText().toString());
     socketChatMessage.setMessage(message);
 
-    Payload payload = new Payload();
+    SignallerPayload payload = new SignallerPayload();
     payload.setTimestamp(curTimestamp);
     socketChatMessage.setPayload(payload);
 
@@ -449,11 +449,11 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void addImageMessage(Uri uri) {
-    ChatMessage message = new ChatMessage();
+    SignallerChatMessage message = new SignallerChatMessage();
     message.setMsgTime(System.currentTimeMillis());
-    Image image = new Image();
+    SignallerImage image = new SignallerImage();
     ImageDimension dimension = ImageUtils.getImageDimensionFromUri(uri);
-    image.setAttributes(new ImageAttribute(dimension.getWidth(), dimension.getHeight()));
+    image.setAttributes(new SignallerImageAttribute(dimension.getWidth(), dimension.getHeight()));
     image.setUrl(uri.toString());
     message.setImage(image);
     addOwnImageMessageCell(message);
@@ -461,18 +461,18 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void sendImageMessage(String imageResourceId) {
-    SocketChatMessage socketChatMessage = new SocketChatMessage();
+    SignallerSocketChatMessage socketChatMessage = new SignallerSocketChatMessage();
     socketChatMessage.setRoomId(chatRoomId);
 
     long curTimestamp = System.currentTimeMillis();
 
-    ChatMessage message = new ChatMessage();
+    SignallerChatMessage message = new SignallerChatMessage();
     message.setTimestamp(curTimestamp);
     message.setType("image");
     message.setContent(imageResourceId);
     socketChatMessage.setMessage(message);
 
-    Payload payload = new Payload();
+    SignallerPayload payload = new SignallerPayload();
     payload.setTimestamp(curTimestamp);
     socketChatMessage.setPayload(payload);
 
@@ -482,35 +482,35 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     });
   }
 
-  private void addOwnTextMessageCell(ChatMessage message) {
+  private void addOwnTextMessageCell(SignallerChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(TEXT, message);
     messageList.addCell(cell);
     messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
-  private void addOwnImageMessageCell(ChatMessage message) {
+  private void addOwnImageMessageCell(SignallerChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(IMAGE, message);
     messageList.addCell(cell);
     messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
-  private void addOtherTextMessageCell(ChatMessage message) {
+  private void addOtherTextMessageCell(SignallerChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOtherChatMessageCell(TEXT, message);
     messageList.addCell(cell);
     messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
-  private void addOtherImageMessageCell(ChatMessage message) {
+  private void addOtherImageMessageCell(SignallerChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOtherChatMessageCell(IMAGE, message);
     messageList.addCell(cell);
     messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);
     scrollToBottom();
   }
 
-  private void addCustomMessageCell(ChatMessage message) {
+  private void addCustomMessageCell(SignallerChatMessage message) {
     ChatMessageCell cell = customChatMessageCellProvider.getCustomChatMessageCells(message);
     messageList.addCell(cell);
     messageList.getAdapter().notifyItemInserted(messageList.getCellsCount() - 1);

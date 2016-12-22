@@ -4,7 +4,7 @@ import android.net.Uri;
 
 import com.jaychang.signaller.core.model.ChatMessageResponse;
 import com.jaychang.signaller.core.model.ChatRoomResponse;
-import com.jaychang.signaller.core.model.Image;
+import com.jaychang.signaller.core.model.SignallerImage;
 
 import java.io.File;
 
@@ -44,7 +44,7 @@ public class SignallerDataManager {
       });
   }
 
-  public Observable<Image> uploadPhoto(Uri photoUri) {
+  public Observable<SignallerImage> uploadPhoto(Uri photoUri) {
     File file = new File(photoUri.getPath());
     MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), RequestBody.create(MediaType.parse("image/*"), file));
     return api.uploadPhoto(filePart)

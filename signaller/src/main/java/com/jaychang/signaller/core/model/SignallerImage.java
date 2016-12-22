@@ -6,7 +6,7 @@ import com.jaychang.signaller.util.GsonUtils;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Image extends RealmObject {
+public class SignallerImage extends RealmObject {
 
   @PrimaryKey
   @SerializedName("resource_id")
@@ -28,10 +28,10 @@ public class Image extends RealmObject {
   @SerializedName("name")
   private String name;
   @SerializedName("attributes")
-  private ImageAttribute attributes;
+  private SignallerImageAttribute attributes;
 
-  public static Image from(String json) {
-    return GsonUtils.getGson().fromJson(json, Image.class);
+  public static SignallerImage from(String json) {
+    return GsonUtils.getGson().fromJson(json, SignallerImage.class);
   }
 
   public float getRatio() {
@@ -111,11 +111,11 @@ public class Image extends RealmObject {
     this.name = name;
   }
 
-  public ImageAttribute getAttributes() {
+  public SignallerImageAttribute getAttributes() {
     return attributes;
   }
 
-  public void setAttributes(ImageAttribute attributes) {
+  public void setAttributes(SignallerImageAttribute attributes) {
     this.attributes = attributes;
   }
   //endregion

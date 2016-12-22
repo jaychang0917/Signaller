@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Receiver extends RealmObject {
+public class SignallerReceiver extends RealmObject {
 
   @PrimaryKey
   @SerializedName("user_id")
@@ -15,7 +15,7 @@ public class Receiver extends RealmObject {
   @SerializedName("user_type")
   private String userType;
   @SerializedName("profile_photo")
-  private ProfilePhoto profilePhoto;
+  private SignallerProfilePhoto profilePhoto;
   @SerializedName("mtime")
   private long mtime;
   @SerializedName("name")
@@ -46,7 +46,7 @@ public class Receiver extends RealmObject {
 
   public void setProfilePhotoUrl(String url) {
     if (profilePhoto == null) {
-      profilePhoto = new ProfilePhoto();
+      profilePhoto = new SignallerProfilePhoto();
     }
     profilePhoto.setUrl(url);
   }

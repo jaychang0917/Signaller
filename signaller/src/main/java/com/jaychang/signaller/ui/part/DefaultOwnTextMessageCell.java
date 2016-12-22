@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.vanniktech.emoji.EmojiTextView;
 
 import butterknife.BindView;
@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 
 public class DefaultOwnTextMessageCell extends ChatMessageCell{
 
-  public DefaultOwnTextMessageCell(ChatMessage message) {
+  public DefaultOwnTextMessageCell(SignallerChatMessage message) {
     super(message);
   }
 

@@ -10,7 +10,7 @@ import com.bumptech.glide.Glide;
 import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 
 public class DefaultOwnImageMessageCell extends ChatMessageCell {
 
-  public DefaultOwnImageMessageCell(ChatMessage message) {
+  public DefaultOwnImageMessageCell(SignallerChatMessage message) {
     super(message);
   }
 

@@ -61,4 +61,9 @@ public final class Signaller {
     }
     return uiConfig;
   }
+
+  public void clearDatabase() {
+    SignallerDbManager.getInstance().clear();
+  }
+
 }

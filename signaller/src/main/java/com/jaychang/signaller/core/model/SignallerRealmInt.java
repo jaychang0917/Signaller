@@ -2,14 +2,14 @@ package com.jaychang.signaller.core.model;
 
 import io.realm.RealmObject;
 
-public class RealmInt extends RealmObject {
+public class SignallerRealmInt extends RealmObject {
 
   private int value;
 
-  public RealmInt() {
+  public SignallerRealmInt() {
   }
 
-  public RealmInt(int value) {
+  public SignallerRealmInt(int value) {
     this.value = value;
   }
 

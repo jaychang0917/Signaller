@@ -5,16 +5,16 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class SocketChatMessage extends RealmObject {
+public class SignallerSocketChatMessage extends RealmObject {
 
   @PrimaryKey
   private long timestamp;
   @SerializedName("room_id")
   private String roomId;
   @SerializedName("message")
-  private ChatMessage message;
+  private SignallerChatMessage message;
   @SerializedName("payload")
-  private Payload payload;
+  private SignallerPayload payload;
 
   public long getTimestamp() {
     return timestamp;
@@ -32,19 +32,19 @@ public class SocketChatMessage extends RealmObject {
     this.roomId = roomId;
   }
 
-  public ChatMessage getMessage() {
+  public SignallerChatMessage getMessage() {
     return message;
   }
 
-  public void setMessage(ChatMessage message) {
+  public void setMessage(SignallerChatMessage message) {
     this.message = message;
   }
 
-  public Payload getPayload() {
+  public SignallerPayload getPayload() {
     return payload;
   }
 
-  public void setPayload(Payload payload) {
+  public void setPayload(SignallerPayload payload) {
     this.payload = payload;
   }
 

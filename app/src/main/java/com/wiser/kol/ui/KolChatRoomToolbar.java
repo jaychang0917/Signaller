@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 
-import com.jaychang.signaller.core.model.ChatRoom;
+import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.wiser.kol.R;
 
 public class KolChatRoomToolbar extends Toolbar {
@@ -18,13 +18,13 @@ public class KolChatRoomToolbar extends Toolbar {
     activity = (Activity) context;
   }
 
-  public static KolChatRoomToolbar create(Activity activity, ChatRoom chatRoom) {
+  public static KolChatRoomToolbar create(Activity activity, SignallerChatRoom chatRoom) {
     KolChatRoomToolbar toolbar = new KolChatRoomToolbar(activity);
     toolbar.setupWithChatRoom(chatRoom);
     return toolbar;
   }
 
-  private void setupWithChatRoom(ChatRoom chatRoom) {
+  private void setupWithChatRoom(SignallerChatRoom chatRoom) {
     setTitle(chatRoom.getReceiver().getName());
     setBackgroundColor(ContextCompat.getColor(getContext(), R.color.white));
     setNavigationIcon(R.drawable.ic_toolbar_back);

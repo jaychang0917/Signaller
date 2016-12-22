@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class ProfilePhoto extends RealmObject {
+public class SignallerProfilePhoto extends RealmObject {
 
   @SerializedName("resource_id")
   private String resourceId;

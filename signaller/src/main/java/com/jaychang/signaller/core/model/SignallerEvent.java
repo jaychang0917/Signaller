@@ -6,7 +6,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Event extends RealmObject {
+public class SignallerEvent extends RealmObject {
 
   @PrimaryKey
   @SerializedName("event_id")
@@ -22,9 +22,9 @@ public class Event extends RealmObject {
   @SerializedName("mtime")
   private long mtime;
   @SerializedName("hashtags")
-  private RealmList<RealmString> hashtags;
+  private RealmList<SignallerRealmString> hashtags;
   @SerializedName("options")
-  private RealmList<RealmString> options;
+  private RealmList<SignallerRealmString> options;
 
   //region getters & setters
   public String getEventId() {
@@ -75,19 +75,19 @@ public class Event extends RealmObject {
     this.mtime = mtime;
   }
 
-  public RealmList<RealmString> getHashtags() {
+  public RealmList<SignallerRealmString> getHashtags() {
     return hashtags;
   }
 
-  public void setHashtags(RealmList<RealmString> hashtags) {
+  public void setHashtags(RealmList<SignallerRealmString> hashtags) {
     this.hashtags = hashtags;
   }
 
-  public RealmList<RealmString> getOptions() {
+  public RealmList<SignallerRealmString> getOptions() {
     return options;
   }
 
-  public void setOptions(RealmList<RealmString> options) {
+  public void setOptions(RealmList<SignallerRealmString> options) {
     this.options = options;
   }
   //endregion

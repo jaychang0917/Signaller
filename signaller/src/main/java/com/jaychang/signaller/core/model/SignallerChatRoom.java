@@ -5,30 +5,32 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class ChatRoom extends RealmObject {
+public class SignallerChatRoom extends RealmObject {
 
   @PrimaryKey
   @SerializedName("parent_id")
   private String chatRoomId;
   @SerializedName("last_update_time")
   private long lastUpdateTime;
+  @SerializedName("last_message_time")
+  private long lastMessageTime;
   @SerializedName("info")
-  private ChatRoomInfo info;
+  private SignallerChatRoomInfo info;
   @SerializedName("ctime")
   private long ctime;
   @SerializedName("last_message")
-  private ChatMessage lastMessage;
+  private SignallerChatMessage lastMessage;
   @SerializedName("mtime")
   private long mtime;
   @SerializedName("unread_count")
   private int unreadCount;
   @SerializedName("receiver")
-  private Receiver receiver;
+  private SignallerReceiver receiver;
 
-  public static ChatRoom from(String chatRoomId, ChatMessage message) {
-    ChatRoom chatRoom = new ChatRoom();
+  public static SignallerChatRoom from(String chatRoomId, SignallerChatMessage message) {
+    SignallerChatRoom chatRoom = new SignallerChatRoom();
     chatRoom.setChatRoomId(chatRoomId);
-    Receiver receiver = new Receiver();
+    SignallerReceiver receiver = new SignallerReceiver();
     receiver.setName(message.getSender().getName());
     receiver.setProfilePhotoUrl(message.getSender().getImageUrl());
     chatRoom.setReceiver(receiver);
@@ -50,19 +52,19 @@ public class ChatRoom extends RealmObject {
     this.chatRoomId = chatRoomId;
   }
 
-  public ChatRoomInfo getInfo() {
+  public SignallerChatRoomInfo getInfo() {
     return info;
   }
 
-  public void setInfo(ChatRoomInfo info) {
+  public void setInfo(SignallerChatRoomInfo info) {
     this.info = info;
   }
 
-  public ChatMessage getLastMessage() {
+  public SignallerChatMessage getLastMessage() {
     return lastMessage;
   }
 
-  public void setLastMessage(ChatMessage lastMessage) {
+  public void setLastMessage(SignallerChatMessage lastMessage) {
     this.lastMessage = lastMessage;
   }
 
@@ -74,6 +76,14 @@ public class ChatRoom extends RealmObject {
     this.lastUpdateTime = lastUpdateTime;
   }
 
+  public long getLastMessageTime() {
+    return lastMessageTime;
+  }
+
+  public void setLastMessageTime(long lastMessageTime) {
+    this.lastMessageTime = lastMessageTime;
+  }
+
   public int getUnreadCount() {
     return unreadCount;
   }
@@ -82,11 +92,11 @@ public class ChatRoom extends RealmObject {
     this.unreadCount = unreadCount;
   }
 
-  public Receiver getReceiver() {
+  public SignallerReceiver getReceiver() {
     return receiver;
   }
 
-  public void setReceiver(Receiver receiver) {
+  public void setReceiver(SignallerReceiver receiver) {
     this.receiver = receiver;
   }
   //endregion

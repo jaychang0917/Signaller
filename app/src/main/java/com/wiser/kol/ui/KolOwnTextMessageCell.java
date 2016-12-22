@@ -6,7 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jaychang.nrv.BaseViewHolder;
-import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.vanniktech.emoji.EmojiTextView;
 import com.wiser.kol.R;
@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 
 public class KolOwnTextMessageCell extends ChatMessageCell{
 
-  public KolOwnTextMessageCell(ChatMessage message) {
+  public KolOwnTextMessageCell(SignallerChatMessage message) {
     super(message);
   }
 

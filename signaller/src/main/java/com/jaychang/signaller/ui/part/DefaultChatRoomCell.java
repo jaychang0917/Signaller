@@ -12,9 +12,9 @@ import com.bumptech.glide.Glide;
 import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.model.ChatMessage;
-import com.jaychang.signaller.core.model.ChatRoom;
-import com.jaychang.signaller.core.model.Receiver;
+import com.jaychang.signaller.core.model.SignallerChatMessage;
+import com.jaychang.signaller.core.model.SignallerChatRoom;
+import com.jaychang.signaller.core.model.SignallerReceiver;
 import com.jaychang.utils.DateTimeFormatUtils;
 import com.vanniktech.emoji.EmojiTextView;
 
@@ -24,7 +24,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class DefaultChatRoomCell extends ChatRoomCell {
 
-  public DefaultChatRoomCell(ChatRoom chatroom) {
+  public DefaultChatRoomCell(SignallerChatRoom chatroom) {
     super(chatroom);
   }
 
@@ -49,7 +49,7 @@ public class DefaultChatRoomCell extends ChatRoomCell {
     ViewHolder holder = (ViewHolder) viewHolder;
     Context context = holder.itemView.getContext().getApplicationContext();
 
-    Receiver receiver = chatRoom.getReceiver();
+    SignallerReceiver receiver = chatRoom.getReceiver();
     boolean hasLogo = !TextUtils.isEmpty(receiver.getProfilePhotoUrl());
     Object logo = hasLogo ? receiver.getProfilePhotoUrl() : R.drawable.ic_default_profile_logo;
     Glide.with(context)
@@ -66,7 +66,7 @@ public class DefaultChatRoomCell extends ChatRoomCell {
       holder.unreadCountView.setVisibility(View.INVISIBLE);
     }
 
-    ChatMessage lastMessage = chatRoom.getLastMessage();
+    SignallerChatMessage lastMessage = chatRoom.getLastMessage();
     if (lastMessage != null) {
       if (lastMessage.isText()) {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -81,7 +81,7 @@ public class DefaultChatRoomCell extends ChatRoomCell {
 
     String yesterday = "'" + context.getString(R.string.sig_yesterday) + "'";
     String date = DateTimeFormatUtils.translate(
-      String.valueOf(chatRoom.getLastUpdateTime()),
+      String.valueOf(chatRoom.getLastMessageTime()),
       "hh:mm a",
       yesterday,
       "dd/MM/yyyy");

@@ -2,7 +2,7 @@ package com.jaychang.signaller.core;
 
 import com.jaychang.signaller.core.model.ChatMessageResponse;
 import com.jaychang.signaller.core.model.ChatRoomResponse;
-import com.jaychang.signaller.core.model.Image;
+import com.jaychang.signaller.core.model.SignallerImage;
 
 import okhttp3.MultipartBody;
 import retrofit2.http.GET;
@@ -26,6 +26,6 @@ interface Api {
 
   @POST("/api/resources/images")
   @Multipart
-  Observable<Image> uploadPhoto(@Part MultipartBody.Part file);
+  Observable<SignallerImage> uploadPhoto(@Part MultipartBody.Part file);
 
 }

@@ -4,8 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-import io.realm.RealmList;
-
 public class ChatMessageResponse {
 
   @SerializedName("cursor")
@@ -17,6 +15,6 @@ public class ChatMessageResponse {
   @SerializedName("more")
   public boolean hasMore;
   @SerializedName("results")
-  public List<ChatMessage> chatMessages;
+  public List<SignallerChatMessage> chatMessages;
 
 }

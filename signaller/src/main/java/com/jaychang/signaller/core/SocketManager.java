@@ -3,7 +3,7 @@ package com.jaychang.signaller.core;
 import android.os.Handler;
 import android.os.Looper;
 
-import com.jaychang.signaller.core.model.SocketChatMessage;
+import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
 import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
 
@@ -93,7 +93,7 @@ public class SocketManager {
     }
   }
 
-  public void send(SocketChatMessage message) {
+  public void send(SignallerSocketChatMessage message) {
     try {
       JSONObject chatMsgObj = new JSONObject();
       chatMsgObj.put("room_id", message.getRoomId());
@@ -167,14 +167,14 @@ public class SocketManager {
   };
 
   private Emitter.Listener onMsgReceived = args -> {
-    SocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SocketChatMessage.class);
+    SignallerSocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SignallerSocketChatMessage.class);
     LogUtils.d("message received:" + socketChatMessage.getMessage().getContent());
     insertOrUpdateChatMsgInDb(socketChatMessage);
     insertOrUpdateChatRoomInDb(socketChatMessage);
     dispatchMsgEvents(socketChatMessage.getRoomId(), socketChatMessage.getMessage().getMsgId());
   };
 
-  private void insertOrUpdateChatMsgInDb(SocketChatMessage socketChatMessage) {
+  private void insertOrUpdateChatMsgInDb(SignallerSocketChatMessage socketChatMessage) {
     // update own just sent msg
     if (socketChatMessage.getPayload() != null && socketChatMessage.getPayload().getTimestamp() != 0L) {
       // remove temp msg
@@ -192,7 +192,7 @@ public class SocketManager {
     }
   }
 
-  private void insertOrUpdateChatRoomInDb(SocketChatMessage socketChatMessage) {
+  private void insertOrUpdateChatRoomInDb(SignallerSocketChatMessage socketChatMessage) {
     SignallerDbManager.getInstance().insertOrUpdateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
   }
 
@@ -218,7 +218,7 @@ public class SocketManager {
     SignallerDbManager.getInstance().getPendingChatMessages()
       .subscribe(
         pendingChatMessages -> {
-          for (SocketChatMessage pendingChatMessage : pendingChatMessages) {
+          for (SignallerSocketChatMessage pendingChatMessage : pendingChatMessages) {
             send(pendingChatMessage);
             LogUtils.d("sent pending chat message:" + pendingChatMessage.getMessage());
           }

@@ -8,7 +8,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.jaychang.nrv.BaseViewHolder;
-import com.jaychang.signaller.core.model.ChatMessage;
+import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.utils.AppUtils;
 import com.jaychang.utils.ViewUtils;
@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class KolOwnImageMessageCell extends ChatMessageCell {
 
-  public KolOwnImageMessageCell(ChatMessage message) {
+  public KolOwnImageMessageCell(SignallerChatMessage message) {
     super(message);
   }
 

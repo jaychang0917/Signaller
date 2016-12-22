@@ -2,7 +2,7 @@ package com.jaychang.signaller.core.model;
 
 import io.realm.RealmObject;
 
-public class Payload extends RealmObject {
+public class SignallerPayload extends RealmObject {
 
   private long timestamp;
 

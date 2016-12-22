@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.jaychang.nrv.BaseViewHolder;
-import com.jaychang.signaller.core.model.ChatRoom;
-import com.jaychang.signaller.core.model.Receiver;
+import com.jaychang.signaller.core.model.SignallerChatRoom;
+import com.jaychang.signaller.core.model.SignallerReceiver;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
 import com.wiser.kol.R;
 
@@ -23,7 +23,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class KolChatRoomCell extends ChatRoomCell {
 
-  public KolChatRoomCell(ChatRoom chatroom) {
+  public KolChatRoomCell(SignallerChatRoom chatroom) {
     super(chatroom);
   }
 
@@ -50,7 +50,7 @@ public class KolChatRoomCell extends ChatRoomCell {
       holder.itemView.setOnClickListener(v -> callback.onCellClicked(chatRoom));
     }
 
-    Receiver receiver = chatRoom.getReceiver();
+    SignallerReceiver receiver = chatRoom.getReceiver();
     String userLogoUrl = receiver.getProfilePhotoUrl();
     if (!TextUtils.isEmpty(userLogoUrl)) {
       holder.logoImageView.setVisibility(View.VISIBLE);
