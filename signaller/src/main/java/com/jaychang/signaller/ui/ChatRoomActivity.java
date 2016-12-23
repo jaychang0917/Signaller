@@ -17,6 +17,7 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
+import com.jaychang.signaller.core.NetworkStateMonitor;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerDataManager;
 import com.jaychang.signaller.core.SignallerDbManager;
@@ -38,7 +39,6 @@ import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
 import com.jaychang.signaller.util.LogUtils;
-import com.jaychang.signaller.core.NetworkStateMonitor;
 import com.jaychang.utils.AppUtils;
 import com.jaychang.utils.ImageDimension;
 import com.jaychang.utils.ImageUtils;
@@ -76,6 +76,10 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   EmojiEditText inputEditText;
   View sendMsgView;
 
+  interface MessageCallback {
+    void onMessageSavedToDb(SignallerSocketChatMessage message);
+  }
+
   public static final String EXTRA_CHATROOM_ID = "EXTRA_CHATROOM_ID";
 
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
@@ -107,18 +111,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     ButterKnife.bind(this);
     init();
     loadChatMessages();
-  }
-
-  @Override
-  protected void onResume() {
-    super.onResume();
-    UserData.getInstance().setInChatRoomPage(true);
-  }
-
-  @Override
-  protected void onPause() {
-    super.onPause();
-    UserData.getInstance().setInChatRoomPage(false);
   }
 
   public void init() {
@@ -237,20 +229,13 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     } else {
       sendMsgView.setEnabled(false);
     }
-
-    if (isSocketConnected && isNetworkConnected) {
-      photoIconView.setEnabled(true);
-      photoIconView.setAlpha(1f);
-    } else {
-      photoIconView.setEnabled(false);
-      photoIconView.setAlpha(0.7f);
-    }
   }
 
   @Override
   public void onStart() {
     super.onStart();
     EventBus.getDefault().register(this);
+    UserData.getInstance().setInChatRoomPage(true);
     SocketManager.getInstance().connect();
   }
 
@@ -258,6 +243,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   public void onStop() {
     super.onStop();
     EventBus.getDefault().unregister(this);
+    UserData.getInstance().setInChatRoomPage(false);
     SocketManager.getInstance().disconnect();
   }
 
@@ -404,32 +390,32 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void addTextMessage() {
     SignallerChatMessage chatMessage = new SignallerChatMessage();
-    chatMessage.setMsgTime(System.currentTimeMillis());
+    chatMessage.setTimestamp(System.currentTimeMillis());
     chatMessage.setType("text");
+    chatMessage.setSent(false);
     chatMessage.setContent(inputEditText.getText().toString());
+
     addOwnTextMessageCell(chatMessage);
-    sendTextMessage();
+    addChatMessageToDb(chatMessage, socketChatMessage -> {
+      LogUtils.d("sent text msg to server.");
+      SocketManager.getInstance().send(socketChatMessage);
+    });
     clearInput();
   }
 
-  private void sendTextMessage() {
+  private void addChatMessageToDb(SignallerChatMessage chatMessage, MessageCallback callback) {
+    // save temp msg to db
+    SignallerDbManager.getInstance().saveChatMessageAsync(chatMessage);
+    // save to pending queue
     SignallerSocketChatMessage socketChatMessage = new SignallerSocketChatMessage();
     socketChatMessage.setRoomId(chatRoomId);
-
-    long curTimestamp = System.currentTimeMillis();
-
-    SignallerChatMessage message = new SignallerChatMessage();
-    message.setTimestamp(curTimestamp);
-    message.setType("text");
-    message.setContent(inputEditText.getText().toString());
-    socketChatMessage.setMessage(message);
-
     SignallerPayload payload = new SignallerPayload();
-    payload.setTimestamp(curTimestamp);
+    payload.setTimestamp(chatMessage.getTimestamp());
     socketChatMessage.setPayload(payload);
-
+    socketChatMessage.setMessage(chatMessage);
     SignallerDbManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
-      SocketManager.getInstance().send(socketChatMessage);
+      LogUtils.d("saved chat msg to db and queue.");
+      callback.onMessageSavedToDb(socketChatMessage);
     });
   }
 
@@ -437,49 +423,36 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     inputEditText.setText("");
   }
 
-  private void uploadPhotoAndSendImageMsg(Uri uri) {
-    SignallerDataManager.getInstance().uploadPhoto(uri)
-      .subscribe(image -> {
-          LogUtils.d("photo uploaded: " + uri.toString());
-          sendImageMessage(image.getResourceId());
-        },
-        error -> {
-          LogUtils.d(error.getMessage());
-        });
-  }
-
   private void addImageMessage(Uri uri) {
     SignallerChatMessage message = new SignallerChatMessage();
-    message.setMsgTime(System.currentTimeMillis());
+    long time = System.currentTimeMillis();
+    message.setMsgTime(time);
     SignallerImage image = new SignallerImage();
     ImageDimension dimension = ImageUtils.getImageDimensionFromUri(uri);
     image.setAttributes(new SignallerImageAttribute(dimension.getWidth(), dimension.getHeight()));
     image.setUrl(uri.toString());
     message.setImage(image);
+    message.setTimestamp(time);
+    message.setType("image");
+    message.setSent(false);
+
     addOwnImageMessageCell(message);
-    uploadPhotoAndSendImageMsg(uri);
+    addChatMessageToDb(message, socketChatMessage -> {
+      uploadPhotoAndSendImageMsg(uri, socketChatMessage);
+    });
   }
 
-  private void sendImageMessage(String imageResourceId) {
-    SignallerSocketChatMessage socketChatMessage = new SignallerSocketChatMessage();
-    socketChatMessage.setRoomId(chatRoomId);
-
-    long curTimestamp = System.currentTimeMillis();
-
-    SignallerChatMessage message = new SignallerChatMessage();
-    message.setTimestamp(curTimestamp);
-    message.setType("image");
-    message.setContent(imageResourceId);
-    socketChatMessage.setMessage(message);
-
-    SignallerPayload payload = new SignallerPayload();
-    payload.setTimestamp(curTimestamp);
-    socketChatMessage.setPayload(payload);
-
-    SignallerDbManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
-      LogUtils.d("send image to server.");
-      SocketManager.getInstance().send(socketChatMessage);
-    });
+  private void uploadPhotoAndSendImageMsg(Uri uri, SignallerSocketChatMessage socketChatMessage) {
+    SignallerDataManager.getInstance().uploadPhoto(uri)
+      .subscribe(image -> {
+          LogUtils.d("photo uploaded: " + uri.toString());
+          socketChatMessage.getMessage().setContent(image.getResourceId());
+          SocketManager.getInstance().send(socketChatMessage);
+          LogUtils.d("sent image msg to server.");
+        },
+        error -> {
+          LogUtils.d("photo upload fail.");
+        });
   }
 
   private void addOwnTextMessageCell(SignallerChatMessage message) {

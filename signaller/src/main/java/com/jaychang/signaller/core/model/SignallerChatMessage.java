@@ -29,7 +29,7 @@ public class SignallerChatMessage extends RealmObject {
   private String type;
   @SerializedName("sender")
   private SignallerSender sender;
-  private boolean isSent;
+  private boolean isSent = true;
   private long timestamp;
 
   public boolean isSameSender(SignallerChatMessage message) {

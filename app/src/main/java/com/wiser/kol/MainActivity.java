@@ -8,7 +8,7 @@ import com.wiser.kol.push.GcmManager;
 
 public class MainActivity extends AppCompatActivity {
 
-  public static final String EXTRA_ACCESS_TOEKN = "EXTRA_ACCESS_TOEKN";
+  public static final String EXTRA_ACCESS_TOKEN = "EXTRA_ACCESS_TOKEN";
   public static final String EXTRA_USER_ID = "EXTRA_USER_ID";
 
   @Override
@@ -21,12 +21,12 @@ public class MainActivity extends AppCompatActivity {
   public void init() {
     BottomTabManager.init(this);
 
-    String accessToken = getIntent().getStringExtra(EXTRA_ACCESS_TOEKN);
+    String accessToken = getIntent().getStringExtra(EXTRA_ACCESS_TOKEN);
     String userId = getIntent().getStringExtra(EXTRA_USER_ID);
 
     Signaller.getInstance().connect(accessToken, userId);
 
     GcmManager.init(this);
-
   }
+
 }

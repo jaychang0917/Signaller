@@ -11,7 +11,6 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.ChatRoomJoinCallback;
 import com.jaychang.signaller.core.NetworkStateMonitor;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerDataManager;
@@ -200,20 +199,36 @@ public class ChatRoomListFragment extends RxFragment {
     for (SignallerChatRoom chatRoom : chatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
       cell.setCallback(room -> {
-        chatWith(room.getReceiver().getUserId());
+        chatWith(room.getChatRoomId());
       });
       recyclerView.addCell(cell);
     }
     recyclerView.getAdapter().notifyDataSetChanged();
   }
 
-  private void chatWith(String userId) {
-    Signaller.getInstance().chatWith(userId, new ChatRoomJoinCallback() {
-      @Override
-      public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getContext(), chatRoomId);
-      }
-    });
+  private void chatWith(String chatRoomId) {
+    ChatRoomActivity.start(getContext(), chatRoomId);
   }
+
+  // todo uncomment
+//  private void bindChatRooms(List<SignallerChatRoom> chatRooms) {
+//    for (SignallerChatRoom chatRoom : chatRooms) {
+//      ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
+//      cell.setCallback(room -> {
+//        chatWith(room.getReceiver().getUserId());
+//      });
+//      recyclerView.addCell(cell);
+//    }
+//    recyclerView.getAdapter().notifyDataSetChanged();
+//  }
+//
+//  private void chatWith(String userId) {
+//    Signaller.getInstance().chatWith(userId, new ChatRoomJoinCallback() {
+//      @Override
+//      public void onChatRoomJoined(String chatRoomId) {
+//        ChatRoomActivity.start(getContext(), chatRoomId);
+//      }
+//    });
+//  }
 
 }

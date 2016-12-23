@@ -118,6 +118,12 @@ public class SignallerDbManager {
     });
   }
 
+  public void saveChatMessageAsync(SignallerChatMessage msg) {
+    getRealm().executeTransactionAsync(realm -> {
+      realm.insertOrUpdate(msg);
+    });
+  }
+
   public void removeTempChatMessage(long timestamp) {
     getRealm().executeTransaction(realm -> {
       SignallerChatMessage msg = realm.where(SignallerChatMessage.class)

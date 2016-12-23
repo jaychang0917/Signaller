@@ -32,6 +32,8 @@ public class SocketManager {
   private static final String RECEIVE_MESSAGE = "receive_message";
 
   private Socket socket;
+  // since socket.connected() has bug, so we rely on connection callback;
+  private boolean isConnected;
   private boolean isSocketInitialized;
   private Handler mainThreadHandler;
 
@@ -67,7 +69,7 @@ public class SocketManager {
   }
 
   public boolean isConnected() {
-    return socket != null && socket.connected();
+    return isConnected;
   }
 
   public void connect() {
@@ -156,12 +158,14 @@ public class SocketManager {
   };
 
   private Emitter.Listener onConnected = args -> {
+    isConnected = true;
     LogUtils.d("onConnected");
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectedEvent());
     sendPendingChatMsg();
   };
 
   private Emitter.Listener onDisconnected = args -> {
+    isConnected = false;
     LogUtils.d("onDisconnected");
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketDisconnectedEvent());
   };
