@@ -122,7 +122,6 @@ public class App extends MultiDexApplication {
       })
       .chatRoomToolbarBackgroundColor(R.color.white)
       .chatRoomStatusBarBackgroundColor(R.color.colorPrimary)
-      .chatRoomPhotoPickerTitleTextColor(android.R.color.black)
       .build();
 
     Signaller.getInstance().setUIConfig(uiConfig);
