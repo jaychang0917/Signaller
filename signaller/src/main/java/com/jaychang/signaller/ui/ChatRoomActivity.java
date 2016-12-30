@@ -369,19 +369,20 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void showPhotoPicker() {
-    NPhotoPicker.with(this)
-      .toolbarColor(uiConfig.getChatRoomToolbarBackgroundColor())
-      .statusBarColor(uiConfig.getChatRoomStatusBarBackgroundColor())
-      .selectedBorderColor(uiConfig.getChatRoomStatusBarBackgroundColor())
-      .pickSinglePhotoFromAlbum()
-      .subscribe(
-        uri -> {
-          addImageMessage(uri);
-        },
-        error -> {
-          LogUtils.d(error.getMessage());
-        }
-      );
+      NPhotoPicker.with(this)
+        .toolbarColor(uiConfig.getChatRoomToolbarBackgroundColor())
+        .toolbarTitleTextColor(uiConfig.getChatRoomToolbarBackgroundColor())
+        .statusBarColor(uiConfig.getChatRoomStatusBarBackgroundColor())
+        .selectedBorderColor(uiConfig.getChatRoomStatusBarBackgroundColor())
+        .pickSinglePhotoFromAlbum()
+        .subscribe(
+          uri -> {
+            addImageMessage(uri);
+          },
+          error -> {
+            LogUtils.d(error.getMessage());
+          }
+        );
   }
 
   private void addTextMessage() {

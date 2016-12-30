@@ -15,6 +15,7 @@ public class UIConfig {
   private boolean showChatMsgDateSeparator;
   private @ColorRes int chatRoomToolbarBackgroundColor;
   private @ColorRes int chatRoomStatusBarBackgroundColor;
+  private @ColorRes int chatRoomPhotoPickerTitleTextColor;
 
   private UIConfig(Builder builder) {
     chatRoomCellProvider = builder.chatRoomCellProvider;
@@ -26,6 +27,7 @@ public class UIConfig {
     showChatMsgDateSeparator = builder.showChatMsgDateSeparator;
     chatRoomToolbarBackgroundColor = builder.chatRoomToolbarBackgroundColor;
     chatRoomStatusBarBackgroundColor = builder.chatRoomStatusBarBackgroundColor;
+    chatRoomPhotoPickerTitleTextColor = builder.chatRoomPhotoPickerTitleTextColor;
   }
 
   public static Builder newBuilder() {
@@ -68,6 +70,10 @@ public class UIConfig {
     return chatRoomStatusBarBackgroundColor;
   }
 
+  public int getChatRoomPhotoPickerTitleTextColor() {
+    return chatRoomPhotoPickerTitleTextColor;
+  }
+
   public static final class Builder {
     private ChatRoomCellProvider chatRoomCellProvider;
     private ChatRoomToolbarProvider chatRoomToolbarProvider;
@@ -78,6 +84,7 @@ public class UIConfig {
     private boolean showChatMsgDateSeparator = true;
     private int chatRoomToolbarBackgroundColor = R.color.sig_toolbar_bg;
     private int chatRoomStatusBarBackgroundColor;
+    private int chatRoomPhotoPickerTitleTextColor;
 
     private Builder() {
     }
@@ -124,6 +131,11 @@ public class UIConfig {
 
     public Builder chatRoomStatusBarBackgroundColor(@ColorRes int colorRes) {
       chatRoomStatusBarBackgroundColor = colorRes;
+      return this;
+    }
+
+    public Builder chatRoomPhotoPickerTitleTextColor(@ColorRes int colorRes) {
+      chatRoomPhotoPickerTitleTextColor = colorRes;
       return this;
     }
 
