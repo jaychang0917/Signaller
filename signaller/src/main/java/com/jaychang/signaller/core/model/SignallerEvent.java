@@ -21,6 +21,8 @@ public class SignallerEvent extends RealmObject {
   private String imageUrl;
   @SerializedName("mtime")
   private long mtime;
+  @SerializedName("result")
+  private String result;
   @SerializedName("hashtags")
   private RealmList<SignallerRealmString> hashtags;
   @SerializedName("options")
@@ -73,6 +75,14 @@ public class SignallerEvent extends RealmObject {
 
   public void setMtime(long mtime) {
     this.mtime = mtime;
+  }
+
+  public String getResult() {
+    return result;
+  }
+
+  public void setResult(String result) {
+    this.result = result;
   }
 
   public RealmList<SignallerRealmString> getHashtags() {
