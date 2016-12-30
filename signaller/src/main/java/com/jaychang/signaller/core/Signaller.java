@@ -1,6 +1,8 @@
 package com.jaychang.signaller.core;
 
 import android.content.Context;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.StringRes;
 
 import com.jaychang.signaller.ui.config.UIConfig;
 
@@ -14,10 +16,15 @@ public final class Signaller {
 
   public static void init(Context appContext,
                           String serverDomain,
-                          String socketUrl) {
-    UserData.getInstance().setServerDomain(serverDomain);
-    UserData.getInstance().setSocketUrl(socketUrl);
+                          String socketUrl,
+                          @StringRes int appName,
+                          @DrawableRes int appIcon) {
+    AppData.getInstance().setServerDomain(serverDomain);
+    AppData.getInstance().setSocketUrl(socketUrl);
+    AppData.getInstance().setAppName(appName);
+    AppData.getInstance().setAppIcon(appIcon);
     SignallerDbManager.getInstance().init(appContext);
+//    SignallerGcmManager.init(appContext);
   }
 
   public static Signaller getInstance() {

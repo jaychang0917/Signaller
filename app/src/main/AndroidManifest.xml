@@ -17,37 +17,6 @@
             </intent-filter>
         </activity>
         <activity android:name="com.wiser.kol.MainActivity" />
-
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
-                <category android:name="com.wiser.kol" />
-            </intent-filter>
-        </receiver>
-
-        <service
-            android:name="com.wiser.kol.push.MyGcmListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.wiser.kol.push.GcmInstanceIDListenerService"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
-            </intent-filter>
-        </service>
-        <service
-            android:name="com.wiser.kol.push.GcmRegistrationService"
-            android:exported="false">
-        </service>
     </application>
 
 </manifest>

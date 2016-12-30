@@ -16,7 +16,6 @@ import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerDataManager;
 import com.jaychang.signaller.core.SignallerDbManager;
 import com.jaychang.signaller.core.SignallerEvents;
-import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
@@ -66,14 +65,12 @@ public class ChatRoomListFragment extends RxFragment {
   public void onStart() {
     super.onStart();
     EventBus.getDefault().register(this);
-    SocketManager.getInstance().connect();
   }
 
   @Override
   public void onStop() {
     super.onStop();
     EventBus.getDefault().unregister(this);
-    SocketManager.getInstance().disconnect();
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

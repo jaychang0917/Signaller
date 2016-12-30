@@ -42,7 +42,7 @@ public class App extends MultiDexApplication {
   }
 
   private void initSignaller() {
-    Signaller.init(this, Constant.SERVER_DOMAIN, Constant.SOCKET_URL);
+    Signaller.init(this, Constant.SERVER_DOMAIN, Constant.SOCKET_URL, R.string.app_name, R.mipmap.ic_launcher);
 
     UIConfig uiConfig = UIConfig.newBuilder()
       .chatRoomCellProvider(new ChatRoomCellProvider() {

@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.jaychang.signaller.core.Signaller;
-import com.wiser.kol.push.GcmManager;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,8 +24,6 @@ public class MainActivity extends AppCompatActivity {
     String userId = getIntent().getStringExtra(EXTRA_USER_ID);
 
     Signaller.getInstance().connect(accessToken, userId);
-
-    GcmManager.init(this);
   }
 
 }

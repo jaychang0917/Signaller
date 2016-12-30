@@ -54,7 +54,7 @@ public class SocketManager {
       IO.Options opts = new IO.Options();
       opts.query = "access_token=" + accessToken;
       opts.secure = true;
-      socket = IO.socket(UserData.getInstance().getSocketUrl(), opts);
+      socket = IO.socket(AppData.getInstance().getSocketUrl(), opts);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }

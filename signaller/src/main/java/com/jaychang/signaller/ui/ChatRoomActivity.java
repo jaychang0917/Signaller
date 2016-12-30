@@ -236,7 +236,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     super.onStart();
     EventBus.getDefault().register(this);
     UserData.getInstance().setInChatRoomPage(true);
-    SocketManager.getInstance().connect();
   }
 
   @Override
@@ -244,7 +243,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     super.onStop();
     EventBus.getDefault().unregister(this);
     UserData.getInstance().setInChatRoomPage(false);
-    SocketManager.getInstance().disconnect();
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

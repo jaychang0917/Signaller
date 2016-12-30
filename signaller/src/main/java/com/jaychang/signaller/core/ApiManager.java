@@ -24,7 +24,7 @@ class ApiManager {
   private static Api api;
 
   static {
-    BASE_URL = UserData.getInstance().getServerDomain();
+    BASE_URL = AppData.getInstance().getServerDomain();
     setup();
   }
 

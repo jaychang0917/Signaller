@@ -1,4 +1,4 @@
-package com.wiser.kol.push;
+package com.jaychang.signaller.core.push;
 
 import android.content.Context;
 import android.content.Intent;
@@ -9,7 +9,7 @@ import android.util.Log;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
-public class GcmManager {
+public class SignallerGcmManager {
 
   public static final String IS_GCM_REGISTERED = "IS_GCM_REGISTERED";
 
@@ -18,7 +18,7 @@ public class GcmManager {
     boolean isRegistered = sharedPreferences.getBoolean(IS_GCM_REGISTERED, false);
     if (!isRegistered) {
       if (checkPlayServices(context)) {
-        Intent intent = new Intent(context, GcmRegistrationService.class);
+        Intent intent = new Intent(context, SignallerGcmRegistrationService.class);
         context.startService(intent);
       }
     }
