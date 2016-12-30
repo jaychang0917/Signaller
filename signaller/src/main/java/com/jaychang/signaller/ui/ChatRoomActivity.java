@@ -369,12 +369,10 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void showPhotoPicker() {
-    int colorPrimary = uiConfig.getChatRoomToolbarBackgroundColor();
-
     NPhotoPicker.with(this)
-      .toolbarColor(colorPrimary)
-      .statusBarColor(colorPrimary)
-      .selectedBorderColor(colorPrimary)
+      .toolbarColor(uiConfig.getChatRoomToolbarBackgroundColor())
+      .statusBarColor(uiConfig.getChatRoomStatusBarBackgroundColor())
+      .selectedBorderColor(uiConfig.getChatRoomStatusBarBackgroundColor())
       .pickSinglePhotoFromAlbum()
       .subscribe(
         uri -> {
