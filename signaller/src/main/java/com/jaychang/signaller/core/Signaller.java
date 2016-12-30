@@ -1,10 +1,13 @@
 package com.jaychang.signaller.core;
 
-import android.content.Context;
+import android.app.Application;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
+import com.jaychang.signaller.core.push.SignallerGcmManager;
 import com.jaychang.signaller.ui.config.UIConfig;
+import com.jaychang.signaller.util.LogUtils;
+import com.jaychang.utils.AppStatusUtils;
 
 public final class Signaller {
 
@@ -14,7 +17,7 @@ public final class Signaller {
   private Signaller() {
   }
 
-  public static void init(Context appContext,
+  public static void init(Application app,
                           String serverDomain,
                           String socketUrl,
                           @StringRes int appName,
@@ -23,12 +26,30 @@ public final class Signaller {
     AppData.getInstance().setSocketUrl(socketUrl);
     AppData.getInstance().setAppName(appName);
     AppData.getInstance().setAppIcon(appIcon);
-    SignallerDbManager.getInstance().init(appContext);
-//    SignallerGcmManager.init(appContext);
+
+    registerAppCallback(app);
+    SignallerDbManager.getInstance().init(app.getApplicationContext());
+    SignallerGcmManager.init(app.getApplicationContext());
   }
 
   public static Signaller getInstance() {
     return INSTANCE;
+  }
+
+  private static void registerAppCallback(Application app) {
+    AppStatusUtils.registerAppStatusCallback(app, new AppStatusUtils.Callback() {
+      @Override
+      public void onAppEnterBackground() {
+        SocketManager.getInstance().disconnect();
+        LogUtils.d("onAppEnterBackground, disconnect socket");
+      }
+
+      @Override
+      public void onAppEnterForeground() {
+        SocketManager.getInstance().connect();
+        LogUtils.d("onAppEnterForeground, connect socket");
+      }
+    });
   }
 
   public void connect(String accessToken, String userId) {
@@ -69,7 +90,7 @@ public final class Signaller {
     return uiConfig;
   }
 
-  public void clearDatabase() {
+  public void clearChatCache() {
     SignallerDbManager.getInstance().clear();
   }
 

@@ -26,6 +26,7 @@ public class SignallerGcmListenerService extends GcmListenerService {
    */
   @Override
   public void onMessageReceived(String from, Bundle data) {
+    LogUtils.d("onMessageReceived");
     String message = data.getString("content");
     for (String key : data.keySet()) {
       LogUtils.d("GCM:data->key:" + key + " value:" + data.get(key));

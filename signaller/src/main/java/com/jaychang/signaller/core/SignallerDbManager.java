@@ -4,7 +4,14 @@ import android.content.Context;
 
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.core.model.SignallerChatRoom;
+import com.jaychang.signaller.core.model.SignallerChatRoomInfo;
+import com.jaychang.signaller.core.model.SignallerEvent;
+import com.jaychang.signaller.core.model.SignallerImage;
+import com.jaychang.signaller.core.model.SignallerImageAttribute;
+import com.jaychang.signaller.core.model.SignallerPayload;
+import com.jaychang.signaller.core.model.SignallerProfilePhoto;
 import com.jaychang.signaller.core.model.SignallerReceiver;
+import com.jaychang.signaller.core.model.SignallerSender;
 import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
 import com.jaychang.signaller.util.LogUtils;
 
@@ -55,7 +62,18 @@ public class SignallerDbManager {
   }
 
   void clear() {
-    Realm.deleteRealm(realmConfig);
+    getRealm().executeTransactionAsync(realm -> {
+      realm.delete(SignallerEvent.class);
+      realm.delete(SignallerImage.class);
+      realm.delete(SignallerImageAttribute.class);
+      realm.delete(SignallerPayload.class);
+      realm.delete(SignallerProfilePhoto.class);
+      realm.delete(SignallerReceiver.class);
+      realm.delete(SignallerSender.class);
+      realm.delete(SignallerChatMessage.class);
+      realm.delete(SignallerChatRoomInfo.class);
+      realm.delete(SignallerChatRoom.class);
+    });
   }
 
   /**
