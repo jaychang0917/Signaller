@@ -11,7 +11,7 @@ class DefaultChatRoomToolbarProvider implements ChatRoomToolbarProvider {
 
   @NonNull
   @Override
-  public View getToolbar(Activity activity, SignallerChatRoom chatRoom) {
-    return DefaultChatRoomToolbar.create(activity, chatRoom);
+  public View getToolbar(Activity activity, String username) {
+    return DefaultChatRoomToolbar.create(activity, username);
   }
 }

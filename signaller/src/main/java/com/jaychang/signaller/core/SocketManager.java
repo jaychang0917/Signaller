@@ -3,9 +3,11 @@ package com.jaychang.signaller.core;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
 import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
+import com.jaychang.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -175,12 +177,12 @@ public class SocketManager {
     LogUtils.d("message received:" + socketChatMessage.getMessage().getContent());
     insertOrUpdateChatMsgInDb(socketChatMessage);
     insertOrUpdateChatRoomInDb(socketChatMessage);
-    dispatchMsgEvents(socketChatMessage.getRoomId(), socketChatMessage.getMessage().getMsgId());
+    dispatchMsgEvents(socketChatMessage);
   };
 
   private void insertOrUpdateChatMsgInDb(SignallerSocketChatMessage socketChatMessage) {
     // update own just sent msg
-    if (socketChatMessage.getPayload() != null && socketChatMessage.getPayload().getTimestamp() != 0L) {
+    if (socketChatMessage.getPayload() != null && socketChatMessage.getPayload().getTimestamp() != 0L && socketChatMessage.getMessage().isOwnMessage()) {
       // remove temp msg
       SignallerDbManager.getInstance().removeTempChatMessage(socketChatMessage.getPayload().getTimestamp());
       // save real msg with local timestamp
@@ -201,7 +203,17 @@ public class SocketManager {
   }
 
   // todo how to handle push??
-  private void dispatchMsgEvents(String chatRoomId, String msgId) {
+  private void dispatchMsgEvents(SignallerSocketChatMessage socketChatMessage) {
+    SignallerChatMessage chatMessage = socketChatMessage.getMessage();
+    String chatRoomId = chatMessage.getChatroomId();
+    String msgId = chatMessage.getMsgId();
+    String message;
+    if (chatMessage.isText()) {
+      message = chatMessage.getContent();
+    } else {
+      message = StringUtils.capitalize(chatMessage.getType());
+    }
+
     boolean isInChatRoomPage = UserData.getInstance().isInChatRoomPage();
 
     if (isInChatRoomPage) {
@@ -209,12 +221,12 @@ public class SocketManager {
       if (isInSameChatRoom) {
         EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(msgId));
       } else {
-        EventBus.getDefault().postSticky(new SignallerEvents.ShowPushNotificationEvent(msgId));
+//        SignallerNotificationManager.showNotification(message, chatRoomId);
       }
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
     } else {
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
-      EventBus.getDefault().postSticky(new SignallerEvents.ShowPushNotificationEvent(msgId));
+//      SignallerNotificationManager.showNotification(message, chatRoomId);
     }
   }
 

@@ -1,5 +1,6 @@
 package com.jaychang.signaller.core;
 
+import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
@@ -10,6 +11,7 @@ public final class AppData {
   private int appIcon;
   private String serverDomain;
   private String socketUrl;
+  private Context appContext;
 
   private AppData() {
   }
@@ -48,6 +50,14 @@ public final class AppData {
 
   public void setServerDomain(String serverDomain) {
     this.serverDomain = serverDomain;
+  }
+
+  public Context getAppContext() {
+    return appContext;
+  }
+
+  public void setAppContext(Context appContext) {
+    this.appContext = appContext;
   }
 
 }

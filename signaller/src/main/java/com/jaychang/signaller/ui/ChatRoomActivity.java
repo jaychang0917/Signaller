@@ -25,7 +25,6 @@ import com.jaychang.signaller.core.SignallerEvents;
 import com.jaychang.signaller.core.SocketManager;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
-import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.jaychang.signaller.core.model.SignallerImage;
 import com.jaychang.signaller.core.model.SignallerImageAttribute;
 import com.jaychang.signaller.core.model.SignallerPayload;
@@ -81,11 +80,14 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   public static final String EXTRA_CHATROOM_ID = "EXTRA_CHATROOM_ID";
+  public static final String EXTRA_CHATROOM_USERNAME = "EXTRA_CHATROOM_USERNAME";
+  public static final String EXTRA_CHATROOM_USERID = "EXTRA_CHATROOM_USERID";
 
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
 
   private String chatRoomId;
-  private SignallerChatRoom chatRoom;
+  private String username;
+  private String userId;
   private String cursor;
   private boolean hasMoreData;
   private boolean questScrollToBottom = true;
@@ -98,9 +100,11 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private boolean isShowChatMessageDateSeparator;
   private UIConfig uiConfig;
 
-  public static void start(Context context, String chatRoomId) {
+  public static void start(Context context, String chatRoomId, String userId, String username) {
     Intent intent = new Intent(context, ChatRoomActivity.class);
     intent.putExtra(EXTRA_CHATROOM_ID, chatRoomId);
+    intent.putExtra(EXTRA_CHATROOM_USERID, userId);
+    intent.putExtra(EXTRA_CHATROOM_USERNAME, username);
     context.startActivity(intent);
   }
 
@@ -137,13 +141,15 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void initData() {
     chatRoomId = getIntent().getStringExtra(EXTRA_CHATROOM_ID);
-    chatRoom = SignallerDbManager.getInstance().getChatRoom(chatRoomId);
+    userId = getIntent().getStringExtra(EXTRA_CHATROOM_USERID);
+    username = getIntent().getStringExtra(EXTRA_CHATROOM_USERNAME);
+//    chatRoom = SignallerDbManager.getInstance().getChatRoom(chatRoomId);
 
     UserData.getInstance().setCurrentChatRoomId(chatRoomId);
   }
 
   private void initToolbar() {
-    View toolbar = chatRoomToolbarProvider.getToolbar(this, chatRoom);
+    View toolbar = chatRoomToolbarProvider.getToolbar(this, username);
     toolbarHolder.addView(toolbar);
   }
 
@@ -287,7 +293,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void loadChatMessages() {
-    SignallerDataManager.getInstance().getChatMessages(chatRoom.getReceiver().getUserId(), cursor)
+    SignallerDataManager.getInstance().getChatMessages(userId, cursor)
       .subscribe(response -> {
           cursor = response.cursor;
           hasMoreData = response.hasMore;

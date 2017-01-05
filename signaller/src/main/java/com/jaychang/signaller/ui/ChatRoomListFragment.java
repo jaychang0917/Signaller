@@ -196,15 +196,15 @@ public class ChatRoomListFragment extends RxFragment {
     for (SignallerChatRoom chatRoom : chatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
       cell.setCallback(room -> {
-        chatWith(room.getChatRoomId());
+        chatWith(room.getChatRoomId(), room.getReceiver().getUserId(), room.getReceiver().getName());
       });
       recyclerView.addCell(cell);
     }
     recyclerView.getAdapter().notifyDataSetChanged();
   }
 
-  private void chatWith(String chatRoomId) {
-    ChatRoomActivity.start(getContext(), chatRoomId);
+  private void chatWith(String chatRoomId, String userId, String username) {
+    ChatRoomActivity.start(getContext(), chatRoomId, userId, username);
   }
 
   // todo uncomment

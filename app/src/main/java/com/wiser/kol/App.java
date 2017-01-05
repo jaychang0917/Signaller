@@ -90,8 +90,8 @@ public class App extends MultiDexApplication {
       .chatRoomToolbarProvider(new ChatRoomToolbarProvider() {
         @NonNull
         @Override
-        public View getToolbar(Activity activity, SignallerChatRoom chatRoom) {
-          return KolChatRoomToolbar.create(activity, chatRoom);
+        public View getToolbar(Activity activity, String username) {
+          return KolChatRoomToolbar.create(activity, username);
         }
       })
       .chatRoomControlViewProvider(new ChatRoomControlViewProvider() {
