@@ -49,8 +49,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay10() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY10, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, Constant.USER_ID_JAY10, "jay10");
+      public void onChatRoomJoined(String chatRoomId, String userId) {
+        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay10");
       }
     });
   }
@@ -59,8 +59,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay11() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY11, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, Constant.USER_ID_JAY11, "jay11");
+      public void onChatRoomJoined(String chatRoomId, String userId) {
+        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay11");
       }
     });
   }
@@ -69,8 +69,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay12() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY12, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, Constant.USER_ID_JAY12, "jay12");
+      public void onChatRoomJoined(String chatRoomId, String userId) {
+        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay12");
       }
     });
   }
@@ -79,8 +79,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay13() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY13, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, Constant.USER_ID_JAY13, "jay13");
+      public void onChatRoomJoined(String chatRoomId, String userId) {
+        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay13");
       }
     });
   }
@@ -89,8 +89,8 @@ public class PeopleFragment extends Fragment {
   void chatWithJay14() {
     Signaller.getInstance().chatWith(Constant.USER_ID_JAY14, new ChatRoomJoinCallback() {
       @Override
-      public void onChatRoomJoined(String chatRoomId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, Constant.USER_ID_JAY14, "jay14");
+      public void onChatRoomJoined(String chatRoomId, String userId) {
+        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay14");
       }
     });
   }

@@ -1,5 +1,5 @@
 package com.jaychang.signaller.core;
 
 public interface ChatRoomJoinCallback {
-  void onChatRoomJoined(String chatRoomId);
+  void onChatRoomJoined(String chatRoomId, String userId);
 }

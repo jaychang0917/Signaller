@@ -125,7 +125,7 @@ public class SocketManager {
       socket.emit(JOIN, object, (Ack) args -> {
         LogUtils.d("onJoined");
         mainThreadHandler.post(() -> {
-          callback.onChatRoomJoined(chatRoomId);
+          callback.onChatRoomJoined(chatRoomId, userId);
         });
       });
     } catch (JSONException e) {
