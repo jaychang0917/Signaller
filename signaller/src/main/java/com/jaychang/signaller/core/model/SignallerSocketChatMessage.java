@@ -13,8 +13,9 @@ public class SignallerSocketChatMessage extends RealmObject {
   private String roomId;
   @SerializedName("message")
   private SignallerChatMessage message;
-  @SerializedName("payload")
-  private SignallerPayload payload;
+  @SerializedName("payloadJson")
+  private String payloadJson;
+  private SignallerPayload payloadModel;
 
   public long getTimestamp() {
     return timestamp;
@@ -40,12 +41,20 @@ public class SignallerSocketChatMessage extends RealmObject {
     this.message = message;
   }
 
-  public SignallerPayload getPayload() {
-    return payload;
+  public String getPayloadJson() {
+    return payloadJson;
   }
 
-  public void setPayload(SignallerPayload payload) {
-    this.payload = payload;
+  public void setPayloadJson(String payloadJson) {
+    this.payloadJson = payloadJson;
+  }
+
+  public SignallerPayload getPayloadModel() {
+    return payloadModel;
+  }
+
+  public void setPayloadModel(SignallerPayload payloadModel) {
+    this.payloadModel = payloadModel;
   }
 
 }

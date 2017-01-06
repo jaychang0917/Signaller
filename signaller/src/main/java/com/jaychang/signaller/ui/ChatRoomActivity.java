@@ -37,6 +37,7 @@ import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
+import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.AppUtils;
 import com.jaychang.utils.ImageDimension;
@@ -413,7 +414,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     socketChatMessage.setRoomId(chatRoomId);
     SignallerPayload payload = new SignallerPayload();
     payload.setTimestamp(chatMessage.getTimestamp());
-    socketChatMessage.setPayload(payload);
+    socketChatMessage.setPayloadJson(GsonUtils.getGson().toJson(payload));
+    socketChatMessage.setPayloadModel(payload);
     socketChatMessage.setMessage(chatMessage);
     SignallerDbManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
       LogUtils.d("saved chat msg to db and queue.");

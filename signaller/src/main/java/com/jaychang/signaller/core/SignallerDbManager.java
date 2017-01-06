@@ -91,7 +91,7 @@ public class SignallerDbManager {
 
   public void addPendingChatMessageAsync(SignallerSocketChatMessage msg, Realm.Transaction.OnSuccess callback) {
     getRealm().executeTransactionAsync(realm -> {
-      msg.setTimestamp(msg.getPayload().getTimestamp());
+      msg.setTimestamp(msg.getPayloadModel().getTimestamp());
       realm.insertOrUpdate(msg);
     }, callback);
   }
@@ -99,7 +99,7 @@ public class SignallerDbManager {
   public void removePendingChatMsg(long timestamp) {
     getRealm().executeTransaction(realm -> {
       SignallerSocketChatMessage msg = realm.where(SignallerSocketChatMessage.class)
-        .equalTo("payload.timestamp", timestamp).findFirst();
+        .equalTo("payloadModel.timestamp", timestamp).findFirst();
       if (msg != null) {
         msg.deleteFromRealm();
         LogUtils.d("removed pending msg:" + timestamp);

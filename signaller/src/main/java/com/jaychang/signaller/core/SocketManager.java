@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.jaychang.signaller.core.model.SignallerChatMessage;
+import com.jaychang.signaller.core.model.SignallerPayload;
 import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
 import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
@@ -107,9 +108,7 @@ public class SocketManager {
       msgObj.put("content", message.getMessage().getContent());
       chatMsgObj.put("message", msgObj);
 
-      JSONObject payload = new JSONObject();
-      payload.put("timestamp", message.getPayload().getTimestamp());
-      chatMsgObj.put("payload", payload);
+      chatMsgObj.put("payload", message.getPayloadJson());
 
       socket.emit(SEND_MESSAGE, chatMsgObj);
     } catch (JSONException e) {
@@ -182,15 +181,17 @@ public class SocketManager {
 
   private void insertOrUpdateChatMsgInDb(SignallerSocketChatMessage socketChatMessage) {
     // update own just sent msg
-    if (socketChatMessage.getPayload() != null && socketChatMessage.getPayload().getTimestamp() != 0L && socketChatMessage.getMessage().isOwnMessage()) {
+    if (socketChatMessage.getPayloadJson() != null && socketChatMessage.getPayloadJson().length() > 0 && socketChatMessage.getMessage().isOwnMessage()) {
+      SignallerPayload payload = GsonUtils.getGson().fromJson(socketChatMessage.getPayloadJson(), SignallerPayload.class);
+      long timestamp = payload.getTimestamp();
       // remove temp msg
-      SignallerDbManager.getInstance().removeTempChatMessage(socketChatMessage.getPayload().getTimestamp());
+      SignallerDbManager.getInstance().removeTempChatMessage(timestamp);
       // save real msg with local timestamp
       socketChatMessage.getMessage().setSent(true);
-      socketChatMessage.getMessage().setMsgTime(socketChatMessage.getPayload().getTimestamp());
+      socketChatMessage.getMessage().setMsgTime(timestamp);
       SignallerDbManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
       // remove msg from pending queue
-      SignallerDbManager.getInstance().removePendingChatMsg(socketChatMessage.getPayload().getTimestamp());
+      SignallerDbManager.getInstance().removePendingChatMsg(timestamp);
     }
     // save another received msg
     else {

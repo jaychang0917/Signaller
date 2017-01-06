@@ -1,8 +1,10 @@
 package com.jaychang.signaller.core.model;
 
+import java.io.Serializable;
+
 import io.realm.RealmObject;
 
-public class SignallerPayload extends RealmObject {
+public class SignallerPayload extends RealmObject implements Serializable{
 
   private long timestamp;
 
