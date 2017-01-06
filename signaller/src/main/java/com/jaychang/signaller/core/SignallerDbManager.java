@@ -172,10 +172,12 @@ public class SignallerDbManager {
           chatRoom.increaseUnreadCount();
         }
         chatRoom.setLastMessage(realm.copyToRealmOrUpdate(lastMsg));
-      } else {
-        chatRoom = SignallerChatRoom.from(roomId, lastMsg);
-        realm.copyToRealmOrUpdate(chatRoom);
       }
+      // todo dont create chatroom ourself, call api to update chatrooms
+//      else {
+//        chatRoom = SignallerChatRoom.from(roomId, lastMsg);
+//        realm.copyToRealmOrUpdate(chatRoom);
+//      }
     });
   }
 

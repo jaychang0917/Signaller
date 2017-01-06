@@ -144,7 +144,14 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void insertOrUpdateChatRoom(SignallerChatRoom room) {
-    boolean hasChatRoom = false;
+    // if has no this chat room, call api to update
+    if (room == null) {
+      recyclerView.removeAllCells();
+      recyclerView.getAdapter().notifyDataSetChanged();
+      cursor = null;
+      loadChatRooms();
+      return;
+    }
 
     for (BaseCell cell : recyclerView.getAllCells()) {
       ChatRoomCell chatRoomCell = (ChatRoomCell) cell;
@@ -166,19 +173,9 @@ public class ChatRoomListFragment extends RxFragment {
           recyclerView.getAdapter().notifyItemMoved(fromPos, 0);
         }
 
-        hasChatRoom = true;
-
         break;
       }
     }
-
-    if (!hasChatRoom) {
-      // if has no this chat room, insert this new chat room at top
-      ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(room);
-      recyclerView.addCell(cell, 0);
-      recyclerView.getAdapter().notifyItemInserted(0);
-    }
-
   }
 
   private void loadChatRoomsFromDB() {
