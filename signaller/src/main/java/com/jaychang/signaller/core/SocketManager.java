@@ -204,7 +204,7 @@ public class SocketManager {
   // todo how to handle push??
   private void dispatchMsgEvents(SignallerSocketChatMessage socketChatMessage) {
     SignallerChatMessage chatMessage = socketChatMessage.getMessage();
-    String chatRoomId = chatMessage.getChatroomId();
+    String chatRoomId = socketChatMessage.getRoomId();
     String msgId = chatMessage.getMsgId();
     String message;
     if (chatMessage.isText()) {
