@@ -25,7 +25,7 @@ public class KolDateSeparatorView extends FrameLayout {
     String today = "'" + getContext().getString(R.string.sig_today) + "', h:mm a";
 
     String date = DateTimeFormatUtils.translate(
-      String.valueOf(message.getMsgTime()),
+      String.valueOf(message.getMsgTime() != 0L ? message.getMsgTime() : message.getTimestamp()),
       today,
       yesterday,
       "dd/MM/yy,h:mm a"

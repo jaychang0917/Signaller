@@ -62,7 +62,7 @@ public class KolChatRoomCell extends ChatRoomCell {
     } else {
       holder.logoImageView.setVisibility(View.GONE);
       holder.logoTextView.setVisibility(View.VISIBLE);
-      holder.logoTextView.setText(receiver.getName().substring(0, 1).toUpperCase());
+      holder.logoTextView.setText(receiver.getName().trim().substring(0, 1).toUpperCase());
     }
 
     holder.nameView.setText(receiver.getName());
