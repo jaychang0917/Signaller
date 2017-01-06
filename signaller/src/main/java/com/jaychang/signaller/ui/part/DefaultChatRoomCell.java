@@ -57,7 +57,7 @@ public class DefaultChatRoomCell extends ChatRoomCell {
       .bitmapTransform(new CropCircleTransformation(context))
       .into(holder.logoView);
 
-    holder.nameView.setText(receiver.getName());
+    holder.nameView.setText(receiver.getName().trim());
 
     if (chatRoom.getUnreadCount() > 0) {
       holder.unreadCountView.setText(String.valueOf(chatRoom.getUnreadCount()));

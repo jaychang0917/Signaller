@@ -65,7 +65,7 @@ public class KolChatRoomCell extends ChatRoomCell {
       holder.logoTextView.setText(receiver.getName().trim().substring(0, 1).toUpperCase());
     }
 
-    holder.nameView.setText(receiver.getName());
+    holder.nameView.setText(receiver.getName().trim());
 
     if ("brand".equals(receiver.getUserType())) {
       holder.brandLabelView.setVisibility(View.VISIBLE);
