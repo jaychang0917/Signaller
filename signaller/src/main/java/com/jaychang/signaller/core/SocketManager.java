@@ -160,7 +160,7 @@ public class SocketManager {
   private Emitter.Listener onConnected = args -> {
     LogUtils.d("onConnected");
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectedEvent());
-    sendPendingChatMsg();
+//    sendPendingChatMsg();
   };
 
   private Emitter.Listener onDisconnected = args -> {
