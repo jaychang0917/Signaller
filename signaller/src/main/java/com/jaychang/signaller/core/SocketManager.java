@@ -173,7 +173,7 @@ public class SocketManager {
     SignallerSocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SignallerSocketChatMessage.class);
     LogUtils.d("message received:" + socketChatMessage.getMessage().getContent());
     insertOrUpdateChatMsgInDb(socketChatMessage);
-    insertOrUpdateChatRoomInDb(socketChatMessage);
+    updateChatRoomInDb(socketChatMessage);
     dispatchMsgEvents(socketChatMessage);
   };
 
@@ -197,8 +197,8 @@ public class SocketManager {
     }
   }
 
-  private void insertOrUpdateChatRoomInDb(SignallerSocketChatMessage socketChatMessage) {
-    SignallerDbManager.getInstance().insertOrUpdateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
+  private void updateChatRoomInDb(SignallerSocketChatMessage socketChatMessage) {
+    SignallerDbManager.getInstance().updateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
   }
 
   // todo how to handle push??

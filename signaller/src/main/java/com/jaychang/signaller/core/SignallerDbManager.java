@@ -163,7 +163,7 @@ public class SignallerDbManager {
     });
   }
 
-  public void insertOrUpdateChatRoom(String roomId, SignallerChatMessage lastMsg) {
+  public void updateChatRoom(String roomId, SignallerChatMessage lastMsg) {
     getRealm().executeTransaction(realm -> {
       SignallerChatRoom chatRoom = realm.where(SignallerChatRoom.class)
         .equalTo("chatRoomId", roomId).findFirst();
@@ -173,11 +173,6 @@ public class SignallerDbManager {
         }
         chatRoom.setLastMessage(realm.copyToRealmOrUpdate(lastMsg));
       }
-      // todo dont create chatroom ourself, call api to update chatrooms
-//      else {
-//        chatRoom = SignallerChatRoom.from(roomId, lastMsg);
-//        realm.copyToRealmOrUpdate(chatRoom);
-//      }
     });
   }
 
