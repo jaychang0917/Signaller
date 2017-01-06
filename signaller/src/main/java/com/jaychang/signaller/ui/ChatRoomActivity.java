@@ -30,13 +30,13 @@ import com.jaychang.signaller.core.model.SignallerImageAttribute;
 import com.jaychang.signaller.core.model.SignallerPayload;
 import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
-import com.jaychang.signaller.ui.config.ChatMessageDateSeparatorCellProvider;
 import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
 import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
 import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
+import com.jaychang.signaller.ui.config.DateSeparatorViewProvider;
 import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
-import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
+import com.jaychang.signaller.ui.part.DateSeparatorItemDecoration;
 import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.AppUtils;
@@ -97,7 +97,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private ChatRoomToolbarProvider chatRoomToolbarProvider;
   private ChatRoomControlViewProvider chatRoomControlViewProvider;
   private CustomChatMessageCellProvider customChatMessageCellProvider;
-  private ChatMessageDateSeparatorCellProvider chatMessageDateSeparatorCellProvider;
+  private DateSeparatorViewProvider dateSeparatorViewProvider;
   private boolean isShowChatMessageDateSeparator;
   private UIConfig uiConfig;
 
@@ -136,8 +136,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     chatRoomControlViewProvider = uiConfig.getChatRoomControlViewProvider();
     chatMessageCellProvider = uiConfig.getChatMessageCellProvider();
     customChatMessageCellProvider = uiConfig.getCustomChatMessageCellProvider();
-    chatMessageDateSeparatorCellProvider = uiConfig.getChatMsgDateSeparatorCellProvider();
-    isShowChatMessageDateSeparator = uiConfig.isShowChatMessageDateSeparator();
+    dateSeparatorViewProvider = uiConfig.getDateSeparatorViewProvider();
+    isShowChatMessageDateSeparator = uiConfig.isShowDateSeparatorView();
   }
 
   private void initData() {
@@ -164,6 +164,9 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private void initRecyclerView() {
     messageList.useVerticalLinearMode();
     messageList.setCellSpacing(8);
+    if (isShowChatMessageDateSeparator) {
+      messageList.addItemDecoration(new DateSeparatorItemDecoration(dateSeparatorViewProvider));
+    }
     messageList.setOnLoadMoreListener(true, new OnLoadMorePageListener() {
       @Override
       public void onLoadMore(int page) {
@@ -353,19 +356,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
       });
 
       messageList.addCell(cell, 0);
-
-      // date cell
-      boolean isSameDate = false;
-      if (nextPos > reversedMessages.size() - 1) {
-        isSameDate = true;
-      } else if (message.isSameDate(reversedMessages.get(nextPos))) {
-        isSameDate = true;
-      }
-
-      if (!isSameDate && isShowChatMessageDateSeparator) {
-        ChatMessageDateSeparatorCell separatorCell = chatMessageDateSeparatorCellProvider.getChatMessageDateSeparatorCell(message.getMsgTime());
-        messageList.addCell(separatorCell, 0);
-      }
     }
 
     messageList.getAdapter().notifyItemRangeInserted(0, messageList.getCellsCount() - totalCountBefore);

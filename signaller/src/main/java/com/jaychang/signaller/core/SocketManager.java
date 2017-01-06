@@ -35,8 +35,6 @@ public class SocketManager {
   private static final String RECEIVE_MESSAGE = "receive_message";
 
   private Socket socket;
-  // since socket.connected() has bug, so we rely on connection callback;
-  private boolean isConnected;
   private boolean isSocketInitialized;
   private Handler mainThreadHandler;
 
@@ -62,21 +60,16 @@ public class SocketManager {
       throw new RuntimeException(e);
     }
 
-    socket.on(CONNECT, onConnect);
-    socket.on(CONNECTING, onConnecting);
-    socket.on(CONNECTED, onConnected);
-    socket.on(DISCONNECTED, onDisconnected);
-    socket.on(RECEIVE_MESSAGE, onMsgReceived);
-
     isSocketInitialized = true;
   }
 
   public boolean isConnected() {
-    return isConnected;
+    return socket != null && socket.connected();
   }
 
   public void connect() {
     if (!isConnected()) {
+      onEvents();
       socket.connect();
     }
   }
@@ -88,14 +81,20 @@ public class SocketManager {
     }
   }
 
+  private void onEvents() {
+    socket.on(CONNECT, onConnect);
+    socket.on(CONNECTING, onConnecting);
+    socket.on(CONNECTED, onConnected);
+    socket.on(DISCONNECTED, onDisconnected);
+    socket.on(RECEIVE_MESSAGE, onMsgReceived);
+  }
+
   private void offEvents() {
-    if (isConnected()) {
-      socket.off(CONNECT);
-      socket.off(CONNECTING);
-      socket.off(CONNECTED);
-      socket.off(DISCONNECTED);
-      socket.off(RECEIVE_MESSAGE);
-    }
+    socket.off(CONNECT);
+    socket.off(CONNECTING);
+    socket.off(CONNECTED);
+    socket.off(DISCONNECTED);
+    socket.off(RECEIVE_MESSAGE);
   }
 
   public void send(SignallerSocketChatMessage message) {
@@ -159,14 +158,13 @@ public class SocketManager {
   };
 
   private Emitter.Listener onConnected = args -> {
-    isConnected = true;
     LogUtils.d("onConnected");
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectedEvent());
     sendPendingChatMsg();
   };
 
   private Emitter.Listener onDisconnected = args -> {
-    isConnected = false;
+    // todo SocketIO BUG, no callback received
     LogUtils.d("onDisconnected");
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketDisconnectedEvent());
   };

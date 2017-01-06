@@ -9,19 +9,18 @@ import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
-import com.jaychang.signaller.ui.config.ChatMessageDateSeparatorCellProvider;
 import com.jaychang.signaller.ui.config.ChatMessageType;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
 import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
 import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
+import com.jaychang.signaller.ui.config.DateSeparatorViewProvider;
 import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
-import com.jaychang.signaller.ui.part.ChatMessageDateSeparatorCell;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
-import com.wiser.kol.ui.KolChatMessageDateSeparatorCell;
 import com.wiser.kol.ui.KolChatRoomCell;
 import com.wiser.kol.ui.KolChatRoomToolbar;
+import com.wiser.kol.ui.KolDateSeparatorView;
 import com.wiser.kol.ui.KolEventMessageCell;
 import com.wiser.kol.ui.KolOtherImageMessageCell;
 import com.wiser.kol.ui.KolOtherTextMessageCell;
@@ -80,11 +79,18 @@ public class App extends MultiDexApplication {
           return new KolEventMessageCell(message);
         }
       })
-      .chatMessageDateSeparatorCellProvider(new ChatMessageDateSeparatorCellProvider() {
+      .dateSeparatorViewProvider(new DateSeparatorViewProvider() {
         @NonNull
         @Override
-        public ChatMessageDateSeparatorCell getChatMessageDateSeparatorCell(long timestampMillis) {
-          return new KolChatMessageDateSeparatorCell(timestampMillis);
+        public View getSeparatorView(SignallerChatMessage item) {
+          KolDateSeparatorView view = new KolDateSeparatorView(getApplicationContext());
+          view.bind(item);
+          return view;
+        }
+
+        @Override
+        public boolean isSameDate(SignallerChatMessage item, SignallerChatMessage nextItem) {
+          return item.isSameDate(nextItem);
         }
       })
       .chatRoomToolbarProvider(new ChatRoomToolbarProvider() {

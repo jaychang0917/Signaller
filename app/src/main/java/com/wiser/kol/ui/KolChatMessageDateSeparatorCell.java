@@ -23,7 +23,7 @@ public class KolChatMessageDateSeparatorCell extends ChatMessageDateSeparatorCel
 
   @Override
   public BaseViewHolder onCreateViewHolder(ViewGroup viewGroup, int position) {
-    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.sig_cell_chat_message_date, viewGroup, false);
+    View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.sig_view_date_separator, viewGroup, false);
     return new ViewHolder(view);
   }
 

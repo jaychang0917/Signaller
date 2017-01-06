@@ -11,7 +11,7 @@ public class UIConfig {
   private ChatRoomControlViewProvider chatRoomControlViewProvider;
   private ChatMessageCellProvider chatMessageCellProvider;
   private CustomChatMessageCellProvider customChatMessageCellProvider;
-  private ChatMessageDateSeparatorCellProvider chatMsgDateSeparatorCellProvider;
+  private DateSeparatorViewProvider dateSeparatorViewProvider;
   private boolean showChatMsgDateSeparator;
   private @ColorRes int chatRoomToolbarBackgroundColor;
   private @ColorRes int chatRoomStatusBarBackgroundColor;
@@ -22,7 +22,7 @@ public class UIConfig {
     chatRoomControlViewProvider = builder.chatRoomControlViewProvider;
     chatMessageCellProvider = builder.chatMessageCellProvider;
     customChatMessageCellProvider = builder.customChatMessageCellProvider;
-    chatMsgDateSeparatorCellProvider = builder.chatMsgDateSeparatorCellProvider;
+    dateSeparatorViewProvider = builder.dateSeparatorViewProvider;
     showChatMsgDateSeparator = builder.showChatMsgDateSeparator;
     chatRoomToolbarBackgroundColor = builder.chatRoomToolbarBackgroundColor;
     chatRoomStatusBarBackgroundColor = builder.chatRoomStatusBarBackgroundColor;
@@ -52,11 +52,11 @@ public class UIConfig {
     return customChatMessageCellProvider;
   }
 
-  public ChatMessageDateSeparatorCellProvider getChatMsgDateSeparatorCellProvider() {
-    return chatMsgDateSeparatorCellProvider;
+  public DateSeparatorViewProvider getDateSeparatorViewProvider() {
+    return dateSeparatorViewProvider;
   }
 
-  public boolean isShowChatMessageDateSeparator() {
+  public boolean isShowDateSeparatorView() {
     return showChatMsgDateSeparator;
   }
 
@@ -74,7 +74,7 @@ public class UIConfig {
     private ChatRoomControlViewProvider chatRoomControlViewProvider;
     private ChatMessageCellProvider chatMessageCellProvider;
     private CustomChatMessageCellProvider customChatMessageCellProvider;
-    private ChatMessageDateSeparatorCellProvider chatMsgDateSeparatorCellProvider;
+    private DateSeparatorViewProvider dateSeparatorViewProvider;
     private boolean showChatMsgDateSeparator = true;
     private int chatRoomToolbarBackgroundColor = R.color.sig_toolbar_bg;
     private int chatRoomStatusBarBackgroundColor;
@@ -107,8 +107,8 @@ public class UIConfig {
       return this;
     }
 
-    public Builder chatMessageDateSeparatorCellProvider(ChatMessageDateSeparatorCellProvider provider) {
-      chatMsgDateSeparatorCellProvider = provider;
+    public Builder dateSeparatorViewProvider(DateSeparatorViewProvider provider) {
+      dateSeparatorViewProvider = provider;
       return this;
     }
 
@@ -145,8 +145,8 @@ public class UIConfig {
       if (chatMessageCellProvider == null) {
         chatMessageCellProvider = new DefaultChatMessageCellProvider();
       }
-      if (chatMsgDateSeparatorCellProvider == null) {
-        chatMsgDateSeparatorCellProvider = new DefaultChatMessageDateSeparatorCellProvider();
+      if (dateSeparatorViewProvider == null) {
+        dateSeparatorViewProvider = new DefaultDateSeparatorViewProvider();
       }
     }
   }
