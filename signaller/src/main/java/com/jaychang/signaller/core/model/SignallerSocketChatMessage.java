@@ -13,7 +13,7 @@ public class SignallerSocketChatMessage extends RealmObject {
   private String roomId;
   @SerializedName("message")
   private SignallerChatMessage message;
-  @SerializedName("payloadJson")
+  @SerializedName("payload")
   private String payloadJson;
   private SignallerPayload payloadModel;
 
