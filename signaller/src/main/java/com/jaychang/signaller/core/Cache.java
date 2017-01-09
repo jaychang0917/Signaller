@@ -8,4 +8,8 @@ public final class Cache {
 
   public static HashMap<String, SignallerChatRoom> chatRoomCache = new HashMap<>();
 
+  public static void clear() {
+    chatRoomCache.clear();
+  }
+
 }

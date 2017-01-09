@@ -101,6 +101,7 @@ public final class Signaller {
 
   public void clearChatCache() {
     SignallerDbManager.getInstance().clear();
+    Cache.clear();
   }
 
 }
