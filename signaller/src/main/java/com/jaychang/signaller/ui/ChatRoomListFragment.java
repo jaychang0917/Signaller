@@ -11,6 +11,7 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
+import com.jaychang.signaller.core.Cache;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerDataManager;
 import com.jaychang.signaller.core.SignallerDbManager;
@@ -28,7 +29,6 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,7 +43,6 @@ public class ChatRoomListFragment extends RxFragment {
   private String cursor;
   private boolean hasMoreData = true;
   private ChatRoomCellProvider chatRoomCellProvider;
-  private static HashMap<String, SignallerChatRoom> chatRoomCache = new HashMap<>();
 
   public static ChatRoomListFragment newInstance() {
     return new ChatRoomListFragment();
@@ -117,7 +116,7 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void loadChatRooms() {
-    if (chatRoomCache.isEmpty()) {
+    if (Cache.chatRoomCache.isEmpty()) {
       loadChatRoomsFromNetwork();
     } else {
       bindChatRooms();
@@ -140,7 +139,7 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void cacheChatRooms(List<SignallerChatRoom> rooms) {
     for (SignallerChatRoom room : rooms) {
-      chatRoomCache.put(room.getChatRoomId(), room);
+      Cache.chatRoomCache.put(room.getChatRoomId(), room);
     }
   }
 
@@ -185,7 +184,7 @@ public class ChatRoomListFragment extends RxFragment {
   private void bindChatRooms() {
     recyclerView.removeAllCells();
 
-    List<SignallerChatRoom> sortedChatRooms = sort(new ArrayList<>(chatRoomCache.values()));
+    List<SignallerChatRoom> sortedChatRooms = sort(new ArrayList<>(Cache.chatRoomCache.values()));
     for (SignallerChatRoom chatRoom : sortedChatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
       cell.setCallback(room -> {
