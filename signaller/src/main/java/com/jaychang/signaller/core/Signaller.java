@@ -117,7 +117,8 @@ public final class Signaller {
 
   public void clearChatCache() {
     SignallerDbManager.getInstance().clear();
-    Cache.clear();
+    ChatRoomMeta.hasMoreData = false;
+    ChatRoomMeta.cursor = null;
   }
 
 }

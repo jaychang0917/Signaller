@@ -181,9 +181,10 @@ public class SignallerDbManager {
 
     return realm
       .where(SignallerChatRoom.class)
-      .findAllSorted("lastUpdateTime", Sort.DESCENDING)
+      .findAllSortedAsync("lastUpdateTime", Sort.DESCENDING)
       .asObservable()
-      .doOnCompleted(realm::close);
+      .filter(RealmResults::isLoaded)
+      .first();
   }
 
   public SignallerChatRoom getChatRoom(String chatRoomId) {

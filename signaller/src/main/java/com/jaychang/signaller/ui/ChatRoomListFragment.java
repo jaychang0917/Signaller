@@ -11,7 +11,7 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.nrv.OnLoadMorePageListener;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.R2;
-import com.jaychang.signaller.core.Cache;
+import com.jaychang.signaller.core.ChatRoomMeta;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerDataManager;
 import com.jaychang.signaller.core.SignallerDbManager;
@@ -21,6 +21,7 @@ import com.jaychang.signaller.core.model.SignallerReceiver;
 import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
 import com.jaychang.signaller.util.LogUtils;
+import com.trello.rxlifecycle.android.FragmentEvent;
 import com.trello.rxlifecycle.components.support.RxFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -29,6 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.BindView;
@@ -40,9 +42,8 @@ public class ChatRoomListFragment extends RxFragment {
   NRecyclerView recyclerView;
 
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
-  private String cursor;
-  private boolean hasMoreData = true;
   private ChatRoomCellProvider chatRoomCellProvider;
+  private HashMap<String, SignallerChatRoom> chatRooms = new HashMap<>();
 
   public static ChatRoomListFragment newInstance() {
     return new ChatRoomListFragment();
@@ -98,7 +99,7 @@ public class ChatRoomListFragment extends RxFragment {
     recyclerView.setOnLoadMoreListener(new OnLoadMorePageListener() {
       @Override
       public void onLoadMore(int i) {
-        if (hasMoreData) {
+        if (ChatRoomMeta.hasMoreData) {
           loadChatRoomsFromNetwork();
         }
       }
@@ -116,42 +117,41 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void loadChatRooms() {
-    if (Cache.chatRoomCache.isEmpty()) {
-      loadChatRoomsFromNetwork();
-    } else {
-      bindChatRooms();
-    }
+    SignallerDataManager.getInstance().getChatRooms()
+      .compose(bindUntilEvent(FragmentEvent.DESTROY))
+      .subscribe(rooms -> {
+          saveChatRooms(rooms);
+          bindChatRooms();
+        });
   }
 
   private void loadChatRoomsFromNetwork() {
-    SignallerDataManager.getInstance().getChatRooms(cursor)
-      .compose(bindToLifecycle())
+    SignallerDataManager.getInstance().getChatRoomsFromNetwork(ChatRoomMeta.cursor)
+      .compose(bindUntilEvent(FragmentEvent.DESTROY))
       .subscribe(
-        response -> {
-          hasMoreData = response.hasMore;
-          cursor = response.cursor;
-          cacheChatRooms(response.chatRooms);
+        chatRooms -> {
+          saveChatRooms(chatRooms);
           bindChatRooms();
         }, error -> {
           LogUtils.e("loadChatRoomsFromNetwork:" + error.getMessage());
         });
   }
 
-  private void cacheChatRooms(List<SignallerChatRoom> rooms) {
+  private void saveChatRooms(List<SignallerChatRoom> rooms) {
     for (SignallerChatRoom room : rooms) {
-      Cache.chatRoomCache.put(room.getChatRoomId(), room);
+      chatRooms.put(room.getChatRoomId(), room);
     }
   }
 
   private List<SignallerChatRoom> sort(List<SignallerChatRoom> rooms) {
-    Collections.sort(rooms, (chatRoom, other) -> (int)(other.getLastMessageTime() - chatRoom.getLastMessageTime()));
+    Collections.sort(rooms, (chatRoom, other) -> (int) (other.getLastMessageTime() - chatRoom.getLastMessageTime()));
     return rooms;
   }
 
   private void insertOrUpdateChatRoom(SignallerChatRoom room) {
     // if has no this chat room, call api to update
     if (room == null) {
-      cursor = null;
+      ChatRoomMeta.cursor = null;
       loadChatRoomsFromNetwork();
       return;
     }
@@ -184,7 +184,7 @@ public class ChatRoomListFragment extends RxFragment {
   private void bindChatRooms() {
     recyclerView.removeAllCells();
 
-    List<SignallerChatRoom> sortedChatRooms = sort(new ArrayList<>(Cache.chatRoomCache.values()));
+    List<SignallerChatRoom> sortedChatRooms = sort(new ArrayList<>(chatRooms.values()));
     for (SignallerChatRoom chatRoom : sortedChatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
       cell.setCallback(room -> {

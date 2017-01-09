@@ -3,10 +3,11 @@ package com.jaychang.signaller.core;
 import android.net.Uri;
 
 import com.jaychang.signaller.core.model.ChatMessageResponse;
-import com.jaychang.signaller.core.model.ChatRoomResponse;
+import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.jaychang.signaller.core.model.SignallerImage;
 
 import java.io.File;
+import java.util.List;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -28,12 +29,19 @@ public class SignallerDataManager {
     return INSTANCE;
   }
 
-  public Observable<ChatRoomResponse> getChatRooms(String cursor) {
+  public Observable<List<SignallerChatRoom>> getChatRooms() {
+    return Observable.concat(databaseManager.getChatRooms(), getChatRoomsFromNetwork(null));
+  }
+
+  public Observable<List<SignallerChatRoom>> getChatRoomsFromNetwork(String cursor) {
     return api.getChatRooms(cursor, 24)
-      .compose(new SchedulerTransformer<>())
       .doOnNext(response -> {
+        ChatRoomMeta.cursor = response.cursor;
+        ChatRoomMeta.hasMoreData = response.hasMore;
         databaseManager.saveChatRooms(response.chatRooms);
-      });
+      })
+      .map(response -> response.chatRooms)
+      .compose(new SchedulerTransformer<>());
   }
 
   public Observable<ChatMessageResponse> getChatMessages(String userId, String cursor) {
