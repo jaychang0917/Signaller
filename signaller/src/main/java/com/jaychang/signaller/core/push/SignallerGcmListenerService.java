@@ -27,7 +27,7 @@ public class SignallerGcmListenerService extends GcmListenerService {
     String chatRoomId = "123";
 
     SignallerNotificationManager.showNotification(message, chatRoomId);
-    LogUtils.d("show push notification:" + message);
+    LogUtils.d("[GCM]show push notification:" + message);
   }
 
 }

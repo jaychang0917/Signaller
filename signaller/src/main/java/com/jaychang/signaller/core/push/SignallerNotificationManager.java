@@ -19,7 +19,6 @@ public class SignallerNotificationManager {
   }
 
   public static void showNotification(String message, String chatRoomId) {
-    LogUtils.d("manually show notification: '" + message + "' for chatroom:" + chatRoomId);
     Context context = AppData.getInstance().getAppContext();
 
     Intent intent = new Intent(context, ChatRoomActivity.class);
