@@ -1,10 +1,12 @@
 package com.jaychang.signaller.core;
 
 import android.app.Application;
+import android.content.Context;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
 import com.jaychang.signaller.core.push.SignallerGcmManager;
+import com.jaychang.signaller.ui.ChatRoomActivity;
 import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.AppStatusUtils;
@@ -66,8 +68,13 @@ public final class Signaller {
     SocketManager.getInstance().disconnect();
   }
 
-  public void chatWith(String userId, ChatRoomJoinCallback callback) {
-    SocketManager.getInstance().join(userId, makeChatRoomId(userId), callback);
+  public void chatWith(Context context, String userId, String toolbarTitle) {
+    SocketManager.getInstance().join(userId, makeChatRoomId(userId), new ChatRoomJoinCallback() {
+      @Override
+      public void onChatRoomJoined(String chatRoomId, String userId) {
+        ChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
+      }
+    });
   }
 
   public void leaveChatRoom(String chatRoomId, ChatRoomLeaveCallback callback) {

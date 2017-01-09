@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.jaychang.signaller.core.ChatRoomJoinCallback;
 import com.jaychang.signaller.core.ChatRoomLeaveCallback;
 import com.jaychang.signaller.core.Signaller;
-import com.jaychang.signaller.ui.ChatRoomActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,52 +45,27 @@ public class PeopleFragment extends Fragment {
 
   @OnClick(R.id.joinJay10Button)
   void chatWithJay10() {
-    Signaller.getInstance().chatWith(Constant.USER_ID_JAY10, new ChatRoomJoinCallback() {
-      @Override
-      public void onChatRoomJoined(String chatRoomId, String userId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay10");
-      }
-    });
+    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY10, "jay10");
   }
 
   @OnClick(R.id.joinJay11Button)
   void chatWithJay11() {
-    Signaller.getInstance().chatWith(Constant.USER_ID_JAY11, new ChatRoomJoinCallback() {
-      @Override
-      public void onChatRoomJoined(String chatRoomId, String userId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay11");
-      }
-    });
+    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY11, "jay11");
   }
 
   @OnClick(R.id.joinJay12Button)
   void chatWithJay12() {
-    Signaller.getInstance().chatWith(Constant.USER_ID_JAY12, new ChatRoomJoinCallback() {
-      @Override
-      public void onChatRoomJoined(String chatRoomId, String userId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay12");
-      }
-    });
+    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY12, "jay12");
   }
 
   @OnClick(R.id.joinJay13Button)
   void chatWithJay13() {
-    Signaller.getInstance().chatWith(Constant.USER_ID_JAY13, new ChatRoomJoinCallback() {
-      @Override
-      public void onChatRoomJoined(String chatRoomId, String userId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay13");
-      }
-    });
+    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY13, "jay13");
   }
 
   @OnClick(R.id.joinJay14Button)
   void chatWithJay14() {
-    Signaller.getInstance().chatWith(Constant.USER_ID_JAY14, new ChatRoomJoinCallback() {
-      @Override
-      public void onChatRoomJoined(String chatRoomId, String userId) {
-        ChatRoomActivity.start(getActivity(), chatRoomId, userId, "jay14");
-      }
-    });
+    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY14, "jay14");
   }
 
   private String makeChatRoomId(String userId) {

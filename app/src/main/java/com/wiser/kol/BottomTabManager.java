@@ -23,7 +23,8 @@ public class BottomTabManager {
   private enum Tab {
     TAB1(R.string.people, PeopleFragment.class),
     CHAT(R.string.chatroom, ChatRoomsFragment.class),
-    TAB3(R.string.other, OtherFragment.class);
+    TAB3(R.string.other, OtherFragment.class),
+    TAB4(R.string.other, OtherFragment.class);
 
     int title;
     Class<? extends Fragment> fragment;
