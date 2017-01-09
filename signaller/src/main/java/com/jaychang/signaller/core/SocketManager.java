@@ -6,6 +6,7 @@ import android.os.Looper;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.core.model.SignallerPayload;
 import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
+import com.jaychang.signaller.core.push.SignallerNotificationManager;
 import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.StringUtils;
@@ -201,7 +202,7 @@ public class SocketManager {
     SignallerDbManager.getInstance().updateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
   }
 
-  // todo how to handle push??
+
   private void dispatchMsgEvents(SignallerSocketChatMessage socketChatMessage) {
     SignallerChatMessage chatMessage = socketChatMessage.getMessage();
     String chatRoomId = socketChatMessage.getRoomId();
@@ -220,12 +221,12 @@ public class SocketManager {
       if (isInSameChatRoom) {
         EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(msgId));
       } else {
-//        SignallerNotificationManager.showNotification(message, chatRoomId);
+        SignallerNotificationManager.showNotification(message, chatRoomId);
       }
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
     } else {
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
-//      SignallerNotificationManager.showNotification(message, chatRoomId);
+      SignallerNotificationManager.showNotification(message, chatRoomId);
     }
   }
 

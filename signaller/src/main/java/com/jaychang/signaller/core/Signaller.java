@@ -4,6 +4,7 @@ import android.app.Application;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
+import com.jaychang.signaller.core.push.SignallerGcmManager;
 import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.AppStatusUtils;
@@ -29,7 +30,6 @@ public final class Signaller {
 
     registerAppCallback(app);
     SignallerDbManager.getInstance().init(app.getApplicationContext());
-//    SignallerGcmManager.init(app.getApplicationContext());
   }
 
   public static Signaller getInstance() {
@@ -58,6 +58,8 @@ public final class Signaller {
 
     SocketManager.getInstance().initSocket(accessToken);
     SocketManager.getInstance().connect();
+
+    SignallerGcmManager.init(AppData.getInstance().getAppContext());
   }
 
   public void disconnect() {

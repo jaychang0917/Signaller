@@ -11,6 +11,7 @@ import android.support.v4.app.TaskStackBuilder;
 
 import com.jaychang.signaller.core.AppData;
 import com.jaychang.signaller.ui.ChatRoomActivity;
+import com.jaychang.signaller.util.LogUtils;
 
 public class SignallerNotificationManager {
 
@@ -18,6 +19,7 @@ public class SignallerNotificationManager {
   }
 
   public static void showNotification(String message, String chatRoomId) {
+    LogUtils.d("manually show notification: '" + message + "' for chatroom:" + chatRoomId);
     Context context = AppData.getInstance().getAppContext();
 
     Intent intent = new Intent(context, ChatRoomActivity.class);

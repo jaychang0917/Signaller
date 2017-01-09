@@ -8,7 +8,6 @@ import android.preference.PreferenceManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
-import com.jaychang.signaller.core.AppData;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.AppUtils;
@@ -46,12 +45,12 @@ public class SignallerGcmRegistrationService extends IntentService {
 
   private void sendRegistrationToServer(final String token) {
     final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-
+//    getString(AppData.getInstance().getAppName())
     // custom implementation for server to send push to specific devices
     HttpUrl url = HttpUrl.parse("https://redsopushserver.appspot.com/apis/reg_device")
       .newBuilder()
       .addQueryParameter("device_token", token)
-      .addQueryParameter("app_name", getString(AppData.getInstance().getAppName()))
+      .addQueryParameter("app_name", "kol")
       .addQueryParameter("is_dev", "0")
       .addQueryParameter("client_version", AppUtils.getVersionCode(getApplicationContext())+"")
       .addQueryParameter("os_version", Build.VERSION.RELEASE)
@@ -65,6 +64,8 @@ public class SignallerGcmRegistrationService extends IntentService {
     Request request = new Request.Builder().get()
       .url(url)
       .build();
+
+    LogUtils.d("sendRegistrationToServer: user id:" + UserData.getInstance().getUserId());
 
     new OkHttpClient().newCall(request).enqueue(new Callback() {
       @Override
