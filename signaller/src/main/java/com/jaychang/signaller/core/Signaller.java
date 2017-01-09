@@ -69,6 +69,22 @@ public final class Signaller {
   }
 
   public void chatWith(Context context, String userId, String toolbarTitle) {
+    if (!SocketManager.getInstance().isConnected()) {
+      SocketManager.getInstance().connect(new SocketConnectionCallbacks() {
+        @Override
+        void onConnected() {
+          if (context == null) {
+            return;
+          }
+          chatWithInternal(context, userId, toolbarTitle);
+        }
+      });
+    } else {
+      chatWithInternal(context, userId, toolbarTitle);
+    }
+  }
+
+  private void chatWithInternal(Context context, String userId, String toolbarTitle) {
     SocketManager.getInstance().join(userId, makeChatRoomId(userId), new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId, String userId) {

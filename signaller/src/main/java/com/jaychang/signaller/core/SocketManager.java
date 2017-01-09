@@ -21,6 +21,7 @@ import io.socket.client.Ack;
 import io.socket.client.IO;
 import io.socket.client.Socket;
 import io.socket.emitter.Emitter;
+import rx.subjects.PublishSubject;
 
 public class SocketManager {
 
@@ -39,8 +40,11 @@ public class SocketManager {
   private boolean isSocketInitialized;
   private Handler mainThreadHandler;
 
+  private PublishSubject<String> connectionEmitter;
+
   private SocketManager() {
     mainThreadHandler = new Handler(Looper.getMainLooper());
+    connectionEmitter = PublishSubject.create();
   }
 
   public static SocketManager getInstance() {
@@ -68,11 +72,34 @@ public class SocketManager {
     return socket != null && socket.connected();
   }
 
-  public void connect() {
+  public void connect(SocketConnectionCallbacks callback) {
     if (!isConnected()) {
       onEvents();
       socket.connect();
+      registerConnectionCallbacks(callback);
     }
+  }
+
+  private void registerConnectionCallbacks(SocketConnectionCallbacks callback) {
+    if (callback == null) {
+      return;
+    }
+
+    connectionEmitter.subscribe(type -> {
+      if (type.equals(CONNECT)) {
+        callback.onConnect();
+      } else if (type.equals(CONNECTING)) {
+        callback.onConnecting();
+      } else if (type.equals(CONNECTED)) {
+        callback.onConnected();
+      } else if (type.equals(DISCONNECTED)) {
+        callback.onDisconnected();
+      }
+    });
+  }
+
+  public void connect() {
+    connect(null);
   }
 
   public void disconnect() {
@@ -150,16 +177,19 @@ public class SocketManager {
 
   private Emitter.Listener onConnect = args -> {
     LogUtils.d("onConnect");
+    connectionEmitter.onNext(CONNECT);
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectEvent());
   };
 
   private Emitter.Listener onConnecting = args -> {
     LogUtils.d("onConnecting");
+    connectionEmitter.onNext(CONNECTING);
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectingEvent());
   };
 
   private Emitter.Listener onConnected = args -> {
     LogUtils.d("onConnected");
+    connectionEmitter.onNext(CONNECTED);
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectedEvent());
     sendPendingChatMsg();
   };
@@ -167,6 +197,7 @@ public class SocketManager {
   private Emitter.Listener onDisconnected = args -> {
     // todo SocketIO BUG, no callback received
     LogUtils.d("onDisconnected");
+    connectionEmitter.onNext(DISCONNECTED);
     EventBus.getDefault().postSticky(new SignallerEvents.OnSocketDisconnectedEvent());
   };
 
