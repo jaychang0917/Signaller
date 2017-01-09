@@ -13,7 +13,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
-interface Api {
+public interface SignallerApi {
 
   @GET("api/chats")
   Observable<ChatRoomResponse> getChatRooms(@Query("cursor") String cursor,

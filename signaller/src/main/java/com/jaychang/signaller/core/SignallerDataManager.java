@@ -17,11 +17,11 @@ public class SignallerDataManager {
 
   private static final SignallerDataManager INSTANCE = new SignallerDataManager();
   private SignallerDbManager databaseManager;
-  private Api api;
+  private SignallerApi api;
 
   private SignallerDataManager() {
     databaseManager = SignallerDbManager.getInstance();
-    api = ApiManager.getApi();
+    api = SignallerApiManager.getApi();
   }
 
   public static SignallerDataManager getInstance() {

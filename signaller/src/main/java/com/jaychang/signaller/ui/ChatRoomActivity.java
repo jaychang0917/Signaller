@@ -144,7 +144,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     chatRoomId = getIntent().getStringExtra(EXTRA_CHATROOM_ID);
     userId = getIntent().getStringExtra(EXTRA_CHATROOM_USERID);
     username = getIntent().getStringExtra(EXTRA_CHATROOM_USERNAME);
-//    chatRoom = SignallerDbManager.getInstance().getChatRoom(chatRoomId);
 
     UserData.getInstance().setCurrentChatRoomId(chatRoomId);
   }
@@ -305,7 +304,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
           scrollToBottomOnce();
         },
         error -> {
-//          LogUtils.d(error.getMessage());
         });
   }
 
