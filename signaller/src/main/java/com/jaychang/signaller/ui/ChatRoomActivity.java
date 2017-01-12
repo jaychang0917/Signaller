@@ -80,14 +80,14 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     void onMessageSavedToDb(SignallerSocketChatMessage message);
   }
 
-  public static final String EXTRA_CHATROOM_ID = "EXTRA_CHATROOM_ID";
-  public static final String EXTRA_CHATROOM_USERNAME = "EXTRA_CHATROOM_USERNAME";
-  public static final String EXTRA_CHATROOM_USERID = "EXTRA_CHATROOM_USERID";
+  public static final String EXTRA_CHAT_ROOM_ID = "EXTRA_CHAT_ROOM_ID";
+  public static final String EXTRA_TITLE = "EXTRA_TITLE";
+  public static final String EXTRA_USER_ID = "EXTRA_USER_ID";
 
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
 
   private String chatRoomId;
-  private String username;
+  private String title;
   private String userId;
   private String cursor;
   private boolean hasMoreData;
@@ -103,9 +103,9 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   public static void start(Context context, String chatRoomId, String userId, String username) {
     Intent intent = new Intent(context, ChatRoomActivity.class);
-    intent.putExtra(EXTRA_CHATROOM_ID, chatRoomId);
-    intent.putExtra(EXTRA_CHATROOM_USERID, userId);
-    intent.putExtra(EXTRA_CHATROOM_USERNAME, username);
+    intent.putExtra(EXTRA_CHAT_ROOM_ID, chatRoomId);
+    intent.putExtra(EXTRA_USER_ID, userId);
+    intent.putExtra(EXTRA_TITLE, username);
     context.startActivity(intent);
   }
 
@@ -141,15 +141,15 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void initData() {
-    chatRoomId = getIntent().getStringExtra(EXTRA_CHATROOM_ID);
-    userId = getIntent().getStringExtra(EXTRA_CHATROOM_USERID);
-    username = getIntent().getStringExtra(EXTRA_CHATROOM_USERNAME);
+    chatRoomId = getIntent().getStringExtra(EXTRA_CHAT_ROOM_ID);
+    userId = getIntent().getStringExtra(EXTRA_USER_ID);
+    title = getIntent().getStringExtra(EXTRA_TITLE);
 
     UserData.getInstance().setCurrentChatRoomId(chatRoomId);
   }
 
   private void initToolbar() {
-    View toolbar = chatRoomToolbarProvider.getToolbar(this, username);
+    View toolbar = chatRoomToolbarProvider.getToolbar(this, title);
     toolbarHolder.addView(toolbar);
   }
 

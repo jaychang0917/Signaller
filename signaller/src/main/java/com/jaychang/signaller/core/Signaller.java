@@ -2,8 +2,6 @@ package com.jaychang.signaller.core;
 
 import android.app.Application;
 import android.content.Context;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
 
 import com.jaychang.signaller.core.push.SignallerGcmManager;
 import com.jaychang.signaller.ui.ChatRoomActivity;
@@ -14,24 +12,25 @@ import com.jaychang.utils.AppStatusUtils;
 public final class Signaller {
 
   private static final Signaller INSTANCE = new Signaller();
+  private Context appContext;
+  private AppConfig appConfig;
   private UIConfig uiConfig;
 
   private Signaller() {
   }
 
-  public static void init(Application app,
-                          String serverDomain,
-                          String socketUrl,
-                          @StringRes int appName,
-                          @DrawableRes int appIcon) {
-    AppData.getInstance().setServerDomain(serverDomain);
-    AppData.getInstance().setSocketUrl(socketUrl);
-    AppData.getInstance().setAppName(appName);
-    AppData.getInstance().setAppIcon(appIcon);
-    AppData.getInstance().setAppContext(app.getApplicationContext());
+  public static void init(Application app, AppConfig appConfig, UIConfig uiConfig) {
+    INSTANCE.appContext = app.getApplicationContext();
+    INSTANCE.appConfig = appConfig;
+    INSTANCE.uiConfig = uiConfig;
 
     registerAppCallback(app);
+
     SignallerDbManager.getInstance().init(app.getApplicationContext());
+  }
+
+  public static void init(Application app, AppConfig appConfig) {
+    init(app, appConfig, null);
   }
 
   public static Signaller getInstance() {
@@ -61,7 +60,7 @@ public final class Signaller {
     SocketManager.getInstance().initSocket(accessToken);
     SocketManager.getInstance().connect();
 
-    SignallerGcmManager.init(AppData.getInstance().getAppContext());
+    SignallerGcmManager.init(appContext);
   }
 
   public void disconnect() {
@@ -85,7 +84,12 @@ public final class Signaller {
   }
 
   private void chatWithInternal(Context context, String userId, String toolbarTitle) {
-    SocketManager.getInstance().join(userId, makeChatRoomId(userId), new ChatRoomJoinCallback() {
+    String ownUserId = UserData.getInstance().getUserId();
+    String chatRoomId = ownUserId.compareTo(userId) < 0 ?
+      ownUserId + "_" + userId :
+      userId + "_" + ownUserId;
+
+    SocketManager.getInstance().join(userId, chatRoomId, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId, String userId) {
         ChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
@@ -97,15 +101,8 @@ public final class Signaller {
     SocketManager.getInstance().leave(chatRoomId, callback);
   }
 
-  private String makeChatRoomId(String userId) {
-    String ownUserId = UserData.getInstance().getUserId();
-    return ownUserId.compareTo(userId) < 0 ?
-      ownUserId + "_" + userId :
-      userId + "_" + ownUserId;
-  }
-
-  public void setUIConfig(UIConfig config) {
-    this.uiConfig = config;
+  public Context getAppContext() {
+    return appContext;
   }
 
   public UIConfig getUiConfig() {
@@ -113,6 +110,10 @@ public final class Signaller {
       return UIConfig.newBuilder().build();
     }
     return uiConfig;
+  }
+
+  public AppConfig getAppConfig() {
+    return appConfig;
   }
 
   public void clearChatCache() {

@@ -3,6 +3,7 @@ package com.jaychang.signaller.core.push;
 import android.os.Bundle;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.util.LogUtils;
 
 public class SignallerGcmListenerService extends GcmListenerService {
@@ -16,17 +17,23 @@ public class SignallerGcmListenerService extends GcmListenerService {
    */
   @Override
   public void onMessageReceived(String from, Bundle data) {
-    LogUtils.d("onMessageReceived");
-
-    String message = data.getString("content");
+    LogUtils.d("GCM:onMessageReceived");
 
     for (String key : data.keySet()) {
       LogUtils.d("GCM:data->key:" + key + " value:" + data.get(key));
     }
 
-    String chatRoomId = "123";
+    String message = data.getString("content");
+    // todo
+    String userId = "5745865499082752";
+    String title = "todo";
 
-    SignallerNotificationManager.showNotification(message, chatRoomId);
+    String ownUserId = UserData.getInstance().getUserId();
+    String chatRoomId = ownUserId.compareTo(userId) < 0 ?
+      ownUserId + "_" + userId :
+      userId + "_" + ownUserId;
+
+    SignallerNotificationManager.showNotification(message, userId, chatRoomId, title);
     LogUtils.d("[GCM]show push notification:" + message);
   }
 

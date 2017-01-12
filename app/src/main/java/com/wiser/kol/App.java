@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.view.View;
 
+import com.jaychang.signaller.core.AppConfig;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.core.model.SignallerChatRoom;
@@ -41,8 +42,6 @@ public class App extends MultiDexApplication {
   }
 
   private void initSignaller() {
-    Signaller.init(this, Constant.SERVER_DOMAIN, Constant.SOCKET_URL, R.string.app_name, R.mipmap.ic_launcher);
-
     UIConfig uiConfig = UIConfig.newBuilder()
       .chatRoomCellProvider(new ChatRoomCellProvider() {
         @NonNull
@@ -130,7 +129,14 @@ public class App extends MultiDexApplication {
       .chatRoomStatusBarBackgroundColor(R.color.colorPrimary)
       .build();
 
-    Signaller.getInstance().setUIConfig(uiConfig);
+    AppConfig appConfig = new AppConfig(
+      R.string.app_name,
+      R.mipmap.ic_launcher,
+      Constant.SERVER_DOMAIN,
+      Constant.SOCKET_URL,
+      Constant.PUSH_SENDER_ID);
+
+    Signaller.init(this, appConfig, uiConfig);
   }
 
 }

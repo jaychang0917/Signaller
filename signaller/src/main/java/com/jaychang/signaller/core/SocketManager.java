@@ -36,8 +36,8 @@ public class SocketManager {
   private static final String SEND_MESSAGE = "send_message";
   private static final String RECEIVE_MESSAGE = "receive_message";
 
-  private Socket socket;
-  private boolean isSocketInitialized;
+  private static Socket socket;
+  private static boolean isSocketInitialized;
   private Handler mainThreadHandler;
 
   private PublishSubject<String> connectionEmitter;
@@ -60,7 +60,7 @@ public class SocketManager {
       IO.Options opts = new IO.Options();
       opts.query = "access_token=" + accessToken;
       opts.secure = true;
-      socket = IO.socket(AppData.getInstance().getSocketUrl(), opts);
+      socket = IO.socket(Signaller.getInstance().getAppConfig().getSocketUrl(), opts);
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -237,6 +237,8 @@ public class SocketManager {
   private void dispatchMsgEvents(SignallerSocketChatMessage socketChatMessage) {
     SignallerChatMessage chatMessage = socketChatMessage.getMessage();
     String chatRoomId = socketChatMessage.getRoomId();
+    String senderId = socketChatMessage.getMessage().getSender().getUserId();
+    String senderName = socketChatMessage.getMessage().getSender().getName();
     String msgId = chatMessage.getMsgId();
     String message;
     if (chatMessage.isText()) {
@@ -252,12 +254,12 @@ public class SocketManager {
       if (isInSameChatRoom) {
         EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(msgId));
       } else {
-        SignallerNotificationManager.showNotification(message, chatRoomId);
+        SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName);
       }
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
     } else {
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
-      SignallerNotificationManager.showNotification(message, chatRoomId);
+      SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName);
     }
   }
 

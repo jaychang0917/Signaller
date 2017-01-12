@@ -8,6 +8,7 @@ import android.preference.PreferenceManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.AppUtils;
@@ -23,8 +24,6 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class SignallerGcmRegistrationService extends IntentService {
-  // **change the sender id**
-  private static final String SENDER_ID = "1051552062396";
 
   public SignallerGcmRegistrationService() {
     super("GcmRegistrationService");
@@ -35,7 +34,8 @@ public class SignallerGcmRegistrationService extends IntentService {
 
     try {
       InstanceID instanceID = InstanceID.getInstance(this);
-      String token = instanceID.getToken(SENDER_ID,
+      String token = instanceID.getToken(
+        Signaller.getInstance().getAppConfig().getPushSenderId(),
         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
       sendRegistrationToServer(token);
     } catch (Exception e) {
@@ -45,14 +45,13 @@ public class SignallerGcmRegistrationService extends IntentService {
 
   private void sendRegistrationToServer(final String token) {
     final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-//    getString(AppData.getInstance().getAppName())
-    // custom implementation for server to send push to specific devices
+
     HttpUrl url = HttpUrl.parse("https://redsopushserver.appspot.com/apis/reg_device")
       .newBuilder()
       .addQueryParameter("device_token", token)
-      .addQueryParameter("app_name", "kol")
+      .addQueryParameter("app_name", getString(Signaller.getInstance().getAppConfig().getAppName()).toLowerCase())
       .addQueryParameter("is_dev", "0")
-      .addQueryParameter("client_version", AppUtils.getVersionCode(getApplicationContext())+"")
+      .addQueryParameter("client_version", AppUtils.getVersionCode(getApplicationContext()) + "")
       .addQueryParameter("os_version", Build.VERSION.RELEASE)
       .addQueryParameter("device_model", DeviceUtils.getDeviceModel())
       .addQueryParameter("deviceid", DeviceUtils.getDeviceId(getApplicationContext()))
@@ -65,8 +64,6 @@ public class SignallerGcmRegistrationService extends IntentService {
       .url(url)
       .build();
 
-    LogUtils.d("sendRegistrationToServer: user id:" + UserData.getInstance().getUserId());
-
     new OkHttpClient().newCall(request).enqueue(new Callback() {
       @Override
       public void onFailure(Call call, IOException e) {
@@ -77,7 +74,7 @@ public class SignallerGcmRegistrationService extends IntentService {
       @Override
       public void onResponse(Call call, Response response) throws IOException {
         sharedPreferences.edit().putBoolean(SignallerGcmManager.IS_GCM_REGISTERED, true).apply();
-        LogUtils.d("GCM: sent gcm token(" + token +  ") to server successfully.");
+        LogUtils.d("GCM: sent gcm token(" + token + ") to server successfully.");
       }
     });
   }

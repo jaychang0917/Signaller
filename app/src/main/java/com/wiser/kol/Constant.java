@@ -2,7 +2,7 @@ package com.wiser.kol;
 
 public class Constant {
 
-  public static final String ACCESS_TOKEN_JAY10 = "4c852d6851332ec1c5f4733aeee279c6d1260ed4cbae7a2abaaa32f82350d150e4c3448f912d78ed21903c1fa911db101d576c1943fa98f16c02a1b099c5c9ef";
+  public static final String ACCESS_TOKEN_JAY10 = "cee0d651085cdd4bbb0309c5ebb7b9058c9e5ccdbc50326a9f471a33b2a62997991e795a81c52443438ab6eb31e62c6af80f2f253dcb539cc184727ebab0de74";
   public static final String USER_ID_JAY10 = "5714163003293696";
 
   public static final String ACCESS_TOKEN_JAY11 = "bf88d1b5d5a99a705db4a40ee1ba9ef8f72cdfa31ab642631a7f2ae5eb243609712d3a5d0f089c9b333292759b4777c43b7a70cda67dc24e65fb97156733b522";
@@ -17,7 +17,8 @@ public class Constant {
   public static final String ACCESS_TOKEN_JAY14 = "215a43504fd11767eec236b9fedc44c6b3a1ee4f994df657097f82f24f3aeb6743fc89b6af5d5d3dc01f9513d67f0cd49ef2b830fbe720405ac78499deb501a2";
   public static final String USER_ID_JAY14 = "5739719937753088";
 
-  public static final String SERVER_DOMAIN = "http://kol-pro.appspot.com/";
+  public static final String SERVER_DOMAIN = "https://kol-pro.appspot.com/";
   public static final String SOCKET_URL = "http://kol-chat.redso.com.hk:5000";
+  public static final String PUSH_SENDER_ID = "1051552062396";
 
 }
