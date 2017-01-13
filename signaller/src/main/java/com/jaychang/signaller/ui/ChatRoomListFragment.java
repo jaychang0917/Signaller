@@ -142,9 +142,8 @@ public class ChatRoomListFragment extends RxFragment {
       chatRooms.put(room.getChatRoomId(), room);
     }
   }
-
   private List<SignallerChatRoom> sort(List<SignallerChatRoom> rooms) {
-    Collections.sort(rooms, (chatRoom, other) -> (int) (other.getLastMessageTime() - chatRoom.getLastMessageTime()));
+    Collections.sort(rooms, (chatRoom, other) -> other.getLastMessageTime().compareTo(chatRoom.getLastMessageTime()));
     return rooms;
   }
 

@@ -29,6 +29,7 @@ import com.jaychang.signaller.core.model.SignallerImage;
 import com.jaychang.signaller.core.model.SignallerImageAttribute;
 import com.jaychang.signaller.core.model.SignallerPayload;
 import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
+import com.jaychang.signaller.core.push.SignallerNotificationManager;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
 import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
@@ -128,6 +129,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     initEmojiKeyboard();
     monitorNetworkState();
     monitorInput();
+    cancelNotificationIfNeed();
   }
 
   private void initUIConfig() {
@@ -238,6 +240,10 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     } else {
       sendMsgView.setEnabled(false);
     }
+  }
+
+  private void cancelNotificationIfNeed() {
+    SignallerNotificationManager.cancelNotification(userId);
   }
 
   @Override

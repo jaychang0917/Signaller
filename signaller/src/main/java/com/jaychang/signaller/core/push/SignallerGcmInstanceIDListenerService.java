@@ -11,4 +11,5 @@ public class SignallerGcmInstanceIDListenerService extends InstanceIDListenerSer
     Intent intent = new Intent(this, SignallerGcmRegistrationService.class);
     startService(intent);
   }
+
 }

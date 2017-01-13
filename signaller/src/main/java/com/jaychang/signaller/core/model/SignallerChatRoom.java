@@ -13,7 +13,7 @@ public class SignallerChatRoom extends RealmObject {
   @SerializedName("last_update_time")
   private long lastUpdateTime;
   @SerializedName("last_message_time")
-  private long lastMessageTime;
+  private Long lastMessageTime;
   @SerializedName("info")
   private SignallerChatRoomInfo info;
   @SerializedName("ctime")
@@ -76,7 +76,7 @@ public class SignallerChatRoom extends RealmObject {
     this.lastUpdateTime = lastUpdateTime;
   }
 
-  public long getLastMessageTime() {
+  public Long getLastMessageTime() {
     return lastMessageTime;
   }
 

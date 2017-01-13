@@ -12,18 +12,22 @@ import android.support.v4.app.NotificationCompat;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.ui.ChatRoomActivity;
 
+import java.util.HashMap;
+
 public class SignallerNotificationManager {
+
+  private static HashMap<String, Integer> notificationMap = new HashMap<>();
 
   private SignallerNotificationManager() {
   }
 
-  public static void showNotification(String message, String chatRoomId, String userId, String title) {
+  public static void showNotification(String message, String chatRoomId, String userId, String roomTitle, String msgType) {
     Context context = Signaller.getInstance().getAppContext();
 
     Intent intent = new Intent(context, ChatRoomActivity.class);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     intent.putExtra(ChatRoomActivity.EXTRA_USER_ID, userId);
-    intent.putExtra(ChatRoomActivity.EXTRA_TITLE, title);
+    intent.putExtra(ChatRoomActivity.EXTRA_TITLE, roomTitle);
     intent.putExtra(ChatRoomActivity.EXTRA_CHAT_ROOM_ID, chatRoomId);
 
     TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
@@ -34,7 +38,7 @@ public class SignallerNotificationManager {
 
     NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
       .setSmallIcon(Signaller.getInstance().getAppConfig().getAppIcon())
-      .setContentTitle(context.getString(Signaller.getInstance().getAppConfig().getAppName()))
+      .setContentTitle(roomTitle)
       .setContentText(message)
       .setAutoCancel(true)
       .setContentIntent(pendingIntent);
@@ -45,13 +49,25 @@ public class SignallerNotificationManager {
     NotificationManager notificationManager =
       (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-    notificationManager.notify(0, notificationBuilder.build());
+    int notificationId = notificationMap.size();
+    if (!notificationMap.containsKey(userId)) {
+      notificationMap.put(userId, notificationId);
+    }
+
+    notificationManager.notify(notificationId, notificationBuilder.build());
   }
 
-  public static void cancelAllNofications() {
+  public static void cancelNotification(String userId) {
+    if (!notificationMap.containsKey(userId)) {
+      return;
+    }
+
     NotificationManager notificationManager =
       (NotificationManager) Signaller.getInstance().getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-    notificationManager.cancelAll();
+    notificationManager.cancel(notificationMap.get(userId));
+
+    notificationMap.remove(userId);
   }
+
 }

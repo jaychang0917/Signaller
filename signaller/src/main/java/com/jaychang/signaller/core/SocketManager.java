@@ -9,7 +9,6 @@ import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
 import com.jaychang.signaller.core.push.SignallerNotificationManager;
 import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
-import com.jaychang.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
@@ -233,33 +232,26 @@ public class SocketManager {
     SignallerDbManager.getInstance().updateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage());
   }
 
-
   private void dispatchMsgEvents(SignallerSocketChatMessage socketChatMessage) {
     SignallerChatMessage chatMessage = socketChatMessage.getMessage();
     String chatRoomId = socketChatMessage.getRoomId();
     String senderId = socketChatMessage.getMessage().getSender().getUserId();
     String senderName = socketChatMessage.getMessage().getSender().getName();
     String msgId = chatMessage.getMsgId();
-    String message;
-    if (chatMessage.isText()) {
-      message = chatMessage.getContent();
-    } else {
-      message = StringUtils.capitalize(chatMessage.getType());
-    }
+    String message = chatMessage.getContent();
+    String msgType = chatMessage.getType();
 
-    boolean isInChatRoomPage = UserData.getInstance().isInChatRoomPage();
-
-    if (isInChatRoomPage) {
+    if (UserData.getInstance().isInChatRoomPage()) {
       boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(chatRoomId);
       if (isInSameChatRoom) {
         EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(msgId));
       } else {
-        SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName);
+        SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName, msgType);
       }
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
     } else {
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
-      SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName);
+      SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName, msgType);
     }
   }
 
