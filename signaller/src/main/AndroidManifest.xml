@@ -16,6 +16,12 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>
 
+        <activity
+            android:name=".ui.PhotoViewerActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+
         <!-- GCM -->
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"

@@ -122,4 +122,8 @@ public final class Signaller {
     ChatRoomMeta.cursor = null;
   }
 
+  public void enableLog() {
+    LogUtils.enable();
+  }
+
 }

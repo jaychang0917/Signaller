@@ -137,6 +137,8 @@ public class App extends MultiDexApplication {
       Constant.PUSH_SENDER_ID);
 
     Signaller.init(this, appConfig, uiConfig);
+
+    Signaller.getInstance().enableLog();
   }
 
 }

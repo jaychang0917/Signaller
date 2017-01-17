@@ -3,9 +3,11 @@ package com.jaychang.signaller.core;
 public class SignallerEvents {
 
   public static class OnMsgReceivedEvent {
+    public String chatRoomId;
     public String msgId;
 
-    public OnMsgReceivedEvent(String msgId) {
+    public OnMsgReceivedEvent(String chatRoomId, String msgId) {
+      this.chatRoomId = chatRoomId;
       this.msgId = msgId;
     }
   }

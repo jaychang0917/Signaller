@@ -244,7 +244,7 @@ public class SocketManager {
     if (UserData.getInstance().isInChatRoomPage()) {
       boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(chatRoomId);
       if (isInSameChatRoom) {
-        EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(msgId));
+        EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(chatRoomId, msgId));
       } else {
         SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName, msgType);
       }

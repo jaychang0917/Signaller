@@ -43,8 +43,8 @@ public class SignallerChatMessage extends RealmObject {
   public boolean isSameDate(SignallerChatMessage message) {
     Calendar cal1 = Calendar.getInstance();
     Calendar cal2 = Calendar.getInstance();
-    cal1.setTimeInMillis(mtime);
-    cal2.setTimeInMillis(message.mtime);
+    cal1.setTimeInMillis(mtime == 0L ? timestamp : mtime);
+    cal2.setTimeInMillis(message.mtime == 0L ? message.timestamp : message.mtime);
     return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
       cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
   }

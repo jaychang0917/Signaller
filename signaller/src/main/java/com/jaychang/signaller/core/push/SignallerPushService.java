@@ -31,12 +31,11 @@ public class SignallerPushService extends GcmListenerService {
       userId + "_" + ownUserId;
 
     SignallerNotificationManager.showNotification(message, chatRoomId, userId, roomTitle, msgType);
-    LogUtils.d("[GCM]show push notification:" + message);
+    LogUtils.d("GCM:show push notification:" + message);
 
     boolean isInSameChatRoom = chatRoomId.equals(UserData.getInstance().getCurrentChatRoomId());
     if (isInSameChatRoom) {
-      // todo msgId is unque in chatroom only
-      EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(msgId));
+      EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(chatRoomId, msgId));
     }
 
     EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));

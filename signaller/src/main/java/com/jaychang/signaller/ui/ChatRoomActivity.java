@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -263,7 +264,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
   public void onMsgReceived(SignallerEvents.OnMsgReceivedEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    SignallerChatMessage chatMessage = SignallerDbManager.getInstance().getChatMessage(event.msgId);
+    SignallerChatMessage chatMessage = SignallerDbManager.getInstance().getChatMessage(event.chatRoomId, event.msgId);
     handleChatMessage(chatMessage);
   }
 
@@ -286,6 +287,16 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void handleChatMessage(SignallerChatMessage message) {
+    if (message == null) {
+      cursor = null;
+      messageList.removeAllCells();
+      messageList.getAdapter().notifyDataSetChanged();
+      questScrollToBottom = true;
+      SignallerNotificationManager.cancelNotification(userId);
+      loadChatMessages();
+      return;
+    }
+
     if (message.isImage()) {
       if (!message.isOwnMessage()) {
         addOtherImageMessageCell(message);
@@ -489,7 +500,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void scrollToBottom() {
-    messageList.getLayoutManager().scrollToPosition(messageList.getCellsCount() - 1);
+    ((LinearLayoutManager) messageList.getLayoutManager()).scrollToPositionWithOffset(messageList.getCellsCount() - 1, 0);
   }
 
   private void scrollToBottomOnce() {
@@ -500,7 +511,9 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void goToPhotoPage(String url) {
-
+    Intent intent = new Intent(this, PhotoViewerActivity.class);
+    intent.putExtra(PhotoViewerActivity.EXTRA_IMAGE_URL, url);
+    startActivity(intent);
   }
 
 }

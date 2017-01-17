@@ -9,6 +9,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 
+import com.jaychang.signaller.R;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.ui.ChatRoomActivity;
 
@@ -36,6 +37,10 @@ public class SignallerNotificationManager {
     PendingIntent pendingIntent =
       stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
 
+    if ("image".equals(msgType)) {
+      message = Signaller.getInstance().getAppContext().getString(R.string.sig_image);
+    }
+
     NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context)
       .setSmallIcon(Signaller.getInstance().getAppConfig().getAppIcon())
       .setContentTitle(roomTitle)
@@ -52,6 +57,8 @@ public class SignallerNotificationManager {
     int notificationId = notificationMap.size();
     if (!notificationMap.containsKey(userId)) {
       notificationMap.put(userId, notificationId);
+    } else {
+      notificationId = notificationMap.get(userId);
     }
 
     notificationManager.notify(notificationId, notificationBuilder.build());

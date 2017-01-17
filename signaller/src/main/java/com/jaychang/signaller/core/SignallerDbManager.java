@@ -117,8 +117,11 @@ public class SignallerDbManager {
       .doOnCompleted(realm::close);
   }
 
-  public SignallerChatMessage getChatMessage(String msgId) {
-    return getRealm().where(SignallerChatMessage.class).equalTo("msgId", msgId).findFirst();
+  public SignallerChatMessage getChatMessage(String chatRoomId, String msgId) {
+    return getRealm().where(SignallerChatMessage.class)
+      .equalTo("chatroomId", chatRoomId)
+      .equalTo("msgId", msgId)
+      .findFirst();
   }
 
   public void saveChatMessages(final List<SignallerChatMessage> chatMessages) {
