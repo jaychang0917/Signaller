@@ -21,6 +21,9 @@ public class GsonUtils {
 
   public static Gson gson;
 
+  private GsonUtils() {
+  }
+
   public static Gson getGson() {
     if (gson != null) {
       return gson;

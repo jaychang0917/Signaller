@@ -1,16 +1,20 @@
 package com.jaychang.signaller.core.push;
 
 import android.os.Bundle;
+import android.support.annotation.CallSuper;
 
 import com.google.android.gms.gcm.GcmListenerService;
+import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerEvents;
 import com.jaychang.signaller.core.UserData;
+import com.jaychang.signaller.core.model.PushNotification;
 import com.jaychang.signaller.util.LogUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
-public class SignallerPushService extends GcmListenerService {
+public class SignallerPushNotificationService extends GcmListenerService {
 
+  @CallSuper
   @Override
   public void onMessageReceived(String from, Bundle data) {
     LogUtils.d("GCM:onMessageReceived");
@@ -19,23 +23,16 @@ public class SignallerPushService extends GcmListenerService {
       LogUtils.d("GCM:data->key:" + key + " value:" + data.get(key));
     }
 
-    String message = data.getString("content");
-    String msgType = data.getString("msg_type");
-    String msgId = data.getString("msg_id");
-    String userId = data.getString("user_id");
-    String roomTitle = data.getString("room_title");
+    PushNotification pushNotification = PushNotification.from(data);
 
-    String ownUserId = UserData.getInstance().getUserId();
-    String chatRoomId = ownUserId.compareTo(userId) < 0 ?
-      ownUserId + "_" + userId :
-      userId + "_" + ownUserId;
+    SignallerPushNotificationManager.showNotification(getBaseContext(), pushNotification, Signaller.getInstance().getAppConfig().getPushNotificationParentStack());
 
-    SignallerNotificationManager.showNotification(message, chatRoomId, userId, roomTitle, msgType);
-    LogUtils.d("GCM:show push notification:" + message);
+    LogUtils.d("GCM:show push notification:" + pushNotification.getMessage());
 
+    String chatRoomId = pushNotification.getChatRoomId();
     boolean isInSameChatRoom = chatRoomId.equals(UserData.getInstance().getCurrentChatRoomId());
     if (isInSameChatRoom) {
-      EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(chatRoomId, msgId));
+      EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(chatRoomId, pushNotification.getMsgId()));
     }
 
     EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));

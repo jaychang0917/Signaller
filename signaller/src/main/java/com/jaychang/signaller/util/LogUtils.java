@@ -2,13 +2,20 @@ package com.jaychang.signaller.util;
 
 import android.util.Log;
 
-public class LogUtils {
+public final class LogUtils {
 
   private static final String TAG = "signaller";
-  private static boolean enable;
+  private static boolean enable = false;
 
-  public static void enable() {
-    enable = true;
+  private LogUtils() {
+  }
+
+  public static boolean isEnable() {
+    return enable;
+  }
+
+  public static void setEnable(boolean enable) {
+    LogUtils.enable = enable;
   }
 
   public static void d(String message) {

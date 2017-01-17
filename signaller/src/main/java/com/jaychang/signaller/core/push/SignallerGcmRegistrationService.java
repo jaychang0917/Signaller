@@ -35,7 +35,7 @@ public class SignallerGcmRegistrationService extends IntentService {
     try {
       InstanceID instanceID = InstanceID.getInstance(this);
       String token = instanceID.getToken(
-        Signaller.getInstance().getAppConfig().getPushSenderId(),
+        Signaller.getInstance().getAppConfig().getPushNotificationSenderId(),
         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
       sendRegistrationToServer(token);
     } catch (Exception e) {

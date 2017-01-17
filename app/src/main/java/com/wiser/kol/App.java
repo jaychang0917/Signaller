@@ -16,7 +16,7 @@ import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
 import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
 import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.DateSeparatorViewProvider;
-import com.jaychang.signaller.ui.config.UIConfig;
+import com.jaychang.signaller.core.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
 import com.wiser.kol.ui.KolChatRoomCell;
@@ -134,11 +134,12 @@ public class App extends MultiDexApplication {
       R.mipmap.ic_launcher,
       Constant.SERVER_DOMAIN,
       Constant.SOCKET_URL,
-      Constant.PUSH_SENDER_ID);
+      Constant.PUSH_SENDER_ID,
+      MainActivity.class);
 
     Signaller.init(this, appConfig, uiConfig);
 
-    Signaller.getInstance().enableLog();
+    Signaller.getInstance().enableDebug();
   }
 
 }

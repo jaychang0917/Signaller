@@ -2,7 +2,7 @@ package com.jaychang.signaller.core;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
-import com.jaychang.signaller.util.DebugUtils;
+import com.jaychang.signaller.util.StethoUtils;
 import com.jaychang.signaller.util.GsonUtils;
 
 import java.io.IOException;
@@ -34,7 +34,7 @@ public class SignallerApiManager {
 
   private static OkHttpClient createOkHttpClient() {
     OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder();
-    if (DebugUtils.debug) {
+    if (StethoUtils.isEnable()) {
       okHttpClientBuilder.addNetworkInterceptor(new StethoInterceptor());
     }
 

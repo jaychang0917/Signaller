@@ -24,19 +24,19 @@ import com.jaychang.signaller.core.SignallerDataManager;
 import com.jaychang.signaller.core.SignallerDbManager;
 import com.jaychang.signaller.core.SignallerEvents;
 import com.jaychang.signaller.core.SocketManager;
+import com.jaychang.signaller.core.UIConfig;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.core.model.SignallerImage;
 import com.jaychang.signaller.core.model.SignallerImageAttribute;
 import com.jaychang.signaller.core.model.SignallerPayload;
 import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
-import com.jaychang.signaller.core.push.SignallerNotificationManager;
+import com.jaychang.signaller.core.push.SignallerPushNotificationManager;
 import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
 import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
 import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
 import com.jaychang.signaller.ui.config.DateSeparatorViewProvider;
-import com.jaychang.signaller.ui.config.UIConfig;
 import com.jaychang.signaller.ui.part.ChatMessageCell;
 import com.jaychang.signaller.ui.part.DateSeparatorItemDecoration;
 import com.jaychang.signaller.util.GsonUtils;
@@ -63,7 +63,7 @@ import butterknife.ButterKnife;
 import static com.jaychang.signaller.ui.config.ChatMessageType.IMAGE;
 import static com.jaychang.signaller.ui.config.ChatMessageType.TEXT;
 
-public class ChatRoomActivity extends RxAppCompatActivity {
+public class SignallerChatRoomActivity extends RxAppCompatActivity {
 
   @BindView(R2.id.toolbarHolder)
   FrameLayout toolbarHolder;
@@ -104,7 +104,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   private UIConfig uiConfig;
 
   public static void start(Context context, String chatRoomId, String userId, String username) {
-    Intent intent = new Intent(context, ChatRoomActivity.class);
+    Intent intent = new Intent(context, SignallerChatRoomActivity.class);
     intent.putExtra(EXTRA_CHAT_ROOM_ID, chatRoomId);
     intent.putExtra(EXTRA_USER_ID, userId);
     intent.putExtra(EXTRA_TITLE, username);
@@ -244,7 +244,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void cancelNotificationIfNeed() {
-    SignallerNotificationManager.cancelNotification(userId);
+    SignallerPushNotificationManager.cancelNotification(userId);
   }
 
   @Override
@@ -292,7 +292,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
       messageList.removeAllCells();
       messageList.getAdapter().notifyDataSetChanged();
       questScrollToBottom = true;
-      SignallerNotificationManager.cancelNotification(userId);
+      SignallerPushNotificationManager.cancelNotification(userId);
       loadChatMessages();
       return;
     }

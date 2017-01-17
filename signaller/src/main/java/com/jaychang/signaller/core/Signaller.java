@@ -2,10 +2,13 @@ package com.jaychang.signaller.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.os.Bundle;
 
+import com.jaychang.signaller.core.model.PushNotification;
 import com.jaychang.signaller.core.push.SignallerGcmManager;
-import com.jaychang.signaller.ui.ChatRoomActivity;
-import com.jaychang.signaller.ui.config.UIConfig;
+import com.jaychang.signaller.core.push.SignallerPushNotificationManager;
+import com.jaychang.signaller.ui.SignallerChatRoomActivity;
+import com.jaychang.signaller.util.StethoUtils;
 import com.jaychang.signaller.util.LogUtils;
 import com.jaychang.utils.AppStatusUtils;
 
@@ -92,7 +95,7 @@ public final class Signaller {
     SocketManager.getInstance().join(userId, chatRoomId, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId, String userId) {
-        ChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
+        SignallerChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
       }
     });
   }
@@ -122,8 +125,16 @@ public final class Signaller {
     ChatRoomMeta.cursor = null;
   }
 
-  public void enableLog() {
-    LogUtils.enable();
+  public void showPushNotification(Context context, Bundle data) {
+    SignallerPushNotificationManager.showNotification(
+      context,
+      PushNotification.from(data),
+      getAppConfig().getPushNotificationParentStack());
+  }
+
+  public void enableDebug() {
+    LogUtils.setEnable(true);
+    StethoUtils.setEnable(true);
   }
 
 }

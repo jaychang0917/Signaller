@@ -8,7 +8,7 @@ import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.ui.part.DefaultDateSeparatorView;
 
-class DefaultDateSeparatorViewProvider implements DateSeparatorViewProvider {
+public class DefaultDateSeparatorViewProvider implements DateSeparatorViewProvider {
 
   @NonNull
   @Override
@@ -23,4 +23,5 @@ class DefaultDateSeparatorViewProvider implements DateSeparatorViewProvider {
   public boolean isSameDate(SignallerChatMessage item, SignallerChatMessage nextItem) {
     return item.isSameDate(nextItem);
   }
+
 }

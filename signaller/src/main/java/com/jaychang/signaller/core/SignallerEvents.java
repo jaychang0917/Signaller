@@ -1,5 +1,7 @@
 package com.jaychang.signaller.core;
 
+import com.jaychang.signaller.core.model.PushNotification;
+
 public class SignallerEvents {
 
   public static class OnMsgReceivedEvent {
@@ -13,10 +15,10 @@ public class SignallerEvents {
   }
 
   public static class ShowPushNotificationEvent {
-    public String msgId;
+    public PushNotification notification;
 
-    public ShowPushNotificationEvent(String msgId) {
-      this.msgId = msgId;
+    public ShowPushNotificationEvent(PushNotification notification) {
+      this.notification = notification;
     }
   }
 

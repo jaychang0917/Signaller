@@ -4,7 +4,7 @@ import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
 import com.jaychang.signaller.ui.part.DefaultChatRoomCell;
 
-class DefaultChatRoomCellProvider implements ChatRoomCellProvider {
+public class DefaultChatRoomCellProvider implements ChatRoomCellProvider {
 
   @Override
   public ChatRoomCell getChatRoomCell(SignallerChatRoom chatRoom) {

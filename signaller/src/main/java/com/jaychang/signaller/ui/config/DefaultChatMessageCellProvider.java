@@ -10,7 +10,7 @@ import com.jaychang.signaller.ui.part.DefaultOwnTextMessageCell;
 import static com.jaychang.signaller.ui.config.ChatMessageType.IMAGE;
 import static com.jaychang.signaller.ui.config.ChatMessageType.TEXT;
 
-class DefaultChatMessageCellProvider implements ChatMessageCellProvider {
+public class DefaultChatMessageCellProvider implements ChatMessageCellProvider {
 
   @Override
   public ChatMessageCell getOwnChatMessageCell(ChatMessageType type, SignallerChatMessage message) {
@@ -33,4 +33,5 @@ class DefaultChatMessageCellProvider implements ChatMessageCellProvider {
 
     throw new RuntimeException(type + " is not support.");
   }
+
 }

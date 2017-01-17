@@ -1,8 +1,19 @@
-package com.jaychang.signaller.ui.config;
+package com.jaychang.signaller.core;
 
 import android.support.annotation.ColorRes;
 
 import com.jaychang.signaller.R;
+import com.jaychang.signaller.ui.config.ChatMessageCellProvider;
+import com.jaychang.signaller.ui.config.ChatRoomCellProvider;
+import com.jaychang.signaller.ui.config.ChatRoomControlViewProvider;
+import com.jaychang.signaller.ui.config.ChatRoomToolbarProvider;
+import com.jaychang.signaller.ui.config.CustomChatMessageCellProvider;
+import com.jaychang.signaller.ui.config.DateSeparatorViewProvider;
+import com.jaychang.signaller.ui.config.DefaultChatMessageCellProvider;
+import com.jaychang.signaller.ui.config.DefaultChatRoomCellProvider;
+import com.jaychang.signaller.ui.config.DefaultChatRoomControlViewProvider;
+import com.jaychang.signaller.ui.config.DefaultChatRoomToolbarProvider;
+import com.jaychang.signaller.ui.config.DefaultDateSeparatorViewProvider;
 
 public class UIConfig {
 

@@ -3,10 +3,10 @@ package com.jaychang.signaller.core;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.jaychang.signaller.core.model.PushNotification;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.core.model.SignallerPayload;
 import com.jaychang.signaller.core.model.SignallerSocketChatMessage;
-import com.jaychang.signaller.core.push.SignallerNotificationManager;
 import com.jaychang.signaller.util.GsonUtils;
 import com.jaychang.signaller.util.LogUtils;
 
@@ -240,18 +240,21 @@ public class SocketManager {
     String msgId = chatMessage.getMsgId();
     String message = chatMessage.getContent();
     String msgType = chatMessage.getType();
+    PushNotification pushNotification = new PushNotification(message, chatRoomId, senderId, senderName, msgType, msgId);
 
     if (UserData.getInstance().isInChatRoomPage()) {
       boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(chatRoomId);
       if (isInSameChatRoom) {
         EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(chatRoomId, msgId));
       } else {
-        SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName, msgType);
+        EventBus.getDefault().postSticky(new SignallerEvents.ShowPushNotificationEvent(pushNotification));
+//        SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName, msgType);
       }
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
     } else {
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
-      SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName, msgType);
+      EventBus.getDefault().postSticky(new SignallerEvents.ShowPushNotificationEvent(pushNotification));
+//      SignallerNotificationManager.showNotification(message, chatRoomId, senderId, senderName, msgType);
     }
   }
 
