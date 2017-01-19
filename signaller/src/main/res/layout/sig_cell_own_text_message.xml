@@ -18,6 +18,7 @@
         android:textColor="@android:color/black"
         android:textSize="17sp"
         app:emojiSize="17sp"
+        android:autoLink="web"
         tools:text="fofoofoofoofoofoofoofoofoofoofoofoofoofoofoofooo" />
 
 </LinearLayout>
