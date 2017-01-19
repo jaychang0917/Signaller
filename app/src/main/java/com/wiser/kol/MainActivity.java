@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.jaychang.signaller.core.Signaller;
+import com.jaychang.utils.PreferenceUtils;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,6 +23,16 @@ public class MainActivity extends AppCompatActivity {
 
     String accessToken = getIntent().getStringExtra(EXTRA_ACCESS_TOKEN);
     String userId = getIntent().getStringExtra(EXTRA_USER_ID);
+    if (accessToken != null) {
+      PreferenceUtils.saveString(this, "accessToken", accessToken);
+    } else {
+      accessToken = PreferenceUtils.getString(this, "accessToken");
+    }
+    if (userId != null) {
+      PreferenceUtils.saveString(this, "userId", userId);
+    } else {
+      userId = PreferenceUtils.getString(this, "userId");
+    }
 
     Signaller.getInstance().connect(accessToken, userId);
   }

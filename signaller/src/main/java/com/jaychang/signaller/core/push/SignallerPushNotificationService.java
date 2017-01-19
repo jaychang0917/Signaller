@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.SignallerEvents;
 import com.jaychang.signaller.core.UserData;
 import com.jaychang.signaller.core.model.PushNotification;
@@ -25,7 +24,7 @@ public class SignallerPushNotificationService extends GcmListenerService {
 
     PushNotification pushNotification = PushNotification.from(data);
 
-    SignallerPushNotificationManager.showNotification(getBaseContext(), pushNotification, Signaller.getInstance().getAppConfig().getPushNotificationParentStack());
+    SignallerPushNotificationManager.showNotification(pushNotification);
 
     LogUtils.d("GCM:show push notification:" + pushNotification.getMessage());
 

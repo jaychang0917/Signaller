@@ -2,14 +2,11 @@ package com.jaychang.signaller.core;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Bundle;
 
-import com.jaychang.signaller.core.model.PushNotification;
 import com.jaychang.signaller.core.push.SignallerGcmManager;
-import com.jaychang.signaller.core.push.SignallerPushNotificationManager;
-import com.jaychang.signaller.ui.SignallerChatRoomActivity;
-import com.jaychang.signaller.util.StethoUtils;
+import com.jaychang.signaller.ui.ChatRoomActivity;
 import com.jaychang.signaller.util.LogUtils;
+import com.jaychang.signaller.util.StethoUtils;
 import com.jaychang.utils.AppStatusUtils;
 
 public final class Signaller {
@@ -95,7 +92,7 @@ public final class Signaller {
     SocketManager.getInstance().join(userId, chatRoomId, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId, String userId) {
-        SignallerChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
+        ChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
       }
     });
   }
@@ -121,15 +118,8 @@ public final class Signaller {
 
   public void clearChatCache() {
     SignallerDbManager.getInstance().clear();
-    ChatRoomMeta.hasMoreData = false;
-    ChatRoomMeta.cursor = null;
-  }
-
-  public void showPushNotification(Context context, Bundle data) {
-    SignallerPushNotificationManager.showNotification(
-      context,
-      PushNotification.from(data),
-      getAppConfig().getPushNotificationParentStack());
+    UserData.getInstance().clear();
+    ChatRoomMeta.clear();
   }
 
   public void enableDebug() {

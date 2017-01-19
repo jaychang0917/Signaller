@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -63,7 +64,7 @@ import butterknife.ButterKnife;
 import static com.jaychang.signaller.ui.config.ChatMessageType.IMAGE;
 import static com.jaychang.signaller.ui.config.ChatMessageType.TEXT;
 
-public class SignallerChatRoomActivity extends RxAppCompatActivity {
+public class ChatRoomActivity extends RxAppCompatActivity {
 
   @BindView(R2.id.toolbarHolder)
   FrameLayout toolbarHolder;
@@ -104,7 +105,7 @@ public class SignallerChatRoomActivity extends RxAppCompatActivity {
   private UIConfig uiConfig;
 
   public static void start(Context context, String chatRoomId, String userId, String username) {
-    Intent intent = new Intent(context, SignallerChatRoomActivity.class);
+    Intent intent = new Intent(context, ChatRoomActivity.class);
     intent.putExtra(EXTRA_CHAT_ROOM_ID, chatRoomId);
     intent.putExtra(EXTRA_USER_ID, userId);
     intent.putExtra(EXTRA_TITLE, username);
@@ -514,6 +515,16 @@ public class SignallerChatRoomActivity extends RxAppCompatActivity {
     Intent intent = new Intent(this, PhotoViewerActivity.class);
     intent.putExtra(PhotoViewerActivity.EXTRA_IMAGE_URL, url);
     startActivity(intent);
+  }
+
+  @Override
+  public void onBackPressed() {
+    super.onBackPressed();
+    if (isTaskRoot()) {
+      TaskStackBuilder.create(this)
+        .addNextIntentWithParentStack(new Intent(this, Signaller.getInstance().getAppConfig().getPushNotificationParentStack()))
+        .startActivities();
+    }
   }
 
 }

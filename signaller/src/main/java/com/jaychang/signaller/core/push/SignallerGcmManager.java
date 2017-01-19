@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.jaychang.signaller.util.LogUtils;
 
 public class SignallerGcmManager {
 
@@ -28,7 +28,7 @@ public class SignallerGcmManager {
     GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
     int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
     if (resultCode != ConnectionResult.SUCCESS) {
-      Log.d("GcmManager", "GCM:Google play service is not installed.");
+      LogUtils.d("GCM:Google play service is not installed.");
       return false;
     }
     return true;

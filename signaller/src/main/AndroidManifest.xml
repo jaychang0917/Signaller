@@ -36,7 +36,7 @@
         </receiver>
 
         <service
-            android:name=".core.push.SignallerPushService"
+            android:name=".core.push.SignallerPushNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

@@ -4,7 +4,7 @@ import android.util.Log;
 
 public final class LogUtils {
 
-  private static final String TAG = "signaller";
+  private static final String TAG = "SignallerLog";
   private static boolean enable = false;
 
   private LogUtils() {

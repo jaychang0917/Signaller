@@ -75,13 +75,8 @@ public class KolChatRoomCell extends ChatRoomCell {
       holder.nameView.setTextColor(ContextCompat.getColor(context, R.color.text_color));
     }
 
-    if (!TextUtils.isEmpty(receiver.getFacebookId()) ||
-      !TextUtils.isEmpty(receiver.getYoutubeId()) ||
-      !TextUtils.isEmpty(receiver.getInstagramId())) {
-      holder.chatBubbleView.setImageResource(R.drawable.btn_msg_on);
-    } else {
-      holder.chatBubbleView.setImageResource(R.drawable.btn_msg_off);
-    }
+    // todo
+    holder.chatBubbleView.setImageResource(R.drawable.btn_msg_off);
   }
 
   static class ViewHolder extends BaseViewHolder {

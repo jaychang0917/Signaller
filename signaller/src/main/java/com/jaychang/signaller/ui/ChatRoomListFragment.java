@@ -119,9 +119,13 @@ public class ChatRoomListFragment extends RxFragment {
   private void loadChatRooms() {
     SignallerDataManager.getInstance().getChatRooms()
       .compose(bindUntilEvent(FragmentEvent.DESTROY))
-      .subscribe(rooms -> {
+      .subscribe(
+        rooms -> {
           saveChatRooms(rooms);
           bindChatRooms();
+        },
+        error -> {
+          LogUtils.e("loadChatRooms:" + error.getMessage());
         });
   }
 
@@ -132,7 +136,8 @@ public class ChatRoomListFragment extends RxFragment {
         chatRooms -> {
           saveChatRooms(chatRooms);
           bindChatRooms();
-        }, error -> {
+        },
+        error -> {
           LogUtils.e("loadChatRoomsFromNetwork:" + error.getMessage());
         });
   }
@@ -142,6 +147,7 @@ public class ChatRoomListFragment extends RxFragment {
       chatRooms.put(room.getChatRoomId(), room);
     }
   }
+
   private List<SignallerChatRoom> sort(List<SignallerChatRoom> rooms) {
     Collections.sort(rooms, (chatRoom, other) -> other.getLastMessageTime().compareTo(chatRoom.getLastMessageTime()));
     return rooms;

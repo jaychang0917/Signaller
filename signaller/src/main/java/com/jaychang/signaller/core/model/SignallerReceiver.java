@@ -20,12 +20,6 @@ public class SignallerReceiver extends RealmObject {
   private long mtime;
   @SerializedName("name")
   private String name;
-  @SerializedName("sns_facebook")
-  private String facebookId;
-  @SerializedName("sns_youtube")
-  private String youtubeId;
-  @SerializedName("sns_instagram")
-  private String instagramId;
 
   //region getters & setters
   public String getUserId() {
@@ -58,19 +52,6 @@ public class SignallerReceiver extends RealmObject {
   public void setName(String name) {
     this.name = name;
   }
-
-  public String getFacebookId() {
-    return facebookId;
-  }
-
-  public String getYoutubeId() {
-    return youtubeId;
-  }
-
-  public String getInstagramId() {
-    return instagramId;
-  }
-
   //endregion
 
 }

@@ -11,28 +11,25 @@ import android.support.v4.app.NotificationCompat;
 import com.jaychang.signaller.R;
 import com.jaychang.signaller.core.Signaller;
 import com.jaychang.signaller.core.model.PushNotification;
-import com.jaychang.signaller.ui.SignallerChatRoomActivity;
+import com.jaychang.signaller.ui.ChatRoomActivity;
 
 import java.util.HashMap;
 
 public class SignallerPushNotificationManager {
 
-  private static HashMap<String, Integer> notificationMap = new HashMap<>();
+  private static HashMap<String, Integer> notificationIdMap = new HashMap<>();
 
   private SignallerPushNotificationManager() {
   }
 
-  public static void showNotification(Context context, PushNotification pushNotification, Class<?> parentStack) {
-    Intent intent = new Intent(context, SignallerChatRoomActivity.class);
-    intent.putExtra(SignallerChatRoomActivity.EXTRA_USER_ID, pushNotification.getSenderId());
-    intent.putExtra(SignallerChatRoomActivity.EXTRA_TITLE, pushNotification.getRoomTitle());
-    intent.putExtra(SignallerChatRoomActivity.EXTRA_CHAT_ROOM_ID, pushNotification.getChatRoomId());
+  public static void showNotification(PushNotification pushNotification) {
+    Context context = Signaller.getInstance().getAppContext();
 
-//    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-//    stackBuilder.addParentStack(parentStack);
-//    stackBuilder.addNextIntent(intent);
-//    PendingIntent pendingIntent =
-//      stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+    Intent intent = new Intent(context, ChatRoomActivity.class);
+    intent.putExtra(ChatRoomActivity.EXTRA_USER_ID, pushNotification.getSenderId());
+    intent.putExtra(ChatRoomActivity.EXTRA_TITLE, pushNotification.getRoomTitle());
+    intent.putExtra(ChatRoomActivity.EXTRA_CHAT_ROOM_ID, pushNotification.getChatRoomId());
+
     PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
     if ("image".equals(pushNotification.getMsgType())) {
@@ -52,27 +49,27 @@ public class SignallerPushNotificationManager {
     NotificationManager notificationManager =
       (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
-    int notificationId = notificationMap.size();
-    if (!notificationMap.containsKey(pushNotification.getSenderId())) {
-      notificationMap.put(pushNotification.getSenderId(), notificationId);
+    int notificationId = notificationIdMap.size();
+    if (!notificationIdMap.containsKey(pushNotification.getSenderId())) {
+      notificationIdMap.put(pushNotification.getSenderId(), notificationId);
     } else {
-      notificationId = notificationMap.get(pushNotification.getSenderId());
+      notificationId = notificationIdMap.get(pushNotification.getSenderId());
     }
 
     notificationManager.notify(notificationId, notificationBuilder.build());
   }
 
   public static void cancelNotification(String userId) {
-    if (!notificationMap.containsKey(userId)) {
+    if (!notificationIdMap.containsKey(userId)) {
       return;
     }
 
     NotificationManager notificationManager =
       (NotificationManager) Signaller.getInstance().getAppContext().getSystemService(Context.NOTIFICATION_SERVICE);
 
-    notificationManager.cancel(notificationMap.get(userId));
+    notificationManager.cancel(notificationIdMap.get(userId));
 
-    notificationMap.remove(userId);
+    notificationIdMap.remove(userId);
   }
 
 }
