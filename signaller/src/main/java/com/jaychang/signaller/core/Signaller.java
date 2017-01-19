@@ -122,9 +122,9 @@ public final class Signaller {
     ChatRoomMeta.clear();
   }
 
-  public void enableDebug() {
-    LogUtils.setEnable(true);
-    StethoUtils.setEnable(true);
+  public void enableDebug(boolean enable) {
+    LogUtils.setEnable(enable);
+    StethoUtils.setEnable(enable);
   }
 
 }

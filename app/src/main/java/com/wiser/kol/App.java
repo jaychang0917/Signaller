@@ -139,7 +139,7 @@ public class App extends MultiDexApplication {
 
     Signaller.init(this, appConfig, uiConfig);
 
-    Signaller.getInstance().enableDebug();
+    Signaller.getInstance().enableDebug(true);
   }
 
 }
