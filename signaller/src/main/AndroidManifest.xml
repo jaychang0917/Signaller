@@ -12,6 +12,7 @@
 
         <activity
             android:name=".ui.ChatRoomActivity"
+            android:launchMode="singleTop"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         </activity>

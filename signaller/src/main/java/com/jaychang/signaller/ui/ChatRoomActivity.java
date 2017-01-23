@@ -289,12 +289,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   private void handleChatMessage(SignallerChatMessage message) {
     if (message == null) {
-      cursor = null;
-      messageList.removeAllCells();
-      messageList.getAdapter().notifyDataSetChanged();
-      questScrollToBottom = true;
+      reload();
       SignallerPushNotificationManager.cancelNotification(userId);
-      loadChatMessages();
       return;
     }
 
@@ -311,6 +307,14 @@ public class ChatRoomActivity extends RxAppCompatActivity {
         addCustomMessageCell(message);
       }
     }
+  }
+
+  private void reload() {
+    cursor = null;
+    messageList.removeAllCells();
+    messageList.getAdapter().notifyDataSetChanged();
+    questScrollToBottom = true;
+    loadChatMessages();
   }
 
   private void loadChatMessages() {
