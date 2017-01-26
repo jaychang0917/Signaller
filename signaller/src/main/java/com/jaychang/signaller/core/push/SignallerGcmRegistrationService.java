@@ -69,6 +69,19 @@ public class SignallerGcmRegistrationService extends IntentService {
       .addQueryParameter("userid", UserData.getInstance().getUserId())
       .build();
 
+    LogUtils.d("GCM:sendTokenToServer params:==============");
+    LogUtils.d("device_token:" + token);
+    LogUtils.d("app_name:" + getString(Signaller.getInstance().getAppConfig().getAppName()).toLowerCase());
+    LogUtils.d("is_dev:0");
+    LogUtils.d("client_version:" + AppUtils.getVersionCode(getApplicationContext()) + "");
+    LogUtils.d("os_version:" + Build.VERSION.RELEASE);
+    LogUtils.d("device_model:" + DeviceUtils.getDeviceModel());
+    LogUtils.d("deviceid:" + DeviceUtils.getDeviceId(getApplicationContext()));
+    LogUtils.d("client_os:android");
+    LogUtils.d("enable_push:" + (isReg ? "1" : "0"));
+    LogUtils.d("userid:" + UserData.getInstance().getUserId());
+    LogUtils.d("GCM:sendTokenToServer params:==============");
+
     Request request = new Request.Builder().get()
       .url(url)
       .build();
