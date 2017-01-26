@@ -65,6 +65,7 @@ public final class Signaller {
 
   public void disconnect() {
     SocketManager.getInstance().disconnect();
+    SocketManager.getInstance().invalidate();
     SignallerDbManager.getInstance().clear();
     SignallerGcmManager.unregister(appContext);
     UserData.getInstance().clear();

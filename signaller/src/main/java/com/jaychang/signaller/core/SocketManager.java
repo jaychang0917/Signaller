@@ -36,8 +36,7 @@ public class SocketManager {
   private static final String SEND_MESSAGE = "send_message";
   private static final String RECEIVE_MESSAGE = "receive_message";
 
-  private static Socket socket;
-  private static boolean isSocketInitialized;
+  private Socket socket;
   private Handler mainThreadHandler;
 
   private PublishSubject<String> connectionEmitter;
@@ -52,7 +51,7 @@ public class SocketManager {
   }
 
   void initSocket(String accessToken) {
-    if (isSocketInitialized) {
+    if (socket != null) {
       return;
     }
 
@@ -64,8 +63,6 @@ public class SocketManager {
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
-
-    isSocketInitialized = true;
   }
 
   public boolean isConnected() {
@@ -107,6 +104,10 @@ public class SocketManager {
       offEvents();
       socket.disconnect();
     }
+  }
+
+  public void invalidate() {
+    socket = null;
   }
 
   private void onEvents() {
@@ -248,13 +249,11 @@ public class SocketManager {
       if (isInSameChatRoom) {
         EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(chatRoomId, msgId));
       } else {
-//        EventBus.getDefault().postSticky(new SignallerEvents.ShowPushNotificationEvent(pushNotification));
         SignallerPushNotificationManager.showNotification(pushNotification);
       }
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
     } else {
       EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
-//      EventBus.getDefault().postSticky(new SignallerEvents.ShowPushNotificationEvent(pushNotification));
       SignallerPushNotificationManager.showNotification(pushNotification);
     }
   }
