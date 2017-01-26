@@ -65,6 +65,10 @@ public final class Signaller {
 
   public void disconnect() {
     SocketManager.getInstance().disconnect();
+    SignallerDbManager.getInstance().clear();
+    SignallerGcmManager.unregister(appContext);
+    UserData.getInstance().clear();
+    ChatRoomMeta.clear();
   }
 
   public void chatWith(Context context, String userId, String toolbarTitle) {
@@ -114,13 +118,6 @@ public final class Signaller {
 
   public AppConfig getAppConfig() {
     return appConfig;
-  }
-
-  public void clearChatCache() {
-    SignallerDbManager.getInstance().clear();
-    SignallerGcmManager.unregister(appContext);
-    UserData.getInstance().clear();
-    ChatRoomMeta.clear();
   }
 
   public void enableDebug(boolean enable) {
