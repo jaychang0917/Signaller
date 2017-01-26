@@ -121,6 +121,12 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     loadChatMessages();
   }
 
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    reload();
+  }
+
   public void init() {
     initData();
     initUIConfig();
