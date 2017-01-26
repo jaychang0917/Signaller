@@ -2,25 +2,34 @@ package com.jaychang.signaller.core.push;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.jaychang.signaller.util.LogUtils;
+import com.jaychang.utils.PreferenceUtils;
 
 public class SignallerGcmManager {
 
-  public static final String IS_GCM_REGISTERED = "IS_GCM_REGISTERED";
+  public static final String GCM_TOKEN = SignallerGcmManager.class.getPackage().getName() + "GCM_TOKEN";
 
-  public static void init(Context context) {
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    boolean isRegistered = sharedPreferences.getBoolean(IS_GCM_REGISTERED, false);
+  public static void register(Context context) {
+    boolean isRegistered = !PreferenceUtils.getString(context, GCM_TOKEN).equals("");
     if (!isRegistered) {
       if (checkPlayServices(context)) {
         Intent intent = new Intent(context, SignallerGcmRegistrationService.class);
+        intent.setAction(SignallerGcmRegistrationService.ACTION_REGISTER);
         context.startService(intent);
       }
+    }
+  }
+
+  public static void unregister(Context context) {
+    String token = PreferenceUtils.getString(context, GCM_TOKEN);
+    if (!token.isEmpty()) {
+      Intent intent = new Intent(context, SignallerGcmRegistrationService.class);
+      intent.setAction(SignallerGcmRegistrationService.ACTION_UNREGISTER);
+      intent.putExtra(SignallerGcmRegistrationService.EXTRA_TOKEN, token);
+      context.startService(intent);
     }
   }
 
@@ -33,4 +42,5 @@ public class SignallerGcmManager {
     }
     return true;
   }
+
 }

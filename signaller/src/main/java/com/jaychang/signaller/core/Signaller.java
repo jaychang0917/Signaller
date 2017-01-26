@@ -60,7 +60,7 @@ public final class Signaller {
     SocketManager.getInstance().initSocket(accessToken);
     SocketManager.getInstance().connect();
 
-    SignallerGcmManager.init(appContext);
+    SignallerGcmManager.register(appContext);
   }
 
   public void disconnect() {
@@ -118,6 +118,7 @@ public final class Signaller {
 
   public void clearChatCache() {
     SignallerDbManager.getInstance().clear();
+    SignallerGcmManager.unregister(appContext);
     UserData.getInstance().clear();
     ChatRoomMeta.clear();
   }
