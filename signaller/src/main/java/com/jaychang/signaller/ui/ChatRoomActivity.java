@@ -121,8 +121,17 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     loadChatMessages();
   }
 
+  @Override
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+    initData(intent);
+    toolbarHolder.removeAllViews();
+    initToolbar();
+    reload();
+  }
+
   public void init() {
-    initData();
+    initData(getIntent());
     initUIConfig();
     initToolbar();
     setStatusBarColor();
@@ -144,10 +153,10 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     isShowChatMessageDateSeparator = uiConfig.isShowDateSeparatorView();
   }
 
-  private void initData() {
-    chatRoomId = getIntent().getStringExtra(EXTRA_CHAT_ROOM_ID);
-    userId = getIntent().getStringExtra(EXTRA_USER_ID);
-    title = getIntent().getStringExtra(EXTRA_TITLE);
+  private void initData(Intent intent) {
+    chatRoomId = intent.getStringExtra(EXTRA_CHAT_ROOM_ID);
+    userId = intent.getStringExtra(EXTRA_USER_ID);
+    title = intent.getStringExtra(EXTRA_TITLE);
 
     UserData.getInstance().setCurrentChatRoomId(chatRoomId);
   }
