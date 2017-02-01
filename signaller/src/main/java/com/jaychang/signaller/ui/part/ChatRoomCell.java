@@ -3,11 +3,13 @@ package com.jaychang.signaller.ui.part;
 import com.jaychang.nrv.BaseCell;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.core.model.SignallerChatRoom;
+import com.jaychang.signaller.core.model.SignallerReceiver;
 
 public abstract class ChatRoomCell extends BaseCell{
 
   public interface Callback {
     void onCellClicked(SignallerChatRoom chatroom);
+    void onReceiverLogoClicked(SignallerReceiver receiver);
   }
 
   protected SignallerChatRoom chatRoom;

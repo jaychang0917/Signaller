@@ -39,6 +39,9 @@ public class DefaultChatRoomCell extends ChatRoomCell {
         chatRoom.setUnreadCount(0);
         viewHolder.unreadCountView.setVisibility(View.GONE);
       });
+      viewHolder.logoView.setOnClickListener(v -> {
+        callback.onReceiverLogoClicked(chatRoom.getReceiver());
+      });
     }
 
     return viewHolder;

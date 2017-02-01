@@ -36,6 +36,9 @@ public class KolChatRoomCell extends ChatRoomCell {
       viewHolder.itemView.setOnClickListener(v -> {
         callback.onCellClicked(chatRoom);
       });
+      viewHolder.logoView.setOnClickListener(v -> {
+        callback.onReceiverLogoClicked(chatRoom.getReceiver());
+      });
     }
 
     return viewHolder;

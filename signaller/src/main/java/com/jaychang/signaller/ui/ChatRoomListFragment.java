@@ -38,12 +38,17 @@ import butterknife.ButterKnife;
 
 public class ChatRoomListFragment extends RxFragment {
 
+  public interface OnReceiverLogoClickListener {
+    void onReceiverLogoClicked(SignallerReceiver receiver);
+  }
+
   @BindView(R2.id.recyclerView)
   NRecyclerView recyclerView;
 
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
   private ChatRoomCellProvider chatRoomCellProvider;
   private HashMap<String, SignallerChatRoom> chatRooms = new HashMap<>();
+  private OnReceiverLogoClickListener onReceiverLogoClickListener;
 
   public static ChatRoomListFragment newInstance() {
     return new ChatRoomListFragment();
@@ -192,8 +197,18 @@ public class ChatRoomListFragment extends RxFragment {
     List<SignallerChatRoom> sortedChatRooms = sort(new ArrayList<>(chatRooms.values()));
     for (SignallerChatRoom chatRoom : sortedChatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
-      cell.setCallback(room -> {
-        chatWith(room.getReceiver());
+      cell.setCallback(new ChatRoomCell.Callback() {
+        @Override
+        public void onCellClicked(SignallerChatRoom chatroom) {
+          chatWith(chatroom.getReceiver());
+        }
+
+        @Override
+        public void onReceiverLogoClicked(SignallerReceiver receiver) {
+          if (onReceiverLogoClickListener != null) {
+            onReceiverLogoClickListener.onReceiverLogoClicked(receiver);
+          }
+        }
       });
       recyclerView.addCell(cell);
     }
@@ -202,6 +217,10 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void chatWith(SignallerReceiver receiver) {
     Signaller.getInstance().chatWith(getContext(), receiver.getUserId(), receiver.getName());
+  }
+
+  public void setOnReceiverLogoClickListener(OnReceiverLogoClickListener onReceiverLogoClickListener) {
+    this.onReceiverLogoClickListener = onReceiverLogoClickListener;
   }
 
 }
