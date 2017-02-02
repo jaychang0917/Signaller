@@ -65,11 +65,20 @@ public class SocketManager {
     }
   }
 
+  void initSocketIfNeed() {
+    String accessToken = UserData.getInstance().getAccessToken();
+    if (socket == null && accessToken != null && !accessToken.isEmpty()) {
+      initSocket(accessToken);
+    }
+  }
+
   public boolean isConnected() {
     return socket != null && socket.connected();
   }
 
   public void connect(SocketConnectionCallbacks callback) {
+    initSocketIfNeed();
+
     if (!isConnected()) {
       onEvents();
       socket.connect();
