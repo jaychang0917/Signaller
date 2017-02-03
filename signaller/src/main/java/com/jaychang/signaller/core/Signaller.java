@@ -24,9 +24,7 @@ public final class Signaller {
     INSTANCE.appContext = app.getApplicationContext();
     INSTANCE.appConfig = appConfig;
     INSTANCE.uiConfig = uiConfig;
-
     INSTANCE.app = app;
-    registerAppCallback(app);
 
     SignallerDbManager.getInstance().init(app.getApplicationContext());
   }
@@ -62,10 +60,9 @@ public final class Signaller {
   public void connect(String accessToken, String userId) {
     UserData.getInstance().setAccessToken(accessToken);
     UserData.getInstance().setUserId(userId);
-
     SocketManager.getInstance().initSocket(accessToken);
     SocketManager.getInstance().connect();
-
+    registerAppCallback(app);
     SignallerGcmManager.register(appContext);
   }
 
@@ -74,7 +71,7 @@ public final class Signaller {
     SocketManager.getInstance().invalidate();
     SignallerDbManager.getInstance().clear();
     SignallerGcmManager.unregister(appContext);
-    unregisterAppCallback(INSTANCE.app);
+    unregisterAppCallback(app);
     UserData.getInstance().clear();
     ChatRoomMeta.clear();
   }
