@@ -419,7 +419,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
     addOwnTextMessageCell(chatMessage);
     addChatMessageToDb(chatMessage, socketChatMessage -> {
-      LogUtils.d("sent text msg to server.");
       SocketManager.getInstance().send(socketChatMessage);
     });
     clearInput();

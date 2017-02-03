@@ -82,6 +82,7 @@ public class SocketManager {
     if (!isConnected()) {
       onEvents();
       socket.connect();
+      LogUtils.d("disconnect");
       registerConnectionCallbacks(callback);
     }
   }
@@ -112,6 +113,7 @@ public class SocketManager {
     if (isConnected()) {
       offEvents();
       socket.disconnect();
+      LogUtils.d("disconnect");
     }
   }
 
@@ -148,6 +150,7 @@ public class SocketManager {
       chatMsgObj.put("payload", message.getPayloadJson());
 
       socket.emit(SEND_MESSAGE, chatMsgObj);
+      LogUtils.d("sent text msg (" + message.getMessage().getContent() +") to server.");
     } catch (JSONException e) {
       e.printStackTrace();
     }
@@ -267,19 +270,20 @@ public class SocketManager {
     }
   }
 
+  // todo send multiple times
   private void sendPendingChatMsg() {
-    SignallerDbManager.getInstance().getPendingChatMessages()
-      .subscribe(
-        pendingChatMessages -> {
-          for (SignallerSocketChatMessage pendingChatMessage : pendingChatMessages) {
-            send(pendingChatMessage);
-            LogUtils.d("sent pending chat message:" + pendingChatMessage.getMessage());
-          }
-        },
-        error -> {
-          LogUtils.e("sendPendingChatMsg:" + error.getMessage());
-        }
-      );
+//    SignallerDbManager.getInstance().getPendingChatMessages()
+//      .subscribe(
+//        pendingChatMessages -> {
+//          for (SignallerSocketChatMessage pendingChatMessage : pendingChatMessages) {
+//            send(pendingChatMessage);
+//            LogUtils.d("sent pending chat message:" + pendingChatMessage.getMessage());
+//          }
+//        },
+//        error -> {
+//          LogUtils.e("sendPendingChatMsg:" + error.getMessage());
+//        }
+//      );
   }
 
 }

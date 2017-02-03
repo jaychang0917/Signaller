@@ -10,6 +10,8 @@ import com.jaychang.nrv.NRecyclerView;
 import com.jaychang.signaller.core.model.SignallerChatMessage;
 import com.jaychang.signaller.ui.config.DateSeparatorViewProvider;
 
+import static android.support.v7.widget.RecyclerView.NO_POSITION;
+
 public class DateSeparatorItemDecoration extends RecyclerView.ItemDecoration {
 
   private DateSeparatorViewProvider provider;
@@ -27,6 +29,10 @@ public class DateSeparatorItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     int position = parent.getChildAdapterPosition(view);
+
+    if (position == NO_POSITION) {
+      return;
+    }
 
     if (sectionHeight == 0) {
       View sectionView = getAndMeasureSectionView(parent, position);
@@ -57,7 +63,7 @@ public class DateSeparatorItemDecoration extends RecyclerView.ItemDecoration {
     for (int i = 0; i < parent.getChildCount(); i++) {
       View view = parent.getChildAt(i);
       int position = parent.getChildAdapterPosition(view);
-      if (!isSameSection(position)) {
+      if (position != NO_POSITION && !isSameSection(position)) {
         View sectionView = getAndMeasureSectionView(parent, position);
         int top = view.getTop() - sectionHeight;
         int bottom = view.getTop();
