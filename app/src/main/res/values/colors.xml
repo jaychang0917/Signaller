@@ -6,4 +6,6 @@
     <color name="white">#ffffff</color>
     <color name="tran">#00ffffff</color>
     <color name="text_color">#262626</color>
+    <color name="event_option_on">#4a90e2</color>
+    <color name="event_option_off">#9b9b9b</color>
 </resources>

@@ -41,27 +41,27 @@
             android:layout_width="0dp"
             android:layout_height="49dp"
             android:layout_weight="1"
-            android:textColor="@color/state_event_msg_action"
+            android:textStyle="bold"
             android:gravity="center"
             tools:text="Yes"
-            android:drawableLeft="@drawable/btn_msg_yes" />
+            android:drawableLeft="@drawable/state_btn_event_yes_option" />
 
         <com.jaychang.toolbox.widget.NButton
             android:id="@+id/middleButton"
             android:layout_width="0dp"
             tools:text="No"
             android:gravity="center"
-            android:textColor="@color/state_event_msg_action"
-            android:drawableLeft="@drawable/btn_msg_no"
+            android:textStyle="bold"
+            android:drawableLeft="@drawable/state_btn_event_no_option"
             android:layout_height="49dp"
             android:layout_weight="1" />
 
         <com.jaychang.toolbox.widget.NButton
             android:id="@+id/rightButton"
             android:layout_width="0dp"
-            android:textColor="@color/state_event_msg_action"
             tools:text="Maybe"
             android:gravity="center"
+            android:textStyle="bold"
             android:layout_height="49dp"
             android:layout_weight="1" />
 
