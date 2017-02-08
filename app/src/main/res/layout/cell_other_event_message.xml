@@ -3,8 +3,8 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="325dp"
               android:layout_height="wrap_content"
-              android:background="@drawable/shape_event_bg"
               android:layout_marginLeft="12dp"
+              android:background="@drawable/shape_event_bg"
               android:orientation="vertical">
 
     <ImageView
@@ -36,34 +36,62 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.jaychang.toolbox.widget.NButton
-            android:id="@+id/leftButton"
+        <FrameLayout
             android:layout_width="0dp"
-            android:layout_height="49dp"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:gravity="center"
-            tools:text="Yes"
-            android:drawableLeft="@drawable/state_btn_event_yes_option" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
-        <com.jaychang.toolbox.widget.NButton
-            android:id="@+id/middleButton"
-            android:layout_width="0dp"
-            tools:text="No"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:drawableLeft="@drawable/state_btn_event_no_option"
-            android:layout_height="49dp"
-            android:layout_weight="1" />
+            <TextView
+                android:id="@+id/leftButton"
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/state_btn_event_yes_option"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:gravity="center"
+                android:textColor="@color/state_event_msg_action"
+                tools:text="Yes" />
 
-        <com.jaychang.toolbox.widget.NButton
-            android:id="@+id/rightButton"
+        </FrameLayout>
+
+
+        <FrameLayout
             android:layout_width="0dp"
-            tools:text="Maybe"
-            android:gravity="center"
-            android:textStyle="bold"
-            android:layout_height="49dp"
-            android:layout_weight="1" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/middleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
+                android:layout_gravity="center"
+                android:drawableLeft="@drawable/state_btn_event_no_option"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:gravity="center"
+                android:textColor="@color/state_event_msg_action"
+                tools:text="No" />
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/rightButton"
+                android:layout_width="wrap_content"
+                android:layout_height="49dp"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:drawablePadding="3dp"
+                android:gravity="center"
+                android:textColor="@color/state_event_msg_action"
+                tools:text="Maybe" />
+
+        </FrameLayout>
 
     </LinearLayout>
 

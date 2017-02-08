@@ -77,36 +77,21 @@ public class KolEventMessageCell extends ChatMessageCell {
   }
 
   private void selectRightOption(ViewHolder holder) {
-    int onColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.event_option_on);
-    int offColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.event_option_off);
     holder.leftButton.setSelected(false);
-    holder.leftButton.getButton().setTextColor(offColor);
     holder.middleButton.setSelected(false);
-    holder.middleButton.getButton().setTextColor(offColor);
     holder.rightButton.setSelected(true);
-    holder.rightButton.getButton().setTextColor(onColor);
   }
 
   private void selectMiddleOption(ViewHolder holder) {
-    int onColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.event_option_on);
-    int offColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.event_option_off);
     holder.leftButton.setSelected(false);
-    holder.leftButton.getButton().setTextColor(offColor);
     holder.middleButton.setSelected(true);
-    holder.middleButton.getButton().setTextColor(onColor);
     holder.rightButton.setSelected(false);
-    holder.rightButton.getButton().setTextColor(offColor);
   }
 
   private void selectLeftOption(ViewHolder holder) {
-    int onColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.event_option_on);
-    int offColor = ContextCompat.getColor(holder.itemView.getContext(), R.color.event_option_off);
     holder.leftButton.setSelected(true);
-    holder.leftButton.getButton().setTextColor(onColor);
     holder.middleButton.setSelected(false);
-    holder.middleButton.getButton().setTextColor(offColor);
     holder.rightButton.setSelected(false);
-    holder.rightButton.getButton().setTextColor(offColor);
   }
 
   private void updateEventMsg(String result) {
@@ -119,11 +104,11 @@ public class KolEventMessageCell extends ChatMessageCell {
     @BindView(R.id.contentView)
     TextView contentView;
     @BindView(R.id.leftButton)
-    NButton leftButton;
+    TextView leftButton;
     @BindView(R.id.middleButton)
-    NButton middleButton;
+    TextView middleButton;
     @BindView(R.id.rightButton)
-    NButton rightButton;
+    TextView rightButton;
 
     ViewHolder(View itemView) {
       super(itemView);
