@@ -73,7 +73,7 @@ dependencies {
     compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
     compile 'com.uphyca:stetho_realm:2.0.0'
 
-    compile 'com.github.jaychang0917:Utils:0.0.12'
+    compile 'com.github.jaychang0917:Utils:0.1.0'
     compile 'com.github.jaychang0917:nRecyclerView:2.1.16'
     compile 'com.github.jaychang0917:nPhotoPicker:1.2.5'
 }

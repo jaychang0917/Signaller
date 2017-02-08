@@ -15,6 +15,7 @@ import com.jaychang.nrv.BaseViewHolder;
 import com.jaychang.signaller.core.model.SignallerChatRoom;
 import com.jaychang.signaller.core.model.SignallerReceiver;
 import com.jaychang.signaller.ui.part.ChatRoomCell;
+import com.jaychang.utils.TextViewUtils;
 import com.wiser.kol.R;
 
 import butterknife.BindView;
@@ -70,7 +71,9 @@ public class KolChatRoomCell extends ChatRoomCell {
 
     holder.nameView.setText(receiver.getName().trim());
 
-    if ("brand".equals(receiver.getUserType())) {
+    boolean isBrand = "brand".equals(receiver.getUserType());
+
+    if (isBrand) {
       holder.brandLabelView.setVisibility(View.VISIBLE);
       holder.nameView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
     } else {
@@ -78,7 +81,14 @@ public class KolChatRoomCell extends ChatRoomCell {
       holder.nameView.setTextColor(ContextCompat.getColor(context, R.color.text_color));
     }
 
-    // todo
+    if (TextViewUtils.isEllipsized(holder.nameView)) {
+      holder.brandLabelView.setVisibility(View.GONE);
+    } else {
+      if (isBrand) {
+        holder.brandLabelView.setVisibility(View.VISIBLE);
+      }
+    }
+
     holder.chatBubbleView.setImageResource(R.drawable.btn_msg_off);
   }
 
