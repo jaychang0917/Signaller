@@ -42,6 +42,10 @@ public class ChatRoomListFragment extends RxFragment {
     void onReceiverLogoClicked(SignallerReceiver receiver);
   }
 
+  public interface OnUnreadMessageCountListener {
+    void onUnreadMessageCountReady(int count);
+  }
+
   @BindView(R2.id.recyclerView)
   NRecyclerView recyclerView;
 
@@ -49,6 +53,7 @@ public class ChatRoomListFragment extends RxFragment {
   private ChatRoomCellProvider chatRoomCellProvider;
   private HashMap<String, SignallerChatRoom> chatRooms = new HashMap<>();
   private OnReceiverLogoClickListener onReceiverLogoClickListener;
+  private OnUnreadMessageCountListener onUnreadMessageCountListener;
 
   public static ChatRoomListFragment newInstance() {
     return new ChatRoomListFragment();
@@ -128,6 +133,9 @@ public class ChatRoomListFragment extends RxFragment {
         rooms -> {
           saveChatRooms(rooms);
           bindChatRooms();
+          if (onUnreadMessageCountListener != null) {
+            onUnreadMessageCountListener.onUnreadMessageCountReady(ChatRoomMeta.totalUnreadCount);
+          }
         },
         error -> {
           LogUtils.e("loadChatRooms:" + error.getMessage());
@@ -221,6 +229,10 @@ public class ChatRoomListFragment extends RxFragment {
 
   public void setOnReceiverLogoClickListener(OnReceiverLogoClickListener onReceiverLogoClickListener) {
     this.onReceiverLogoClickListener = onReceiverLogoClickListener;
+  }
+
+  public void setOnUnreadMessageCountListener(OnUnreadMessageCountListener onUnreadMessageCountListener) {
+    this.onUnreadMessageCountListener = onUnreadMessageCountListener;
   }
 
 }

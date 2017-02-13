@@ -38,6 +38,7 @@ public class SignallerDataManager {
       .doOnNext(response -> {
         ChatRoomMeta.cursor = response.cursor;
         ChatRoomMeta.hasMoreData = response.hasMore;
+        ChatRoomMeta.totalUnreadCount = response.totalUnreadCount;
         databaseManager.saveChatRooms(response.chatRooms);
       })
       .map(response -> response.chatRooms)

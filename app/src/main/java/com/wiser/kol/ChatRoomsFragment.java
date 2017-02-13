@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import com.jaychang.signaller.ui.ChatRoomListFragment;
 
-public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTabSelectListener{
+public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTabSelectListener {
 
   @Nullable
   @Override
@@ -27,6 +27,9 @@ public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTa
     ChatRoomListFragment fragment = ChatRoomListFragment.newInstance();
     fragment.setOnReceiverLogoClickListener(receiver -> {
       System.out.println("receiver:" + receiver.getName());
+    });
+    fragment.setOnUnreadMessageCountListener(unreadCount -> {
+      System.out.println("unread count:" + unreadCount);
     });
     getChildFragmentManager().beginTransaction()
       .replace(R.id.chatRoomListFragment, fragment)
