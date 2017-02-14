@@ -36,9 +36,9 @@ public class SignallerDataManager {
   public Observable<List<SignallerChatRoom>> getChatRoomsFromNetwork(String cursor) {
     return api.getChatRooms(cursor, 24)
       .doOnNext(response -> {
-        ChatRoomMeta.cursor = response.cursor;
-        ChatRoomMeta.hasMoreData = response.hasMore;
-        ChatRoomMeta.totalUnreadCount = response.totalUnreadCount;
+        ChatRoomMeta.getInstance().setCursor(response.cursor);
+        ChatRoomMeta.getInstance().setHasMoreData(response.hasMore);
+        ChatRoomMeta.getInstance().setTotalUnreadCount(response.totalUnreadCount);
         databaseManager.saveChatRooms(response.chatRooms);
       })
       .map(response -> response.chatRooms)

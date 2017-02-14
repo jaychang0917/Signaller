@@ -11,6 +11,10 @@ import com.jaychang.utils.AppStatusUtils;
 
 public final class Signaller {
 
+  public interface ChatRoomMetaCallback {
+    void onChatRoomMetaReady(ChatRoomMeta chatRoomMeta);
+  }
+
   private static final Signaller INSTANCE = new Signaller();
   private Context appContext;
   private AppConfig appConfig;
@@ -73,7 +77,7 @@ public final class Signaller {
     SignallerGcmManager.unregister(appContext);
     unregisterAppCallback(app);
     UserData.getInstance().clear();
-    ChatRoomMeta.clear();
+    ChatRoomMeta.getInstance().clear();
   }
 
   public void chatWith(Context context, String userId, String toolbarTitle) {
@@ -128,6 +132,17 @@ public final class Signaller {
   public void enableDebug(boolean enable) {
     LogUtils.setEnable(enable);
     StethoUtils.setEnable(enable);
+  }
+
+  public void getUnreadMessageCount(ChatRoomMetaCallback callback) {
+    SignallerDataManager.getInstance().getChatRoomsFromNetwork(null)
+      .subscribe(
+        rooms -> {
+          callback.onChatRoomMetaReady(ChatRoomMeta.getInstance());
+        },
+        error -> {
+          LogUtils.e("getUnreadMessageCount:" + error.getMessage());
+        });
   }
 
 }

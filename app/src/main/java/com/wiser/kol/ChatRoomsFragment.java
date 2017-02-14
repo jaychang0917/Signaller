@@ -28,9 +28,6 @@ public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTa
     fragment.setOnReceiverLogoClickListener(receiver -> {
       System.out.println("receiver:" + receiver.getName());
     });
-    fragment.setOnUnreadMessageCountListener(unreadCount -> {
-      System.out.println("unread count:" + unreadCount);
-    });
     getChildFragmentManager().beginTransaction()
       .replace(R.id.chatRoomListFragment, fragment)
       .commitNow();
@@ -40,4 +37,5 @@ public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTa
   public void onTabSelected(int pos) {
     init();
   }
+
 }
