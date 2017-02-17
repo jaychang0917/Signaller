@@ -13,13 +13,10 @@ public class SignallerGcmManager {
   public static final String GCM_TOKEN = SignallerGcmManager.class.getPackage().getName() + "GCM_TOKEN";
 
   public static void register(Context context) {
-    boolean isRegistered = !PreferenceUtils.getString(context, GCM_TOKEN).equals("");
-    if (!isRegistered) {
-      if (checkPlayServices(context)) {
-        Intent intent = new Intent(context, SignallerGcmRegistrationService.class);
-        intent.setAction(SignallerGcmRegistrationService.ACTION_REGISTER);
-        context.startService(intent);
-      }
+    if (checkPlayServices(context)) {
+      Intent intent = new Intent(context, SignallerGcmRegistrationService.class);
+      intent.setAction(SignallerGcmRegistrationService.ACTION_REGISTER);
+      context.startService(intent);
     }
   }
 
