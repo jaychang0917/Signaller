@@ -4,7 +4,6 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.facebook.stetho.Stetho;
-import com.uphyca.stetho_realm.RealmInspectorModulesProvider;
 
 public class Utils {
 
@@ -12,11 +11,7 @@ public class Utils {
 
   public static void init(Context appContext) {
     if (debug) {
-      Stetho.initialize(
-        Stetho.newInitializerBuilder(appContext)
-          .enableDumpapp(Stetho.defaultDumperPluginsProvider(appContext))
-          .enableWebKitInspector(RealmInspectorModulesProvider.builder(appContext).build())
-          .build());
+      Stetho.initializeWithDefaults(appContext);
     }
   }
 
