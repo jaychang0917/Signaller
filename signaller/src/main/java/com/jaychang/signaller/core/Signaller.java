@@ -96,6 +96,10 @@ public final class Signaller {
     }
   }
 
+  public void openRoom(Context context, String chatRoomId, String toolbarTitle) {
+    ChatRoomActivity.start(context, chatRoomId, chatRoomId, toolbarTitle);
+  }
+
   private void chatWithInternal(Context context, String userId, String toolbarTitle) {
     String ownUserId = UserData.getInstance().getUserId();
     String chatRoomId = ownUserId.compareTo(userId) < 0 ?
