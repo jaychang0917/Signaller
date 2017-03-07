@@ -21,10 +21,11 @@ import com.redso.signaller.ui.ChatMessageCellProvider;
 import com.redso.signaller.ui.ChatMessageType;
 import com.redso.signaller.ui.ChatRoomCell;
 import com.redso.signaller.ui.ChatRoomCellProvider;
-import com.redso.signaller.ui.ChatRoomControlViewProvider;
+import com.redso.signaller.ui.ChatRoomControlViewAdapter;
 import com.redso.signaller.ui.ChatRoomDateSectionViewProvider;
 import com.redso.signaller.ui.ChatRoomThemeProvider;
 import com.redso.signaller.ui.ChatRoomToolbarProvider;
+import com.redso.signaller.ui.EmojiKeyboardViewInfo;
 import com.redso.signaller.ui.UIConfig;
 
 public class App extends MultiDexApplication {
@@ -76,7 +77,7 @@ public class App extends MultiDexApplication {
           throw new RuntimeException("Unsupported chat message type");
         }
       })
-      .setChatRoomControlViewProvider(new ChatRoomControlViewProvider() {
+      .setChatRoomControlViewProvider(new ChatRoomControlViewAdapter() {
         @Override
         public int getLayoutRes() {
           return R.layout.view_chatroom_control;
@@ -87,19 +88,25 @@ public class App extends MultiDexApplication {
           return R.id.inputEditText;
         }
 
+        // optional
         @Override
-        public int getEmojiIconViewId() {
-          return R.id.emojiIconView;
-        }
+        public EmojiKeyboardViewInfo getEmojiKeyboardViewInfo() {
+          return new EmojiKeyboardViewInfo() {
+            @Override
+            public int getEmojiIconViewId() {
+              return R.id.emojiIconView;
+            }
 
-        @Override
-        public int getEmojiIconResId() {
-          return R.drawable.ic_emoji;
-        }
+            @Override
+            public int getEmojiIconResId() {
+              return R.drawable.ic_emoji;
+            }
 
-        @Override
-        public int getKeyboardIconResId() {
-          return R.drawable.ic_keyboard;
+            @Override
+            public int getKeyboardIconResId() {
+              return R.drawable.ic_keyboard;
+            }
+          };
         }
 
         @Override

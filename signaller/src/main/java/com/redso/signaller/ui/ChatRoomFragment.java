@@ -110,7 +110,6 @@ public class ChatRoomFragment extends RxFragment {
     initUIConfig();
     initRecyclerView();
     initControlView();
-    initEmojiKeyboard();
     monitorNetworkState();
     monitorInput();
     cancelNotificationIfNeed();
@@ -164,13 +163,17 @@ public class ChatRoomFragment extends RxFragment {
   private void initControlView() {
     View controlView = LayoutInflater.from(getContext()).inflate(chatRoomControlViewProvider.getLayoutRes(), null);
     inputEditText = (EmojiEditText) controlView.findViewById(chatRoomControlViewProvider.getInputEditTextId());
-    emojiIconView = (ImageView) controlView.findViewById(chatRoomControlViewProvider.getEmojiIconViewId());
     photoIconView = (ImageView) controlView.findViewById(chatRoomControlViewProvider.getPhotoIconViewId());
     sendMsgView = controlView.findViewById(chatRoomControlViewProvider.getSendMessageViewId());
 
-    emojiIconView.setOnClickListener(view -> {
-      showEmojiKeyboard();
-    });
+    EmojiKeyboardViewInfo emojiKeyboardViewInfo = chatRoomControlViewProvider.getEmojiKeyboardViewInfo();
+    if (emojiKeyboardViewInfo != null) {
+      emojiIconView = (ImageView) controlView.findViewById(emojiKeyboardViewInfo.getEmojiIconViewId());
+      emojiIconView.setOnClickListener(view -> {
+        showEmojiKeyboard();
+      });
+      initEmojiKeyboard(emojiKeyboardViewInfo);
+    }
 
     photoIconView.setOnClickListener(view -> {
       showPhotoPicker();
@@ -183,10 +186,10 @@ public class ChatRoomFragment extends RxFragment {
     controlViewPlaceHolder.addView(controlView);
   }
 
-  private void initEmojiKeyboard() {
+  private void initEmojiKeyboard(EmojiKeyboardViewInfo info) {
     emojiPopup = EmojiPopup.Builder.fromRootView(getView())
-      .setOnEmojiPopupShownListener(() -> emojiIconView.setImageResource(chatRoomControlViewProvider.getKeyboardIconResId()))
-      .setOnEmojiPopupDismissListener(() -> emojiIconView.setImageResource(chatRoomControlViewProvider.getEmojiIconResId()))
+      .setOnEmojiPopupShownListener(() -> emojiIconView.setImageResource(info.getKeyboardIconResId()))
+      .setOnEmojiPopupDismissListener(() -> emojiIconView.setImageResource(info.getEmojiIconResId()))
       .setOnSoftKeyboardCloseListener(() -> emojiPopup.dismiss())
       .build(inputEditText);
   }
