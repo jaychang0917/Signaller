@@ -42,6 +42,7 @@ public class App extends MultiDexApplication {
 
   private void initSignaller() {
     AppConfig appConfig = AppConfig.newBuilder(Constant.SOCKET_URL, Constant.SERVER_DOMAIN)
+      .enablePushNotification(R.string.app_name, R.mipmap.ic_launcher, Constant.PUSH_SENDER_ID, MainActivity.class)
       .build();
 
     UIConfig uiConfig = UIConfig.newBuilder()
@@ -73,27 +74,6 @@ public class App extends MultiDexApplication {
             return new CustomOtherImageMessageCell(message);
           }
           throw new RuntimeException("Unsupported chat message type");
-        }
-      })
-      .setChatRoomDateSectionViewProvider(new ChatRoomDateSectionViewProvider() {
-        @NonNull
-        @Override
-        public View getChatRoomDateSectionView(SignallerChatMessage item) {
-          CustomChatRoomDateSectionView view = new CustomChatRoomDateSectionView(getApplicationContext());
-          view.bind(item);
-          return view;
-        }
-
-        @Override
-        public boolean isSameSection(SignallerChatMessage item, SignallerChatMessage nextItem) {
-          return item.isSameDate(nextItem);
-        }
-      })
-      .setChatRoomToolbarProvider(new ChatRoomToolbarProvider() {
-        @NonNull
-        @Override
-        public View getToolbar(Activity activity, String username) {
-          return CustomChatRoomToolbar.create(activity, username);
         }
       })
       .setChatRoomControlViewProvider(new ChatRoomControlViewProvider() {
@@ -132,6 +112,30 @@ public class App extends MultiDexApplication {
           return R.id.sendMessageView;
         }
       })
+      // optional
+      .setChatRoomDateSectionViewProvider(new ChatRoomDateSectionViewProvider() {
+        @NonNull
+        @Override
+        public View getChatRoomDateSectionView(SignallerChatMessage item) {
+          CustomChatRoomDateSectionView view = new CustomChatRoomDateSectionView(getApplicationContext());
+          view.bind(item);
+          return view;
+        }
+
+        @Override
+        public boolean isSameSection(SignallerChatMessage item, SignallerChatMessage nextItem) {
+          return item.isSameDate(nextItem);
+        }
+      })
+      // optional
+      .setChatRoomToolbarProvider(new ChatRoomToolbarProvider() {
+        @NonNull
+        @Override
+        public View getToolbar(Activity activity, String username) {
+          return CustomChatRoomToolbar.create(activity, username);
+        }
+      })
+      // optional
       .setChatRoomThemeProvider(new ChatRoomThemeProvider() {
         @NonNull
         @Override

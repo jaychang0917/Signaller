@@ -8,8 +8,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import com.redso.signaller.R;
 import com.jaychang.utils.AppUtils;
+import com.redso.signaller.R;
 import com.redso.signaller.core.Signaller;
 import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
@@ -57,17 +57,29 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void initToolbar(Intent intent) {
+    ChatRoomToolbarProvider chatRoomToolbarProvider = Signaller.getInstance().getUiConfig().getChatRoomToolbarProvider();
+
+    if (chatRoomToolbarProvider == null) {
+      return;
+    }
+
     String toolbarTitle = intent.getStringExtra(EXTRA_TITLE);
     FrameLayout placeholder = (FrameLayout) findViewById(R.id.toolbarPlaceholder);
     placeholder.removeAllViews();
-    View toolbar = Signaller.getInstance().getUiConfig().getChatRoomToolbarProvider().getToolbar(this, toolbarTitle);
+    View toolbar = chatRoomToolbarProvider.getToolbar(this, toolbarTitle);
     if (toolbar != null) {
       placeholder.addView(toolbar);
     }
   }
 
   private void setStatusBarColor() {
-    int statusBarColor = Signaller.getInstance().getUiConfig().getChatRoomThemeProvider().getStatusBarColor();
+    ChatRoomThemeProvider chatRoomThemeProvider = Signaller.getInstance().getUiConfig().getChatRoomThemeProvider();
+
+    if (chatRoomThemeProvider == null) {
+      return;
+    }
+
+    int statusBarColor = chatRoomThemeProvider.getStatusBarColor();
     if (statusBarColor != 0) {
       AppUtils.setStatusBarColor(this, statusBarColor);
     }

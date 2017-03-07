@@ -46,6 +46,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Subscriber;
+
 import static com.redso.signaller.ui.ChatMessageType.IMAGE;
 import static com.redso.signaller.ui.ChatMessageType.TEXT;
 
@@ -235,7 +237,9 @@ public class ChatRoomFragment extends RxFragment {
     EventBus.getDefault().unregister(this);
     UserData.getInstance().setInChatRoomPage(false);
 
-    EventBus.getDefault().postSticky(new SignallerEvents.ClearUnreadCountEvent(chatRoomId));
+    if (needClearUnreadCount) {
+      EventBus.getDefault().postSticky(new SignallerEvents.ClearUnreadCountEvent(chatRoomId));
+    }
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -355,19 +359,34 @@ public class ChatRoomFragment extends RxFragment {
   }
 
   private void showPhotoPicker() {
-    NPhotoPicker.with(getContext())
-      .toolbarColor(chatRoomThemeProvider.getPhotoPickerToolbarBackgroundColor())
-      .statusBarColor(chatRoomThemeProvider.getStatusBarColor())
-      .selectedBorderColor(chatRoomThemeProvider.getStatusBarColor())
-      .pickSinglePhotoFromAlbum()
-      .subscribe(
-        uri -> {
-          addImageMessage(uri);
-        },
-        error -> {
-          LogUtils.e("Fail to show photo picker:" + error.getMessage());
-        }
-      );
+    Subscriber<Uri> subscriber = new Subscriber<Uri>() {
+      @Override
+      public void onCompleted() {
+      }
+
+      @Override
+      public void onError(Throwable error) {
+        LogUtils.e("Fail to show photo picker:" + error.getMessage());
+      }
+
+      @Override
+      public void onNext(Uri uri) {
+        addImageMessage(uri);
+      }
+    };
+
+    if (chatRoomThemeProvider != null) {
+      NPhotoPicker.with(getContext())
+        .toolbarColor(chatRoomThemeProvider.getPhotoPickerToolbarBackgroundColor())
+        .statusBarColor(chatRoomThemeProvider.getStatusBarColor())
+        .selectedBorderColor(chatRoomThemeProvider.getStatusBarColor())
+        .pickSinglePhotoFromAlbum()
+        .subscribe(subscriber);
+    } else {
+      NPhotoPicker.with(getContext())
+        .pickSinglePhotoFromAlbum()
+        .subscribe(subscriber);
+    }
   }
 
   private void addTextMessage() {
