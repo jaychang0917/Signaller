@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="right"
-    android:layout_marginRight="12dp"
     android:orientation="horizontal">
 
     <ImageView
@@ -13,7 +12,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginRight="3dp"
-        android:background="#c5c5c5"
+        android:background="#555"
         android:padding="4dp" />
 
 </LinearLayout>

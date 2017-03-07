@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-     <com.jaychang.nrv.NRecyclerView
+     <com.jaychang.srv.SimpleRecyclerView
          android:layout_width="match_parent"
-         android:id="@+id/recyclerView"
+         android:id="@+id/roomsRecyclerView"
          android:background="@android:color/white"
          android:scrollbars="vertical"
+         app:srv_layoutMode="linearVertical"
+         app:srv_showDivider="true"
          android:layout_height="match_parent" />
 
 </LinearLayout>

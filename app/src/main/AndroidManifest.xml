@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.wiser.kol"
+<manifest package="com.redso.signaller.demo"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application
-        android:name="com.wiser.kol.App"
+        android:name=".App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name="com.wiser.kol.ChooseUserActivity">
+        <activity android:name=".ChooseUserActivity"
+                  android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,7 +19,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.wiser.kol.MainActivity" />
+        <activity android:name=".MainActivity"
+                  android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
+
+        <activity android:name=".PhotoViewerActivity"
+                  android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
 
         <service
             android:name=".PushNotificationService"

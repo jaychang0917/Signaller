@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="sig_image">图片</string>
-    <string name="sig_yesterday">昨天</string>
-    <string name="sig_today">今天</string>
-    <string name="sig_send">发送</string>
-</resources>
