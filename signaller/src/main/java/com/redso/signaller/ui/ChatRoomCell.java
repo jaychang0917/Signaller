@@ -2,7 +2,6 @@ package com.redso.signaller.ui;
 
 import com.jaychang.srv.SimpleCell;
 import com.jaychang.srv.SimpleViewHolder;
-import com.redso.signaller.core.SignallerDbManager;
 import com.redso.signaller.core.model.SignallerChatMessage;
 import com.redso.signaller.core.model.SignallerChatRoom;
 
@@ -20,17 +19,20 @@ public abstract class ChatRoomCell<VH extends SimpleViewHolder> extends SimpleCe
     setItem(chatRoom);
   }
 
-  public void updateLastMessage(SignallerChatMessage lastMsg) {
+  void updateLastMessage(SignallerChatMessage lastMsg) {
     getChatRoom().setLastMessage(lastMsg);
   }
 
-  public void increaseUnreadCount() {
+  void increaseUnreadCount() {
     getChatRoom().increaseUnreadCount();
+  }
+
+  void clearUnreadCount() {
+    getChatRoom().setUnreadCount(0);
   }
 
   public void onCellClicked() {
     getChatRoom().setUnreadCount(0);
-    SignallerDbManager.getInstance().clearUnreadMessageCount(getChatRoom().getChatRoomId());
     getOnCellClickListener().onCellClicked(getChatRoom());
   }
 

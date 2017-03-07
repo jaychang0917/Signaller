@@ -80,7 +80,6 @@ public class ChatRoomFragment extends RxFragment {
   private String cursor;
   private boolean hasMoreData;
   private boolean questScrollToBottom = true;
-  private boolean needClearUnreadCount;
 
   public static ChatRoomFragment newInstance(String chatId, String chatRoomId) {
     ChatRoomFragment fragment = new ChatRoomFragment();
@@ -113,6 +112,7 @@ public class ChatRoomFragment extends RxFragment {
     monitorNetworkState();
     monitorInput();
     cancelNotificationIfNeed();
+    clearUnreadCount();
   }
 
   private void initViews(View rootView) {
@@ -227,6 +227,11 @@ public class ChatRoomFragment extends RxFragment {
     SignallerPushNotificationManager.cancelNotification(chatId);
   }
 
+  private void clearUnreadCount() {
+    SignallerDbManager.getInstance().clearUnreadMessageCount(chatRoomId);
+    SignallerDataManager.getInstance().clearUnreadCount(chatRoomId);
+  }
+
   @Override
   public void onStart() {
     super.onStart();
@@ -240,9 +245,8 @@ public class ChatRoomFragment extends RxFragment {
     EventBus.getDefault().unregister(this);
     UserData.getInstance().setInChatRoomPage(false);
 
-    if (needClearUnreadCount) {
-      EventBus.getDefault().postSticky(new SignallerEvents.ClearUnreadCountEvent(chatRoomId));
-    }
+    // clear that unread count for this chat room
+    EventBus.getDefault().postSticky(new SignallerEvents.ClearUnreadCountEvent(chatRoomId));
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
@@ -250,8 +254,6 @@ public class ChatRoomFragment extends RxFragment {
     EventBus.getDefault().removeStickyEvent(event);
     SignallerChatMessage chatMessage = SignallerDbManager.getInstance().getChatMessage(event.chatRoomId, event.msgId);
     handleChatMessage(chatMessage);
-
-    needClearUnreadCount = true;
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)

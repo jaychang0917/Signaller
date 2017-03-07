@@ -60,9 +60,10 @@ public class SignallerDataManager {
       .compose(new SchedulerTransformer<>());
   }
 
-  public Observable<Void> clearUnreadCount(String chatRoomId) {
-    return api.clearUnreadCount(chatRoomId, 0)
-      .compose(new SchedulerTransformer<>());
+  public void clearUnreadCount(String chatRoomId) {
+    api.clearUnreadCount(chatRoomId, 0)
+      .compose(new SchedulerTransformer<>())
+      .subscribe();
   }
 
 }

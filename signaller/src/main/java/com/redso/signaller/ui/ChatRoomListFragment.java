@@ -77,8 +77,7 @@ public class ChatRoomListFragment extends RxFragment {
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
   public void clearUnreadCount(SignallerEvents.ClearUnreadCountEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    SignallerDataManager.getInstance().clearUnreadCount(event.chatRoomId).subscribe();
-    LogUtils.d("Clear unread count for chat room " + event.chatRoomId);
+    clearUnreadCount(event.chatRoomId);
   }
 
   public void init() {
@@ -152,25 +151,46 @@ public class ChatRoomListFragment extends RxFragment {
       return;
     }
 
+    // update ChatRoom cell
+    ChatRoomCell chatRoomCell = getChatRoomCell(room.getChatRoomId());
+    if (chatRoomCell != null) {
+      if (!room.getLastMessage().isOwnMessage() && updateUnreadCount) {
+        chatRoomCell.increaseUnreadCount();
+      }
+
+      chatRoomCell.updateLastMessage(room.getLastMessage());
+
+      roomsRecyclerView.removeCell(chatRoomCell);
+      roomsRecyclerView.addCell(0, chatRoomCell);
+
+      roomsRecyclerView.scrollToPosition(0);
+    }
+  }
+
+  private void clearUnreadCount(String chatRoomId) {
+    SignallerDbManager.getInstance().clearUnreadMessageCount(chatRoomId);
+
+    SignallerDataManager.getInstance().clearUnreadCount(chatRoomId);
+
+    ChatRoomCell chatRoomCell = getChatRoomCell(chatRoomId);
+    if (chatRoomCell != null) {
+      chatRoomCell.clearUnreadCount();
+      roomsRecyclerView.getAdapter().notifyItemChanged(roomsRecyclerView.getAllCells().indexOf(chatRoomCell));
+    }
+
+    LogUtils.d("Clear unread count for chat room " + chatRoomId);
+  }
+
+  private ChatRoomCell getChatRoomCell(String chatRoomId) {
     for (SimpleCell cell : roomsRecyclerView.getAllCells()) {
       ChatRoomCell chatRoomCell = (ChatRoomCell) cell;
       SignallerChatRoom chatRoom = chatRoomCell.getChatRoom();
 
-      if (chatRoom.getChatRoomId().equals(room.getChatRoomId())) {
-        if (!room.getLastMessage().isOwnMessage() && updateUnreadCount) {
-          chatRoomCell.increaseUnreadCount();
-        }
-
-        chatRoomCell.updateLastMessage(room.getLastMessage());
-
-        roomsRecyclerView.removeCell(chatRoomCell);
-        roomsRecyclerView.addCell(0, chatRoomCell);
-
-        roomsRecyclerView.scrollToPosition(0);
-
-        break;
+      if (chatRoom.getChatRoomId().equals(chatRoomId)) {
+        return chatRoomCell;
       }
     }
+    return null;
   }
 
   private void bindChatRooms() {

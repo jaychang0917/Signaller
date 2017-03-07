@@ -64,6 +64,10 @@ public class SignallerPushNotificationManager {
   }
 
   public static void cancelNotification(String chatId) {
+    if (!Signaller.getInstance().isPushNotificationEnabled()) {
+      return;
+    }
+
     if (!notificationIdMap.containsKey(chatId)) {
       return;
     }
