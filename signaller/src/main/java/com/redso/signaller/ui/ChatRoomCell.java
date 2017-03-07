@@ -34,4 +34,9 @@ public abstract class ChatRoomCell<VH extends SimpleViewHolder> extends SimpleCe
     getOnCellClickListener().onCellClicked(getChatRoom());
   }
 
+  @Override
+  protected long getItemId() {
+    return getChatRoom().getChatRoomId().hashCode();
+  }
+
 }

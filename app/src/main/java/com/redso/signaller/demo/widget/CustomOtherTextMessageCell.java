@@ -33,12 +33,7 @@ public class CustomOtherTextMessageCell extends ChatMessageCell<CustomOtherTextM
 
   @Override
   protected void onBindViewHolder(ViewHolder viewHolder, int i, Context context, Object o) {
-    viewHolder.otherMessageView.setText(geChatMessage().getContent());
-  }
-
-  @Override
-  protected long getItemId() {
-    return geChatMessage().getMsgId().hashCode();
+    viewHolder.otherMessageView.setText(getChatMessage().getContent());
   }
 
   static class ViewHolder extends SimpleViewHolder {

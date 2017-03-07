@@ -85,11 +85,6 @@ public class CustomChatRoomCell extends ChatRoomCell<CustomChatRoomCell.ViewHold
     holder.dateView.setText(date);
   }
 
-  @Override
-  protected long getItemId() {
-    return getChatRoom().getChatRoomId().hashCode();
-  }
-
   static class ViewHolder extends SimpleViewHolder {
     @BindView(R.id.logoView)
     ImageView logoView;

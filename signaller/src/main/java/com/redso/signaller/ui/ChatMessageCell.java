@@ -10,12 +10,21 @@ public abstract class ChatMessageCell<VH extends SimpleViewHolder> extends Simpl
     super(chatMessage);
   }
 
-  public SignallerChatMessage geChatMessage() {
+  public SignallerChatMessage getChatMessage() {
     return getItem();
   }
 
   public void setChatMessage(SignallerChatMessage message) {
     setItem(message);
+  }
+
+  @Override
+  protected long getItemId() {
+    if (getChatMessage().getMsgId() == null) {
+      return getChatMessage().getTimestamp();
+    } else {
+      return getChatMessage().getMsgId().hashCode();
+    }
   }
 
 }

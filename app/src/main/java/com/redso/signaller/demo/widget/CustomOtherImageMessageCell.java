@@ -35,16 +35,11 @@ public class CustomOtherImageMessageCell extends ChatMessageCell<CustomOtherImag
 
   @Override
   protected void onBindViewHolder(ViewHolder viewHolder, int i, Context context, Object o) {
-    ViewUtils.setViewWidthHeight(viewHolder.imageView, 150, (int) (150 / geChatMessage().getImage().getRatio()));
+    ViewUtils.setViewWidthHeight(viewHolder.imageView, 150, (int) (150 / getChatMessage().getImage().getRatio()));
 
     Glide.with(context)
-      .load(geChatMessage().getImage().getUrl())
+      .load(getChatMessage().getImage().getUrl())
       .into(viewHolder.imageView);
-  }
-
-  @Override
-  protected long getItemId() {
-    return geChatMessage().getMsgId().hashCode();
   }
 
   static class ViewHolder extends SimpleViewHolder {

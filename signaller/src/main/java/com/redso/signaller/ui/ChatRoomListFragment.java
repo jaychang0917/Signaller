@@ -165,12 +165,8 @@ public class ChatRoomListFragment extends RxFragment {
 
         roomsRecyclerView.removeCell(chatRoomCell);
         roomsRecyclerView.addCell(0, chatRoomCell);
-//        int fromPos = roomsRecyclerView.getAllCells().indexOf(cell);
-//        if (fromPos == 0) {
-//          roomsRecyclerView.getAdapter().notifyItemChanged(0);
-//        } else {
-//          roomsRecyclerView.getAdapter().notifyItemMoved(fromPos, 0);
-//        }
+
+        roomsRecyclerView.scrollToPosition(0);
 
         break;
       }
