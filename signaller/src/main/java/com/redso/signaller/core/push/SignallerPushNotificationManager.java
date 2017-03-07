@@ -23,6 +23,10 @@ public class SignallerPushNotificationManager {
   }
 
   public static void showNotification(PushNotification pushNotification) {
+    if (!Signaller.getInstance().isPushNotificationEnabled()) {
+      return;
+    }
+
     Context context = Signaller.getInstance().getAppContext();
 
     Intent intent = new Intent(context, ChatRoomActivity.class);

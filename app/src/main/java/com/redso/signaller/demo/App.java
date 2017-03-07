@@ -42,7 +42,6 @@ public class App extends MultiDexApplication {
 
   private void initSignaller() {
     AppConfig appConfig = AppConfig.newBuilder(Constant.SOCKET_URL, Constant.SERVER_DOMAIN)
-      .enablePushNotification(R.string.app_name, R.mipmap.ic_launcher, Constant.PUSH_SENDER_ID, MainActivity.class)
       .build();
 
     UIConfig uiConfig = UIConfig.newBuilder()

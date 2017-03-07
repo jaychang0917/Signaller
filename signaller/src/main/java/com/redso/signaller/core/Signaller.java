@@ -58,20 +58,29 @@ public final class Signaller {
     AppStatusUtils.unregisterAppStatusCallback(app);
   }
 
+  public boolean isPushNotificationEnabled() {
+    String pushNotificationSenderId = appConfig.getPushNotificationSenderId();
+    return pushNotificationSenderId != null && !pushNotificationSenderId.isEmpty();
+  }
+
   public void connect(String accessToken, String userId) {
     UserData.getInstance().setAccessToken(accessToken);
     UserData.getInstance().setUserId(userId);
     SocketManager.getInstance().initSocket(accessToken);
     SocketManager.getInstance().connect();
     registerAppCallback(app);
-    SignallerGcmManager.register(appContext);
+    if (isPushNotificationEnabled()) {
+      SignallerGcmManager.register(appContext);
+    }
   }
 
   public void disconnect() {
     SocketManager.getInstance().disconnect();
     SocketManager.getInstance().invalidate();
     SignallerDbManager.getInstance().clear();
-    SignallerGcmManager.unregister(appContext);
+    if (isPushNotificationEnabled()) {
+      SignallerGcmManager.unregister(appContext);
+    }
     unregisterAppCallback(app);
     UserData.getInstance().clear();
     ChatRoomMeta.getInstance().clear();

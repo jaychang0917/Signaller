@@ -5,7 +5,6 @@ import android.content.Context;
 import com.redso.signaller.core.model.SignallerChatMessage;
 import com.redso.signaller.core.model.SignallerChatRoom;
 import com.redso.signaller.core.model.SignallerChatRoomInfo;
-import com.redso.signaller.core.model.SignallerEvent;
 import com.redso.signaller.core.model.SignallerImage;
 import com.redso.signaller.core.model.SignallerImageAttribute;
 import com.redso.signaller.core.model.SignallerPayload;
@@ -54,7 +53,6 @@ public class SignallerDbManager {
 
   void clear() {
     getRealm().executeTransactionAsync(realm -> {
-      realm.delete(SignallerEvent.class);
       realm.delete(SignallerImage.class);
       realm.delete(SignallerImageAttribute.class);
       realm.delete(SignallerPayload.class);
