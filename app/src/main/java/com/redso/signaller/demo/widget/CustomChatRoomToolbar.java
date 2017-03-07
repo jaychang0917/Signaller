@@ -5,7 +5,6 @@ import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 
-import com.jaychang.utils.AppUtils;
 import com.redso.signaller.demo.R;
 
 public class CustomChatRoomToolbar extends Toolbar {
@@ -25,9 +24,9 @@ public class CustomChatRoomToolbar extends Toolbar {
 
   private void setupWithChatRoom(String username) {
     setTitle(username);
+    setTitleTextColor(ContextCompat.getColor(getContext(), android.R.color.white));
     setBackgroundColor(ContextCompat.getColor(getContext(), R.color.colorPrimary));
     setNavigationIcon(R.drawable.ic_toolbar_back);
-    setMinimumHeight(AppUtils.dp2px(getContext(), 48));
     setNavigationOnClickListener(v -> {
       activity.finish();
     });

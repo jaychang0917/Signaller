@@ -65,7 +65,7 @@ public class SignallerChatRoom extends RealmObject {
   }
 
   public Long getLastMessageTime() {
-    return lastMessageTime;
+    return lastMessage != null ? lastMessage.getMsgTime() : 0;
   }
 
   public void setLastMessageTime(long lastMessageTime) {
