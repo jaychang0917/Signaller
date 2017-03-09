@@ -82,7 +82,7 @@ public class SocketManager {
     if (!isConnected()) {
       onEvents();
       socket.connect();
-      LogUtils.d("disconnect");
+      LogUtils.d("connect");
       registerConnectionCallbacks(callback);
     }
   }
@@ -150,7 +150,6 @@ public class SocketManager {
       chatMsgObj.put("payload", message.getPayloadJson());
 
       socket.emit(SEND_MESSAGE, chatMsgObj);
-      LogUtils.d("sent text msg (" + message.getMessage().getContent() +") to server.");
     } catch (JSONException e) {
       e.printStackTrace();
     }

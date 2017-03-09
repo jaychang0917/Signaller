@@ -91,7 +91,7 @@ public class SignallerDbManager {
         .equalTo("payloadModel.timestamp", timestamp).findFirst();
       if (msg != null) {
         msg.deleteFromRealm();
-        LogUtils.d("removed pending msg:" + timestamp);
+        LogUtils.d("Removed pending msg:" + timestamp);
       }
     });
   }
@@ -138,10 +138,10 @@ public class SignallerDbManager {
     getRealm().executeTransaction(realm -> {
       SignallerChatMessage msg = realm.where(SignallerChatMessage.class)
         .equalTo("timestamp", timestamp).findFirst();
-      LogUtils.d("try to remove temp chat msg:" + timestamp + " msg:" + msg);
+      LogUtils.d("Try to remove temp chat msg:" + timestamp + " msg:" + msg);
       if (msg != null) {
         msg.deleteFromRealm();
-        LogUtils.d("remove temp chat msg:" + timestamp);
+        LogUtils.d("Remove temp chat msg:" + timestamp);
       }
     });
   }

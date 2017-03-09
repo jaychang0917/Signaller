@@ -404,6 +404,7 @@ public class ChatRoomFragment extends RxFragment {
     addOwnTextMessageCell(chatMessage);
     addChatMessageToDb(chatMessage, socketChatMessage -> {
       SocketManager.getInstance().send(socketChatMessage);
+      LogUtils.d("Sent text msg to server.");
     });
     clearInput();
   }
