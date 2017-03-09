@@ -7,11 +7,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.redso.signaller.core.model.SignallerChatMessage;
-import com.redso.signaller.ui.ChatMessageCell;
 import com.jaychang.srv.SimpleViewHolder;
 import com.jaychang.utils.ViewUtils;
+import com.redso.signaller.core.model.SignallerChatMessage;
 import com.redso.signaller.demo.R;
+import com.redso.signaller.ui.ChatMessageCell;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +35,8 @@ public class CustomOtherImageMessageCell extends ChatMessageCell<CustomOtherImag
 
   @Override
   protected void onBindViewHolder(ViewHolder viewHolder, int i, Context context, Object o) {
+    viewHolder.imageView.setAlpha(getChatMessage().isSent() ? 1f : 0.3f);
+
     ViewUtils.setViewWidthHeight(viewHolder.imageView, 150, (int) (150 / getChatMessage().getImage().getRatio()));
 
     Glide.with(context)

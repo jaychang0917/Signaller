@@ -22,6 +22,9 @@
         <activity android:name=".MainActivity"
                   android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
 
+        <activity android:name=".ChatRoomActivity"
+                  android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
+
         <activity android:name=".PhotoViewerActivity"
                   android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
 

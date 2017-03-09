@@ -257,6 +257,12 @@ public class ChatRoomFragment extends RxFragment {
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
+  public void onMsgSent(SignallerEvents.OnMsgSentEvent event) {
+    EventBus.getDefault().removeStickyEvent(event);
+    updateChatMessage(event.messageCellIndex, event.chatMessage);
+  }
+
+  @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
   public void onSocketConnected(SignallerEvents.OnSocketConnectedEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
     handleInput();
@@ -289,6 +295,15 @@ public class ChatRoomFragment extends RxFragment {
       if (!message.isOwnMessage()) {
         addOtherTextMessageCell(message);
       }
+    }
+  }
+
+  private void updateChatMessage(int messageCellIndex, SignallerChatMessage message) {
+    ChatMessageCell cell = (ChatMessageCell) messageRecyclerView.getCell(messageCellIndex);
+    if (cell != null) {
+      cell.setChatMessage(message);
+      messageRecyclerView.getAdapter().notifyItemChanged(messageCellIndex);
+      LogUtils.d(String.format("Chat message cell (%1$s) is updated.", message));
     }
   }
 
@@ -417,6 +432,7 @@ public class ChatRoomFragment extends RxFragment {
     socketChatMessage.setRoomId(chatRoomId);
     SignallerPayload payload = new SignallerPayload();
     payload.setTimestamp(chatMessage.getTimestamp());
+    payload.setMessageCellIndex(messageRecyclerView.getItemCount() - 1);
     socketChatMessage.setPayloadJson(GsonUtils.getGson().toJson(payload));
     socketChatMessage.setPayloadModel(payload);
     socketChatMessage.setMessage(chatMessage);

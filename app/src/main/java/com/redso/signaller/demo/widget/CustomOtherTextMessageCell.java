@@ -33,6 +33,8 @@ public class CustomOtherTextMessageCell extends ChatMessageCell<CustomOtherTextM
 
   @Override
   protected void onBindViewHolder(ViewHolder viewHolder, int i, Context context, Object o) {
+    viewHolder.otherMessageView.setAlpha(getChatMessage().isSent() ? 1f : 0.3f);
+
     viewHolder.otherMessageView.setText(getChatMessage().getContent());
   }
 

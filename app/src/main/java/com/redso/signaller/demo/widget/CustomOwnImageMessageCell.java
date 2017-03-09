@@ -35,6 +35,8 @@ public class CustomOwnImageMessageCell extends ChatMessageCell<CustomOwnImageMes
 
   @Override
   protected void onBindViewHolder(ViewHolder viewHolder, int i, Context context, Object o) {
+    viewHolder.imageView.setAlpha(getChatMessage().isSent() ? 1f : 0.3f);
+
     ViewUtils.setViewWidthHeight(viewHolder.imageView, 150, (int) (150 / getChatMessage().getImage().getRatio()));
 
     Glide.with(context)

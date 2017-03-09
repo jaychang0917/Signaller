@@ -1,6 +1,7 @@
 package com.redso.signaller.core;
 
 import com.redso.signaller.core.model.PushNotification;
+import com.redso.signaller.core.model.SignallerChatMessage;
 
 public class SignallerEvents {
 
@@ -53,6 +54,16 @@ public class SignallerEvents {
 
     public ClearUnreadCountEvent(String chatRoomId) {
       this.chatRoomId = chatRoomId;
+    }
+  }
+
+  public static class OnMsgSentEvent {
+    public SignallerChatMessage chatMessage;
+    public int messageCellIndex;
+
+    public OnMsgSentEvent(SignallerChatMessage chatMessage, int messageCellIndex) {
+      this.chatMessage = chatMessage;
+      this.messageCellIndex = messageCellIndex;
     }
   }
 

@@ -19,6 +19,8 @@ public class Constant {
 
   public static final String SERVER_DOMAIN = "https://kol-pro.appspot.com/";
   public static final String SOCKET_URL = "http://kol-chat.redso.com.hk:5000";
+//  public static final String SERVER_DOMAIN = "https://skx-dev.appspot.com/";
+//  public static final String SOCKET_URL = "http://104.155.213.242:5000";
   public static final String PUSH_SENDER_ID = "1051552062396";
 
 }

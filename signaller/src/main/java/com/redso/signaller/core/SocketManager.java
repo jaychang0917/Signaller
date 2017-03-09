@@ -215,7 +215,7 @@ public class SocketManager {
 
   private Emitter.Listener onMsgReceived = args -> {
     SignallerSocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SignallerSocketChatMessage.class);
-    LogUtils.d("Message is sent / received:" + socketChatMessage.getMessage());
+    LogUtils.d("Message is sent / received: " + socketChatMessage.getMessage());
     insertOrUpdateChatMsgInDb(socketChatMessage);
     updateChatRoomInDb(socketChatMessage);
     dispatchMsgEvents(socketChatMessage);
@@ -234,6 +234,14 @@ public class SocketManager {
       SignallerDbManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
       // remove msg from pending queue
       SignallerDbManager.getInstance().removePendingChatMsg(timestamp);
+      // notify msg is sent if in the same chat room
+      boolean isInSameChatRoom = UserData.getInstance().isInChatRoomPage() &&
+        UserData.getInstance().getCurrentChatRoomId().equals(socketChatMessage.getRoomId());
+      int messageCellIndex = payload.getMessageCellIndex();
+      if (isInSameChatRoom) {
+        LogUtils.d(String.format("Notify message cell (%1$s) to update.", socketChatMessage.getMessage()));
+        EventBus.getDefault().postSticky(new SignallerEvents.OnMsgSentEvent(socketChatMessage.getMessage(), messageCellIndex));
+      }
     }
     // save another received msg
     else {

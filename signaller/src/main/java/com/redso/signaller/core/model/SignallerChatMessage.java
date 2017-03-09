@@ -55,10 +55,6 @@ public class SignallerChatMessage extends RealmObject {
     return type.equals("image");
   }
 
-  public boolean isCustomType() {
-    return !isText() && !isImage();
-  }
-
   //region getters & setters
   public String getMsgId() {
     return msgId;
