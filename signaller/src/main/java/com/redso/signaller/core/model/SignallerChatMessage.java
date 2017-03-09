@@ -141,5 +141,15 @@ public class SignallerChatMessage extends RealmObject {
   }
   //endregion
 
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("SignallerChatMessage{");
+    sb.append("msgId='").append(msgId).append('\'');
+    sb.append(", content='").append(content).append('\'');
+    sb.append('}');
+    return sb.toString();
+  }
+
 }
 

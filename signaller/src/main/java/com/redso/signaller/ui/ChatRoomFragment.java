@@ -404,7 +404,7 @@ public class ChatRoomFragment extends RxFragment {
     addOwnTextMessageCell(chatMessage);
     addChatMessageToDb(chatMessage, socketChatMessage -> {
       SocketManager.getInstance().send(socketChatMessage);
-      LogUtils.d("Sent text msg to server.");
+      LogUtils.d(String.format("Try to sent text msg (%1$s) to server.", socketChatMessage.getMessage().getMsgId()));
     });
     clearInput();
   }
@@ -455,7 +455,7 @@ public class ChatRoomFragment extends RxFragment {
           LogUtils.d("Photo uploaded: " + uri.toString());
           socketChatMessage.getMessage().setContent(image.getResourceId());
           SocketManager.getInstance().send(socketChatMessage);
-          LogUtils.d("Sent image msg to server.");
+          LogUtils.d(String.format("Try to sent image msg (%1$s) to server.", socketChatMessage.getMessage().getMsgId()));
         },
         error -> {
           LogUtils.d("Photo upload fail.");
