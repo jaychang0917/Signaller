@@ -23,7 +23,6 @@ import com.redso.signaller.ui.ChatRoomCell;
 import com.redso.signaller.ui.ChatRoomCellProvider;
 import com.redso.signaller.ui.ChatRoomControlViewAdapter;
 import com.redso.signaller.ui.ChatRoomDateSectionViewProvider;
-import com.redso.signaller.ui.ChatRoomThemeProvider;
 import com.redso.signaller.ui.ChatRoomToolbarProvider;
 import com.redso.signaller.ui.EmojiKeyboardViewInfo;
 import com.redso.signaller.ui.UIConfig;
@@ -119,7 +118,7 @@ public class App extends MultiDexApplication {
           return R.id.sendMessageView;
         }
       })
-      // optional
+      // the following options are optional
       .setChatRoomDateSectionViewProvider(new ChatRoomDateSectionViewProvider() {
         @NonNull
         @Override
@@ -134,7 +133,6 @@ public class App extends MultiDexApplication {
           return item.isSameDate(nextItem);
         }
       })
-      // optional
       .setChatRoomToolbarProvider(new ChatRoomToolbarProvider() {
         @NonNull
         @Override
@@ -142,20 +140,9 @@ public class App extends MultiDexApplication {
           return CustomChatRoomToolbar.create(activity, username);
         }
       })
-      // optional
-      .setChatRoomThemeProvider(new ChatRoomThemeProvider() {
-        @NonNull
-        @Override
-        public int getStatusBarColor() {
-          return R.color.colorPrimaryDark;
-        }
-
-        @NonNull
-        @Override
-        public int getPhotoPickerToolbarBackgroundColor() {
-          return R.color.colorPrimary;
-        }
-      })
+      .setChatRoomPhotoPickerThemeColor(R.color.colorPrimaryDark)
+      .setChatRoomEmptyStateViewRes(R.layout.view_empty_state)
+      .setChatRoomBackgroundRes(R.color.colorAccent)
       .build();
 
     Signaller.init(this, appConfig, uiConfig);

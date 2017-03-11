@@ -69,6 +69,6 @@ dependencies {
     compile 'com.facebook.stetho:stetho-okhttp3:1.4.1'
 
     compile 'com.github.jaychang0917:Utils:0.1.2'
-    compile 'com.github.jaychang0917:SimpleRecyclerView:1.1.8'
+    compile 'com.github.jaychang0917:SimpleRecyclerView:1.1.10'
     compile 'com.github.jaychang0917:nPhotoPicker:1.2.5'
 }

@@ -73,15 +73,10 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void setStatusBarColor() {
-    ChatRoomThemeProvider chatRoomThemeProvider = Signaller.getInstance().getUiConfig().getChatRoomThemeProvider();
+    int themeColor = Signaller.getInstance().getUiConfig().getChatRoomPhotoPickerThemeColor();
 
-    if (chatRoomThemeProvider == null) {
-      return;
-    }
-
-    int statusBarColor = chatRoomThemeProvider.getStatusBarColor();
-    if (statusBarColor != 0) {
-      AppUtils.setStatusBarColor(this, statusBarColor);
+    if (themeColor != 0) {
+      AppUtils.setStatusBarColor(this, themeColor);
     }
   }
 

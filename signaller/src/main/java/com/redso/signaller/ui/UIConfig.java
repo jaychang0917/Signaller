@@ -1,5 +1,10 @@
 package com.redso.signaller.ui;
 
+import android.support.annotation.ColorRes;
+import android.support.annotation.DrawableRes;
+import android.support.annotation.LayoutRes;
+import android.view.View;
+
 public class UIConfig {
 
   private ChatRoomCellProvider chatRoomCellProvider;
@@ -7,7 +12,12 @@ public class UIConfig {
   private ChatRoomDateSectionViewProvider chatRoomDateSectionViewProvider;
   private ChatRoomToolbarProvider chatRoomToolbarProvider;
   private ChatRoomControlViewProvider chatRoomControlViewProvider;
-  private ChatRoomThemeProvider chatRoomThemeProvider;
+  private int chatRoomPhotoPickerThemeColor;
+  private int chatRoomEmptyStateViewRes;
+  private View chatRoomEmptyStateView;
+  private int chatRoomListEmptyStateViewRes;
+  private View chatRoomListEmptyStateView;
+  private int chatRoomBackgroundRes;
 
   private UIConfig(Builder builder) {
     chatRoomCellProvider = builder.chatRoomCellProvider;
@@ -15,7 +25,12 @@ public class UIConfig {
     chatRoomDateSectionViewProvider = builder.chatRoomDateSectionViewProvider;
     chatRoomToolbarProvider = builder.chatRoomToolbarProvider;
     chatRoomControlViewProvider = builder.chatRoomControlViewProvider;
-    chatRoomThemeProvider = builder.chatRoomThemeProvider;
+    chatRoomPhotoPickerThemeColor = builder.chatRoomPhotoPickerThemeColor;
+    chatRoomEmptyStateViewRes = builder.chatRoomEmptyStateViewRes;
+    chatRoomEmptyStateView = builder.chatRoomEmptyStateView;
+    chatRoomListEmptyStateViewRes = builder.chatRoomListEmptyStateViewRes;
+    chatRoomListEmptyStateView = builder.chatRoomListEmptyStateView;
+    chatRoomBackgroundRes = builder.chatRoomBackgroundRes;
   }
 
   public static Builder newBuilder() {
@@ -28,7 +43,12 @@ public class UIConfig {
     private ChatRoomDateSectionViewProvider chatRoomDateSectionViewProvider;
     private ChatRoomToolbarProvider chatRoomToolbarProvider;
     private ChatRoomControlViewProvider chatRoomControlViewProvider;
-    private ChatRoomThemeProvider chatRoomThemeProvider;
+    private int chatRoomPhotoPickerThemeColor;
+    private int chatRoomEmptyStateViewRes;
+    private View chatRoomEmptyStateView;
+    private int chatRoomListEmptyStateViewRes;
+    private View chatRoomListEmptyStateView;
+    private int chatRoomBackgroundRes;
 
     private Builder() {
     }
@@ -58,38 +78,84 @@ public class UIConfig {
       return this;
     }
 
-    public Builder setChatRoomThemeProvider(ChatRoomThemeProvider val) {
-      chatRoomThemeProvider = val;
+    public Builder setChatRoomPhotoPickerThemeColor(@ColorRes int val) {
+      chatRoomPhotoPickerThemeColor = val;
+      return this;
+    }
+
+    public Builder setChatRoomEmptyStateViewRes(@LayoutRes int val) {
+      chatRoomEmptyStateViewRes = val;
+      return this;
+    }
+
+    public Builder setChatRoomEmptyStateView(View val) {
+      chatRoomEmptyStateView = val;
+      return this;
+    }
+
+    public Builder setChatRoomListEmptyStateViewRes(@LayoutRes int val) {
+      chatRoomListEmptyStateViewRes = val;
+      return this;
+    }
+
+    public Builder setChatRoomListEmptyStateView(View val) {
+      chatRoomListEmptyStateView = val;
+      return this;
+    }
+
+    public Builder setChatRoomBackgroundRes(@ColorRes @DrawableRes int val) {
+      chatRoomBackgroundRes = val;
       return this;
     }
 
     public UIConfig build() {
       return new UIConfig(this);
     }
+
   }
 
-  ChatRoomCellProvider getChatRoomCellProvider() {
+  public ChatRoomCellProvider getChatRoomCellProvider() {
     return chatRoomCellProvider;
   }
 
-  ChatMessageCellProvider getChatMessageCellProvider() {
+  public ChatMessageCellProvider getChatMessageCellProvider() {
     return chatMessageCellProvider;
   }
 
-  ChatRoomDateSectionViewProvider getChatRoomDateSectionViewProvider() {
+  public ChatRoomDateSectionViewProvider getChatRoomDateSectionViewProvider() {
     return chatRoomDateSectionViewProvider;
   }
 
-  ChatRoomToolbarProvider getChatRoomToolbarProvider() {
+  public ChatRoomToolbarProvider getChatRoomToolbarProvider() {
     return chatRoomToolbarProvider;
   }
 
-  ChatRoomControlViewProvider getChatRoomControlViewProvider() {
+  public ChatRoomControlViewProvider getChatRoomControlViewProvider() {
     return chatRoomControlViewProvider;
   }
 
-  ChatRoomThemeProvider getChatRoomThemeProvider() {
-    return chatRoomThemeProvider;
+  public int getChatRoomPhotoPickerThemeColor() {
+    return chatRoomPhotoPickerThemeColor;
+  }
+
+  public int getChatRoomEmptyStateViewRes() {
+    return chatRoomEmptyStateViewRes;
+  }
+
+  public View getChatRoomEmptyStateView() {
+    return chatRoomEmptyStateView;
+  }
+
+  public int getChatRoomListEmptyStateViewRes() {
+    return chatRoomListEmptyStateViewRes;
+  }
+
+  public View getChatRoomListEmptyStateView() {
+    return chatRoomListEmptyStateView;
+  }
+
+  public int getChatRoomBackgroundRes() {
+    return chatRoomBackgroundRes;
   }
 
 }

@@ -73,7 +73,10 @@ public class ChatRoomFragment extends RxFragment {
   private ChatMessageCellProvider chatMessageCellProvider;
   private ChatRoomControlViewProvider chatRoomControlViewProvider;
   private ChatRoomDateSectionViewProvider chatRoomDateSectionViewProvider;
-  private ChatRoomThemeProvider chatRoomThemeProvider;
+  private int chatRoomPhotoPickerThemeColor;
+  private int chatRoomEmptyStateViewRes;
+  private View chatRoomEmptyStateView;
+  private int chatRoomBackgroundRes;
 
   private String chatId;
   private String chatRoomId;
@@ -132,10 +135,23 @@ public class ChatRoomFragment extends RxFragment {
     chatMessageCellProvider = uiConfig.getChatMessageCellProvider();
     chatRoomControlViewProvider = uiConfig.getChatRoomControlViewProvider();
     chatRoomDateSectionViewProvider = uiConfig.getChatRoomDateSectionViewProvider();
-    chatRoomThemeProvider = uiConfig.getChatRoomThemeProvider();
+    chatRoomPhotoPickerThemeColor = uiConfig.getChatRoomPhotoPickerThemeColor();
+    chatRoomEmptyStateViewRes = uiConfig.getChatRoomEmptyStateViewRes();
+    chatRoomEmptyStateView = uiConfig.getChatRoomEmptyStateView();
+    chatRoomBackgroundRes = uiConfig.getChatRoomBackgroundRes();
   }
 
   private void initRecyclerView() {
+    // load more
+    messageRecyclerView.setLoadMoreToTop(true);
+    messageRecyclerView.setAutoLoadMoreThreshold(OFF_SCREEN_CELLS_THRESHOLD);
+    messageRecyclerView.setOnLoadMoreListener(simpleRecyclerView -> {
+      if (hasMoreData) {
+        loadChatMessages();
+      }
+    });
+
+    // date section
     if (chatRoomDateSectionViewProvider != null) {
       messageRecyclerView.setSectionHeader(new SectionHeaderProviderAdapter<SignallerChatMessage>() {
         @NonNull
@@ -151,13 +167,17 @@ public class ChatRoomFragment extends RxFragment {
       });
     }
 
-    messageRecyclerView.setLoadMoreToTop(true);
-    messageRecyclerView.setAutoLoadMoreThreshold(OFF_SCREEN_CELLS_THRESHOLD);
-    messageRecyclerView.setOnLoadMoreListener(simpleRecyclerView -> {
-      if (hasMoreData) {
-        loadChatMessages();
-      }
-    });
+    // empty state view
+    if (chatRoomEmptyStateViewRes != 0) {
+      messageRecyclerView.setEmptyStateView(chatRoomEmptyStateViewRes);
+    } else if (chatRoomEmptyStateView != null) {
+      messageRecyclerView.setEmptyStateView(chatRoomEmptyStateView);
+    }
+
+    // background
+    if (chatRoomBackgroundRes != 0) {
+      messageRecyclerView.setBackgroundResource(chatRoomBackgroundRes);
+    }
   }
 
   private void initControlView() {
@@ -321,6 +341,7 @@ public class ChatRoomFragment extends RxFragment {
       .subscribe(response -> {
           cursor = response.cursor;
           hasMoreData = response.hasMore;
+          response.chatMessages.clear();//todo
           bindChatMessages(response.chatMessages);
           LogUtils.d(String.format("Load %1$s messages", response.chatMessages.size()));
           scrollToBottomOnce();
@@ -395,11 +416,11 @@ public class ChatRoomFragment extends RxFragment {
       }
     };
 
-    if (chatRoomThemeProvider != null) {
+    if (chatRoomPhotoPickerThemeColor != 0) {
       NPhotoPicker.with(getContext())
-        .toolbarColor(chatRoomThemeProvider.getPhotoPickerToolbarBackgroundColor())
-        .statusBarColor(chatRoomThemeProvider.getStatusBarColor())
-        .selectedBorderColor(chatRoomThemeProvider.getStatusBarColor())
+        .toolbarColor(chatRoomPhotoPickerThemeColor)
+        .statusBarColor(chatRoomPhotoPickerThemeColor)
+        .selectedBorderColor(chatRoomPhotoPickerThemeColor)
         .pickSinglePhotoFromAlbum()
         .subscribe(subscriber);
     } else {
