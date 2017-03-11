@@ -1,4 +1,4 @@
-package com.redso.signaller.demo;
+package com.redso.signaller.demo.app;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
@@ -9,19 +9,23 @@ import com.redso.signaller.core.AppConfig;
 import com.redso.signaller.core.Signaller;
 import com.redso.signaller.core.model.SignallerChatMessage;
 import com.redso.signaller.core.model.SignallerChatRoom;
-import com.redso.signaller.demo.widget.CustomChatRoomCell;
-import com.redso.signaller.demo.widget.CustomChatRoomDateSectionView;
-import com.redso.signaller.demo.widget.CustomChatRoomToolbar;
-import com.redso.signaller.demo.widget.CustomOtherImageMessageCell;
-import com.redso.signaller.demo.widget.CustomOtherTextMessageCell;
-import com.redso.signaller.demo.widget.CustomOwnImageMessageCell;
-import com.redso.signaller.demo.widget.CustomOwnTextMessageCell;
+import com.redso.signaller.demo.Constant;
+import com.redso.signaller.demo.MainActivity;
+import com.redso.signaller.demo.R;
+import com.redso.signaller.demo.Utils;
+import com.redso.signaller.demo.chat.CustomChatRoomCell;
+import com.redso.signaller.demo.chat.CustomChatRoomDateSectionView;
+import com.redso.signaller.demo.chat.CustomChatRoomToolbar;
+import com.redso.signaller.demo.chat.CustomOtherImageMessageCell;
+import com.redso.signaller.demo.chat.CustomOtherTextMessageCell;
+import com.redso.signaller.demo.chat.CustomOwnImageMessageCell;
+import com.redso.signaller.demo.chat.CustomOwnTextMessageCell;
 import com.redso.signaller.ui.ChatMessageCell;
 import com.redso.signaller.ui.ChatMessageCellProvider;
 import com.redso.signaller.ui.ChatMessageType;
 import com.redso.signaller.ui.ChatRoomCell;
 import com.redso.signaller.ui.ChatRoomCellProvider;
-import com.redso.signaller.ui.ChatRoomControlViewAdapter;
+import com.redso.signaller.ui.ChatRoomMessageInputViewAdapter;
 import com.redso.signaller.ui.ChatRoomDateSectionViewProvider;
 import com.redso.signaller.ui.ChatRoomToolbarProvider;
 import com.redso.signaller.ui.EmojiKeyboardViewInfo;
@@ -76,10 +80,10 @@ public class App extends MultiDexApplication {
           throw new RuntimeException("Unsupported chat message type");
         }
       })
-      .setChatRoomControlViewProvider(new ChatRoomControlViewAdapter() {
+      .setChatRoomMessageInputViewProvider(new ChatRoomMessageInputViewAdapter() {
         @Override
         public int getLayoutRes() {
-          return R.layout.view_chatroom_control;
+          return R.layout.view_message_input;
         }
 
         @Override
@@ -142,11 +146,16 @@ public class App extends MultiDexApplication {
       })
       .setChatRoomPhotoPickerThemeColor(R.color.colorPrimaryDark)
       .setChatRoomEmptyStateViewRes(R.layout.view_empty_state)
-      .setChatRoomBackgroundRes(R.color.colorAccent)
+      .setChatRoomBackgroundRes(R.color.colorBackground)
+      .setChatRoomListEmptyStateViewRes(R.layout.view_empty_state)
+      .setChatRoomListDividerColorRes(R.color.colorGrey)
+      .setChatRoomListDividerPadding(64, 0, 0, 0)
       .build();
 
+    // init Signaller
     Signaller.init(this, appConfig, uiConfig);
 
+    // Enable debug log and Stetho
     Signaller.getInstance().setDebugEnabled(true);
   }
 

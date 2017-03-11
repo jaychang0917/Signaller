@@ -34,6 +34,10 @@ public class ChatRoomListFragment extends RxFragment {
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
   private SimpleRecyclerView roomsRecyclerView;
   private ChatRoomCellProvider chatRoomCellProvider;
+  private int emptyStateViewRes;
+  private View emptyStateView;
+  private int dividerColorRes;
+  private int[] dividerPadding;
   private HashMap<String, SignallerChatRoom> chatRooms = new HashMap<>();
 
   public static ChatRoomListFragment newInstance() {
@@ -87,7 +91,12 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void initUIConfig() {
-    chatRoomCellProvider = Signaller.getInstance().getUiConfig().getChatRoomCellProvider();
+    UIConfig uiConfig = Signaller.getInstance().getUiConfig();
+    chatRoomCellProvider = uiConfig.getChatRoomCellProvider();
+    emptyStateViewRes = uiConfig.getChatRoomListEmptyStateViewRes();
+    emptyStateView = uiConfig.getChatRoomListEmptyStateView();
+    dividerColorRes = uiConfig.getChatRoomListDividerColorRes();
+    dividerPadding = uiConfig.getChatRoomListDividerPaddingDp();
   }
 
   private void initRecyclerView() {
@@ -97,6 +106,18 @@ public class ChatRoomListFragment extends RxFragment {
         loadChatRoomsFromNetwork();
       }
     });
+
+    // empty state view
+    if (emptyStateViewRes != 0) {
+      roomsRecyclerView.setEmptyStateView(emptyStateViewRes);
+    } else if (emptyStateView != null) {
+      roomsRecyclerView.setEmptyStateView(emptyStateView);
+    }
+
+    // divider
+    if (dividerColorRes != 0) {
+      roomsRecyclerView.showDivider(dividerColorRes, dividerPadding[0], dividerPadding[1], dividerPadding[2], dividerPadding[3]);
+    }
   }
 
   private void removePendingEvents() {

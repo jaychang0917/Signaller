@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.redso.signaller.core.Signaller;
+import com.redso.signaller.demo.app.App;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

@@ -1,4 +1,4 @@
-package com.redso.signaller.demo.widget;
+package com.redso.signaller.demo.chat;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -40,13 +40,14 @@ public class CustomChatRoomCell extends ChatRoomCell<CustomChatRoomCell.ViewHold
   }
 
   @Override
-  protected void onBindViewHolder(ViewHolder holder, int position, Context context, Object payload) {
+  protected void onBindViewHolder(SignallerChatRoom chatRoom, ViewHolder holder, int position, Context context) {
     holder.itemView.setOnClickListener(v -> {
+      // If you handle cell click event, you MUST call onCellClicked() first to handle the default stuffs.
       onCellClicked();
       holder.unreadCountView.setVisibility(View.GONE);
     });
 
-    SignallerReceiver receiver = getChatRoom().getReceiver();
+    SignallerReceiver receiver = chatRoom.getReceiver();
     boolean hasLogo = !TextUtils.isEmpty(receiver.getProfilePhotoUrl());
     Object logo = hasLogo ? receiver.getProfilePhotoUrl() : R.drawable.ic_default_profile_logo;
     Glide.with(context)
@@ -56,14 +57,14 @@ public class CustomChatRoomCell extends ChatRoomCell<CustomChatRoomCell.ViewHold
 
     holder.nameView.setText(receiver.getName().trim());
 
-    if (getChatRoom().getUnreadCount() > 0) {
-      holder.unreadCountView.setText(String.valueOf(getChatRoom().getUnreadCount()));
+    if (chatRoom.getUnreadCount() > 0) {
+      holder.unreadCountView.setText(String.valueOf(chatRoom.getUnreadCount()));
       holder.unreadCountView.setVisibility(View.VISIBLE);
     } else {
       holder.unreadCountView.setVisibility(View.INVISIBLE);
     }
 
-    SignallerChatMessage lastMessage = getChatRoom().getLastMessage();
+    SignallerChatMessage lastMessage = chatRoom.getLastMessage();
     if (lastMessage != null) {
       if (lastMessage.isText()) {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
@@ -78,7 +79,7 @@ public class CustomChatRoomCell extends ChatRoomCell<CustomChatRoomCell.ViewHold
 
     String yesterday = "'" + context.getString(R.string.yesterday) + "'";
     String date = DateTimeFormatUtils.translate(
-      String.valueOf(getChatRoom().getLastMessageTime()),
+      String.valueOf(chatRoom.getLastMessageTime()),
       "hh:mm a",
       yesterday,
       "dd/MM/yyyy");

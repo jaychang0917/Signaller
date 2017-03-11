@@ -1,6 +1,6 @@
 package com.redso.signaller.ui;
 
-public abstract class ChatRoomControlViewAdapter implements ChatRoomControlViewProvider {
+public abstract class ChatRoomMessageInputViewAdapter implements ChatRoomMessageInputViewProvider {
 
   @Override
   public EmojiKeyboardViewInfo getEmojiKeyboardViewInfo() {

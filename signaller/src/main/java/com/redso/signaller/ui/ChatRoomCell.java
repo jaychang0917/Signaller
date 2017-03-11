@@ -1,5 +1,7 @@
 package com.redso.signaller.ui;
 
+import android.content.Context;
+
 import com.jaychang.srv.SimpleCell;
 import com.jaychang.srv.SimpleViewHolder;
 import com.redso.signaller.core.model.SignallerChatMessage;
@@ -35,6 +37,13 @@ public abstract class ChatRoomCell<VH extends SimpleViewHolder> extends SimpleCe
     getChatRoom().setUnreadCount(0);
     getOnCellClickListener().onCellClicked(getChatRoom());
   }
+
+  @Override
+  protected void onBindViewHolder(VH vh, int position, Context context, Object payload) {
+    onBindViewHolder(getChatRoom(), vh, position, context);
+  }
+
+  protected abstract void onBindViewHolder(SignallerChatRoom chatRoom, VH vh, int position, Context context);
 
   @Override
   protected long getItemId() {

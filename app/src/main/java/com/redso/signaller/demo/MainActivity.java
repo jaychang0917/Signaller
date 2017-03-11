@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.jaychang.utils.PreferenceUtils;
 import com.redso.signaller.core.Signaller;
+import com.redso.signaller.demo.widget.BottomTabManager;
 
 public class MainActivity extends AppCompatActivity {
 

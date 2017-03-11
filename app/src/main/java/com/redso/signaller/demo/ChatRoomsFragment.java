@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.redso.signaller.demo.widget.BottomTabManager;
 import com.redso.signaller.ui.ChatRoomListFragment;
 
 public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTabSelectListener {

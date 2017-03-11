@@ -14,7 +14,7 @@
 
         <TextView
             android:layout_width="wrap_content"
-            android:text="Join chat room with"
+            android:text="Chat with"
             android:textSize="30sp"
             android:layout_height="wrap_content" />
 
@@ -48,52 +48,6 @@
 
         <Button
             android:id="@+id/joinJay14Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="jay14" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
-        <TextView
-            android:layout_width="wrap_content"
-            android:text="Leave chat room with"
-            android:textSize="30sp"
-            android:layout_height="wrap_content" />
-
-        <Button
-            android:id="@+id/leaveJay10Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="jay10" />
-
-        <Button
-            android:id="@+id/leaveJay11Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="jay11" />
-
-        <Button
-            android:id="@+id/leaveJay12Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="jay12" />
-
-        <Button
-            android:id="@+id/leaveJay13Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAllCaps="false"
-            android:text="jay13" />
-        <Button
-            android:id="@+id/leaveJay14Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAllCaps="false"

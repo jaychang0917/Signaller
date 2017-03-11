@@ -11,26 +11,36 @@ public class UIConfig {
   private ChatMessageCellProvider chatMessageCellProvider;
   private ChatRoomDateSectionViewProvider chatRoomDateSectionViewProvider;
   private ChatRoomToolbarProvider chatRoomToolbarProvider;
-  private ChatRoomControlViewProvider chatRoomControlViewProvider;
+  private ChatRoomMessageInputViewProvider chatRoomMessageInputViewProvider;
+  private int chatRoomBackgroundRes;
   private int chatRoomPhotoPickerThemeColor;
   private int chatRoomEmptyStateViewRes;
   private View chatRoomEmptyStateView;
   private int chatRoomListEmptyStateViewRes;
   private View chatRoomListEmptyStateView;
-  private int chatRoomBackgroundRes;
+  private int chatRoomListDividerColorRes;
+  private int chatRoomListDividerPaddingLeftDp;
+  private int chatRoomListDividerPaddingRightDp;
+  private int chatRoomListDividerPaddingTopDp;
+  private int chatRoomListDividerPaddingBottomDp;
 
   private UIConfig(Builder builder) {
     chatRoomCellProvider = builder.chatRoomCellProvider;
     chatMessageCellProvider = builder.chatMessageCellProvider;
     chatRoomDateSectionViewProvider = builder.chatRoomDateSectionViewProvider;
     chatRoomToolbarProvider = builder.chatRoomToolbarProvider;
-    chatRoomControlViewProvider = builder.chatRoomControlViewProvider;
+    chatRoomMessageInputViewProvider = builder.chatRoomMessageInputViewProvider;
     chatRoomPhotoPickerThemeColor = builder.chatRoomPhotoPickerThemeColor;
     chatRoomEmptyStateViewRes = builder.chatRoomEmptyStateViewRes;
     chatRoomEmptyStateView = builder.chatRoomEmptyStateView;
     chatRoomListEmptyStateViewRes = builder.chatRoomListEmptyStateViewRes;
     chatRoomListEmptyStateView = builder.chatRoomListEmptyStateView;
     chatRoomBackgroundRes = builder.chatRoomBackgroundRes;
+    chatRoomListDividerColorRes = builder.chatRoomListDividerColorRes;
+    chatRoomListDividerPaddingLeftDp = builder.chatRoomListDividerPaddingLeftDp;
+    chatRoomListDividerPaddingRightDp = builder.chatRoomListDividerPaddingRightDp;
+    chatRoomListDividerPaddingTopDp = builder.chatRoomListDividerPaddingTopDp;
+    chatRoomListDividerPaddingBottomDp = builder.chatRoomListDividerPaddingBottomDp;
   }
 
   public static Builder newBuilder() {
@@ -42,13 +52,18 @@ public class UIConfig {
     private ChatMessageCellProvider chatMessageCellProvider;
     private ChatRoomDateSectionViewProvider chatRoomDateSectionViewProvider;
     private ChatRoomToolbarProvider chatRoomToolbarProvider;
-    private ChatRoomControlViewProvider chatRoomControlViewProvider;
+    private ChatRoomMessageInputViewProvider chatRoomMessageInputViewProvider;
     private int chatRoomPhotoPickerThemeColor;
     private int chatRoomEmptyStateViewRes;
     private View chatRoomEmptyStateView;
     private int chatRoomListEmptyStateViewRes;
     private View chatRoomListEmptyStateView;
     private int chatRoomBackgroundRes;
+    private int chatRoomListDividerColorRes;
+    private int chatRoomListDividerPaddingLeftDp;
+    private int chatRoomListDividerPaddingRightDp;
+    private int chatRoomListDividerPaddingTopDp;
+    private int chatRoomListDividerPaddingBottomDp;
 
     private Builder() {
     }
@@ -73,8 +88,8 @@ public class UIConfig {
       return this;
     }
 
-    public Builder setChatRoomControlViewProvider(ChatRoomControlViewProvider val) {
-      chatRoomControlViewProvider = val;
+    public Builder setChatRoomMessageInputViewProvider(ChatRoomMessageInputViewProvider val) {
+      chatRoomMessageInputViewProvider = val;
       return this;
     }
 
@@ -108,6 +123,19 @@ public class UIConfig {
       return this;
     }
 
+    public Builder setChatRoomListDividerColorRes(int val) {
+      chatRoomListDividerColorRes = val;
+      return this;
+    }
+
+    public Builder setChatRoomListDividerPadding(int leftDp, int topDp, int rightDp, int bottomDp) {
+      chatRoomListDividerPaddingLeftDp = leftDp;
+      chatRoomListDividerPaddingTopDp = topDp;
+      chatRoomListDividerPaddingRightDp = rightDp;
+      chatRoomListDividerPaddingBottomDp = bottomDp;
+      return this;
+    }
+
     public UIConfig build() {
       return new UIConfig(this);
     }
@@ -130,8 +158,8 @@ public class UIConfig {
     return chatRoomToolbarProvider;
   }
 
-  public ChatRoomControlViewProvider getChatRoomControlViewProvider() {
-    return chatRoomControlViewProvider;
+  public ChatRoomMessageInputViewProvider getChatRoomMessageInputViewProvider() {
+    return chatRoomMessageInputViewProvider;
   }
 
   public int getChatRoomPhotoPickerThemeColor() {
@@ -156,6 +184,19 @@ public class UIConfig {
 
   public int getChatRoomBackgroundRes() {
     return chatRoomBackgroundRes;
+  }
+
+  public int getChatRoomListDividerColorRes() {
+    return chatRoomListDividerColorRes;
+  }
+
+  public int[] getChatRoomListDividerPaddingDp() {
+    return new int[] {
+      chatRoomListDividerPaddingLeftDp,
+      chatRoomListDividerPaddingTopDp,
+      chatRoomListDividerPaddingRightDp,
+      chatRoomListDividerPaddingBottomDp
+    };
   }
 
 }

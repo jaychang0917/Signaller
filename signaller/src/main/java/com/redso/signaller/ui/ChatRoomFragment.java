@@ -63,7 +63,7 @@ public class ChatRoomFragment extends RxFragment {
   private static final int OFF_SCREEN_CELLS_THRESHOLD = 24;
 
   private SimpleRecyclerView messageRecyclerView;
-  private FrameLayout controlViewPlaceHolder;
+  private FrameLayout messageInputViewPlaceholder;
   private ImageView photoIconView;
   private ImageView emojiIconView;
   private EmojiEditText inputEditText;
@@ -71,7 +71,7 @@ public class ChatRoomFragment extends RxFragment {
   private EmojiPopup emojiPopup;
 
   private ChatMessageCellProvider chatMessageCellProvider;
-  private ChatRoomControlViewProvider chatRoomControlViewProvider;
+  private ChatRoomMessageInputViewProvider chatRoomMessageInputViewProvider;
   private ChatRoomDateSectionViewProvider chatRoomDateSectionViewProvider;
   private int chatRoomPhotoPickerThemeColor;
   private int chatRoomEmptyStateViewRes;
@@ -111,7 +111,7 @@ public class ChatRoomFragment extends RxFragment {
     initData();
     initUIConfig();
     initRecyclerView();
-    initControlView();
+    initMessageInputView();
     monitorNetworkState();
     monitorInput();
     cancelNotificationIfNeed();
@@ -120,7 +120,7 @@ public class ChatRoomFragment extends RxFragment {
 
   private void initViews(View rootView) {
     messageRecyclerView = (SimpleRecyclerView) rootView.findViewById(R.id.messageRecyclerView);
-    controlViewPlaceHolder = (FrameLayout) rootView.findViewById(R.id.controlViewPlaceHolder);
+    messageInputViewPlaceholder = (FrameLayout) rootView.findViewById(R.id.controlViewPlaceHolder);
   }
 
   private void initData() {
@@ -133,7 +133,7 @@ public class ChatRoomFragment extends RxFragment {
   private void initUIConfig() {
     UIConfig uiConfig = Signaller.getInstance().getUiConfig();
     chatMessageCellProvider = uiConfig.getChatMessageCellProvider();
-    chatRoomControlViewProvider = uiConfig.getChatRoomControlViewProvider();
+    chatRoomMessageInputViewProvider = uiConfig.getChatRoomMessageInputViewProvider();
     chatRoomDateSectionViewProvider = uiConfig.getChatRoomDateSectionViewProvider();
     chatRoomPhotoPickerThemeColor = uiConfig.getChatRoomPhotoPickerThemeColor();
     chatRoomEmptyStateViewRes = uiConfig.getChatRoomEmptyStateViewRes();
@@ -180,15 +180,15 @@ public class ChatRoomFragment extends RxFragment {
     }
   }
 
-  private void initControlView() {
-    View controlView = LayoutInflater.from(getContext()).inflate(chatRoomControlViewProvider.getLayoutRes(), null);
-    inputEditText = (EmojiEditText) controlView.findViewById(chatRoomControlViewProvider.getInputEditTextId());
-    photoIconView = (ImageView) controlView.findViewById(chatRoomControlViewProvider.getPhotoIconViewId());
-    sendMsgView = controlView.findViewById(chatRoomControlViewProvider.getSendMessageViewId());
+  private void initMessageInputView() {
+    View messageInputView = LayoutInflater.from(getContext()).inflate(chatRoomMessageInputViewProvider.getLayoutRes(), null);
+    inputEditText = (EmojiEditText) messageInputView.findViewById(chatRoomMessageInputViewProvider.getInputEditTextId());
+    photoIconView = (ImageView) messageInputView.findViewById(chatRoomMessageInputViewProvider.getPhotoIconViewId());
+    sendMsgView = messageInputView.findViewById(chatRoomMessageInputViewProvider.getSendMessageViewId());
 
-    EmojiKeyboardViewInfo emojiKeyboardViewInfo = chatRoomControlViewProvider.getEmojiKeyboardViewInfo();
+    EmojiKeyboardViewInfo emojiKeyboardViewInfo = chatRoomMessageInputViewProvider.getEmojiKeyboardViewInfo();
     if (emojiKeyboardViewInfo != null) {
-      emojiIconView = (ImageView) controlView.findViewById(emojiKeyboardViewInfo.getEmojiIconViewId());
+      emojiIconView = (ImageView) messageInputView.findViewById(emojiKeyboardViewInfo.getEmojiIconViewId());
       emojiIconView.setOnClickListener(view -> {
         showEmojiKeyboard();
       });
@@ -203,7 +203,7 @@ public class ChatRoomFragment extends RxFragment {
       addTextMessage();
     });
 
-    controlViewPlaceHolder.addView(controlView);
+    messageInputViewPlaceholder.addView(messageInputView);
   }
 
   private void initEmojiKeyboard(EmojiKeyboardViewInfo info) {
@@ -341,7 +341,6 @@ public class ChatRoomFragment extends RxFragment {
       .subscribe(response -> {
           cursor = response.cursor;
           hasMoreData = response.hasMore;
-          response.chatMessages.clear();//todo
           bindChatMessages(response.chatMessages);
           LogUtils.d(String.format("Load %1$s messages", response.chatMessages.size()));
           scrollToBottomOnce();

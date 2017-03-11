@@ -2,8 +2,7 @@
     <string name="app_name">Signaller Demo</string>
     <string name="people">People</string>
     <string name="other">Other</string>
-    <string name="chatroom">Messages</string>
-    <string name="TXT_Edit_Profile_Brand">Brand</string>
+    <string name="chatRoom">Chats</string>
     <string name="photo">Photo</string>
     <string name="yesterday">Yesterday</string>
     <string name="today">Today</string>

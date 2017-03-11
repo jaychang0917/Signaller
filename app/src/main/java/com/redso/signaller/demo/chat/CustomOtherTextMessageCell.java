@@ -1,4 +1,4 @@
-package com.redso.signaller.demo.widget;
+package com.redso.signaller.demo.chat;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -32,10 +32,10 @@ public class CustomOtherTextMessageCell extends ChatMessageCell<CustomOtherTextM
   }
 
   @Override
-  protected void onBindViewHolder(ViewHolder viewHolder, int i, Context context, Object o) {
-    viewHolder.otherMessageView.setAlpha(getChatMessage().isSent() ? 1f : 0.3f);
+  protected void onBindViewHolder(SignallerChatMessage chatMessage, ViewHolder viewHolder, int position, Context context) {
+    viewHolder.otherMessageView.setAlpha(chatMessage.isSent() ? 1f : 0.3f);
 
-    viewHolder.otherMessageView.setText(getChatMessage().getContent());
+    viewHolder.otherMessageView.setText(chatMessage.getContent());
   }
 
   static class ViewHolder extends SimpleViewHolder {

@@ -1,4 +1,4 @@
-package com.redso.signaller.demo.widget;
+package com.redso.signaller.demo.chat;
 
 import android.app.Activity;
 import android.content.Context;

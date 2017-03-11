@@ -3,7 +3,7 @@ package com.redso.signaller.ui;
 import android.support.annotation.IdRes;
 import android.support.annotation.LayoutRes;
 
-public interface ChatRoomControlViewProvider {
+public interface ChatRoomMessageInputViewProvider {
 
   @LayoutRes int getLayoutRes();
 

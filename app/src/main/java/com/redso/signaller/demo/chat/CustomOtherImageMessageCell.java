@@ -1,4 +1,4 @@
-package com.redso.signaller.demo.widget;
+package com.redso.signaller.demo.chat;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,22 +9,22 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.jaychang.srv.SimpleViewHolder;
 import com.jaychang.utils.ViewUtils;
-import com.redso.signaller.demo.R;
 import com.redso.signaller.core.model.SignallerChatMessage;
+import com.redso.signaller.demo.R;
 import com.redso.signaller.ui.ChatMessageCell;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CustomOwnImageMessageCell extends ChatMessageCell<CustomOwnImageMessageCell.ViewHolder> {
+public class CustomOtherImageMessageCell extends ChatMessageCell<CustomOtherImageMessageCell.ViewHolder> {
 
-  public CustomOwnImageMessageCell(SignallerChatMessage message) {
+  public CustomOtherImageMessageCell(SignallerChatMessage message) {
     super(message);
   }
 
   @Override
   protected int getLayoutRes() {
-    return R.layout.cell_own_image_message;
+    return R.layout.cell_other_image_message;
   }
 
   @NonNull
@@ -34,13 +34,13 @@ public class CustomOwnImageMessageCell extends ChatMessageCell<CustomOwnImageMes
   }
 
   @Override
-  protected void onBindViewHolder(ViewHolder viewHolder, int i, Context context, Object o) {
-    viewHolder.imageView.setAlpha(getChatMessage().isSent() ? 1f : 0.3f);
+  protected void onBindViewHolder(SignallerChatMessage chatMessage, ViewHolder viewHolder, int position, Context context) {
+    viewHolder.imageView.setAlpha(chatMessage.isSent() ? 1f : 0.3f);
 
-    ViewUtils.setViewWidthHeight(viewHolder.imageView, 150, (int) (150 / getChatMessage().getImage().getRatio()));
+    ViewUtils.setViewWidthHeight(viewHolder.imageView, 150, (int) (150 / chatMessage.getImage().getRatio()));
 
     Glide.with(context)
-      .load(getChatMessage().getImage().getUrl())
+      .load(chatMessage.getImage().getUrl())
       .into(viewHolder.imageView);
   }
 
