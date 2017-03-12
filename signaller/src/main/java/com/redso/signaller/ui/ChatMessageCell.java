@@ -4,19 +4,19 @@ import android.content.Context;
 
 import com.jaychang.srv.SimpleCell;
 import com.jaychang.srv.SimpleViewHolder;
-import com.redso.signaller.core.model.SignallerChatMessage;
+import com.redso.signaller.core.model.ChatMessage;
 
-public abstract class ChatMessageCell<VH extends SimpleViewHolder> extends SimpleCell<SignallerChatMessage, VH> {
+public abstract class ChatMessageCell<VH extends SimpleViewHolder> extends SimpleCell<ChatMessage, VH> {
 
-  public ChatMessageCell(SignallerChatMessage chatMessage) {
+  public ChatMessageCell(ChatMessage chatMessage) {
     super(chatMessage);
   }
 
-  public SignallerChatMessage getChatMessage() {
+  public ChatMessage getChatMessage() {
     return getItem();
   }
 
-  public void setChatMessage(SignallerChatMessage message) {
+  public void setChatMessage(ChatMessage message) {
     setItem(message);
   }
 
@@ -25,7 +25,7 @@ public abstract class ChatMessageCell<VH extends SimpleViewHolder> extends Simpl
     onBindViewHolder(getChatMessage(), vh, position, context);
   }
 
-  protected abstract void onBindViewHolder(SignallerChatMessage chatMessage, VH viewHolder, int position, Context context);
+  protected abstract void onBindViewHolder(ChatMessage chatMessage, VH viewHolder, int position, Context context);
 
   @Override
   protected long getItemId() {

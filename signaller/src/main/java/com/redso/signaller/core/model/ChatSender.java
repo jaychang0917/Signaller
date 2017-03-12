@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class SignallerSender extends RealmObject {
+public class ChatSender extends RealmObject {
 
   @PrimaryKey
   @SerializedName("id")

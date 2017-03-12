@@ -4,17 +4,17 @@ import com.google.gson.annotations.SerializedName;
 
 import io.realm.RealmObject;
 
-public class SignallerImageAttribute extends RealmObject {
+public class ImageAttribute extends RealmObject {
 
   @SerializedName("width")
   private int width;
   @SerializedName("height")
   private int height;
 
-  public SignallerImageAttribute() {
+  public ImageAttribute() {
   }
 
-  public SignallerImageAttribute(int width, int height) {
+  public ImageAttribute(int width, int height) {
     this.width = width;
     this.height = height;
   }

@@ -6,7 +6,7 @@ import com.redso.signaller.util.GsonUtils;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class SignallerImage extends RealmObject {
+public class Image extends RealmObject {
 
   @PrimaryKey
   @SerializedName("resource_id")
@@ -28,10 +28,10 @@ public class SignallerImage extends RealmObject {
   @SerializedName("name")
   private String name;
   @SerializedName("attributes")
-  private SignallerImageAttribute attributes;
+  private ImageAttribute attributes;
 
-  public static SignallerImage from(String json) {
-    return GsonUtils.getGson().fromJson(json, SignallerImage.class);
+  public static Image from(String json) {
+    return GsonUtils.getGson().fromJson(json, Image.class);
   }
 
   public float getRatio() {
@@ -111,11 +111,11 @@ public class SignallerImage extends RealmObject {
     this.name = name;
   }
 
-  public SignallerImageAttribute getAttributes() {
+  public ImageAttribute getAttributes() {
     return attributes;
   }
 
-  public void setAttributes(SignallerImageAttribute attributes) {
+  public void setAttributes(ImageAttribute attributes) {
     this.attributes = attributes;
   }
   //endregion

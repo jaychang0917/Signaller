@@ -3,12 +3,12 @@ package com.redso.signaller.ui;
 import android.support.annotation.NonNull;
 import android.view.View;
 
-import com.redso.signaller.core.model.SignallerChatMessage;
+import com.redso.signaller.core.model.ChatMessage;
 
 public interface ChatRoomDateSectionViewProvider {
 
-  @NonNull View getChatRoomDateSectionView(SignallerChatMessage item);
+  @NonNull View getChatRoomDateSectionView(ChatMessage item);
 
-  boolean isSameSection(SignallerChatMessage item, SignallerChatMessage nextItem);
+  boolean isSameSection(ChatMessage item, ChatMessage nextItem);
 
 }

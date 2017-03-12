@@ -11,11 +11,11 @@ import com.jaychang.srv.SimpleCell;
 import com.jaychang.srv.SimpleRecyclerView;
 import com.redso.signaller.core.ChatRoomMeta;
 import com.redso.signaller.core.Signaller;
-import com.redso.signaller.core.SignallerDataManager;
-import com.redso.signaller.core.SignallerDbManager;
-import com.redso.signaller.core.SignallerEvents;
-import com.redso.signaller.core.model.SignallerChatRoom;
-import com.redso.signaller.core.model.SignallerReceiver;
+import com.redso.signaller.core.DataManager;
+import com.redso.signaller.core.DatabaseManager;
+import com.redso.signaller.core.Events;
+import com.redso.signaller.core.model.ChatRoom;
+import com.redso.signaller.core.model.ChatReceiver;
 import com.redso.signaller.util.LogUtils;
 import com.trello.rxlifecycle.android.FragmentEvent;
 import com.trello.rxlifecycle.components.support.RxFragment;
@@ -38,7 +38,7 @@ public class ChatRoomListFragment extends RxFragment {
   private View emptyStateView;
   private int dividerColorRes;
   private int[] dividerPadding;
-  private HashMap<String, SignallerChatRoom> chatRooms = new HashMap<>();
+  private HashMap<String, ChatRoom> chatRooms = new HashMap<>();
 
   public static ChatRoomListFragment newInstance() {
     return new ChatRoomListFragment();
@@ -72,14 +72,14 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void updateChatRoomList(SignallerEvents.UpdateChatRoomListEvent event) {
+  public void updateChatRoomList(Events.UpdateChatRoomListEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    SignallerChatRoom chatRoom = SignallerDbManager.getInstance().getChatRoom(event.chatRoomId);
+    ChatRoom chatRoom = DatabaseManager.getInstance().getChatRoom(event.chatRoomId);
     insertOrUpdateChatRoom(chatRoom, event.updateUnreadCount);
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void clearUnreadCount(SignallerEvents.ClearUnreadCountEvent event) {
+  public void clearUnreadCount(Events.ClearUnreadCountEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
     clearUnreadCount(event.chatRoomId);
   }
@@ -122,11 +122,11 @@ public class ChatRoomListFragment extends RxFragment {
 
   private void removePendingEvents() {
     // remove all extra events that no subscribers, prevent duplicate chatroom list loading
-    EventBus.getDefault().removeStickyEvent(SignallerEvents.UpdateChatRoomListEvent.class);
+    EventBus.getDefault().removeStickyEvent(Events.UpdateChatRoomListEvent.class);
   }
 
   private void loadChatRooms() {
-    SignallerDataManager.getInstance().getChatRooms()
+    DataManager.getInstance().getChatRooms()
       .compose(bindUntilEvent(FragmentEvent.DESTROY))
       .subscribe(
         chatRooms -> {
@@ -140,7 +140,7 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void loadChatRoomsFromNetwork() {
-    SignallerDataManager.getInstance().getChatRoomsFromNetwork(ChatRoomMeta.getInstance().getCursor())
+    DataManager.getInstance().getChatRoomsFromNetwork(ChatRoomMeta.getInstance().getCursor())
       .compose(bindUntilEvent(FragmentEvent.DESTROY))
       .subscribe(
         chatRooms -> {
@@ -153,18 +153,18 @@ public class ChatRoomListFragment extends RxFragment {
         });
   }
 
-  private void saveChatRooms(List<SignallerChatRoom> rooms) {
-    for (SignallerChatRoom room : rooms) {
+  private void saveChatRooms(List<ChatRoom> rooms) {
+    for (ChatRoom room : rooms) {
       chatRooms.put(room.getChatRoomId(), room);
     }
   }
 
-  private List<SignallerChatRoom> sort(List<SignallerChatRoom> rooms) {
+  private List<ChatRoom> sort(List<ChatRoom> rooms) {
     Collections.sort(rooms, (chatRoom, other) -> other.getLastMessageTime().compareTo(chatRoom.getLastMessageTime()));
     return rooms;
   }
 
-  private void insertOrUpdateChatRoom(SignallerChatRoom room, boolean updateUnreadCount) {
+  private void insertOrUpdateChatRoom(ChatRoom room, boolean updateUnreadCount) {
     // if has no this chat room, call api to update
     if (room == null) {
       ChatRoomMeta.getInstance().setCursor(null);
@@ -189,9 +189,9 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void clearUnreadCount(String chatRoomId) {
-    SignallerDbManager.getInstance().clearUnreadMessageCount(chatRoomId);
+    DatabaseManager.getInstance().clearUnreadMessageCount(chatRoomId);
 
-    SignallerDataManager.getInstance().clearUnreadCount(chatRoomId);
+    DataManager.getInstance().clearUnreadCount(chatRoomId);
 
     ChatRoomCell chatRoomCell = getChatRoomCell(chatRoomId);
     if (chatRoomCell != null) {
@@ -205,7 +205,7 @@ public class ChatRoomListFragment extends RxFragment {
   private ChatRoomCell getChatRoomCell(String chatRoomId) {
     for (SimpleCell cell : roomsRecyclerView.getAllCells()) {
       ChatRoomCell chatRoomCell = (ChatRoomCell) cell;
-      SignallerChatRoom chatRoom = chatRoomCell.getChatRoom();
+      ChatRoom chatRoom = chatRoomCell.getChatRoom();
 
       if (chatRoom.getChatRoomId().equals(chatRoomId)) {
         return chatRoomCell;
@@ -217,14 +217,14 @@ public class ChatRoomListFragment extends RxFragment {
   private void bindChatRooms() {
     roomsRecyclerView.removeAllCells();
 
-    List<SignallerChatRoom> sortedChatRooms = sort(new ArrayList<>(chatRooms.values()));
+    List<ChatRoom> sortedChatRooms = sort(new ArrayList<>(chatRooms.values()));
     List<ChatRoomCell> cells = new ArrayList<>();
 
-    for (SignallerChatRoom chatRoom : sortedChatRooms) {
+    for (ChatRoom chatRoom : sortedChatRooms) {
       ChatRoomCell cell = chatRoomCellProvider.getChatRoomCell(chatRoom);
-      cell.setOnCellClickListener(new SimpleCell.OnCellClickListener<SignallerChatRoom>() {
+      cell.setOnCellClickListener(new SimpleCell.OnCellClickListener<ChatRoom>() {
         @Override
-        public void onCellClicked(SignallerChatRoom chatRoom) {
+        public void onCellClicked(ChatRoom chatRoom) {
           chatWith(chatRoom.getReceiver());
         }
       });
@@ -233,7 +233,7 @@ public class ChatRoomListFragment extends RxFragment {
     roomsRecyclerView.addCells(cells);
   }
 
-  private void chatWith(SignallerReceiver receiver) {
+  private void chatWith(ChatReceiver receiver) {
     Signaller.getInstance().chatWith(getContext(), receiver.getUserId(), receiver.getName());
   }
 

@@ -2,14 +2,14 @@ package com.redso.signaller.core.model;
 
 import io.realm.RealmObject;
 
-public class SignallerRealmInt extends RealmObject {
+public class RealmInt extends RealmObject {
 
   private int value;
 
-  public SignallerRealmInt() {
+  public RealmInt() {
   }
 
-  public SignallerRealmInt(int value) {
+  public RealmInt(int value) {
     this.value = value;
   }
 

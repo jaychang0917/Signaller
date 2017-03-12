@@ -8,7 +8,7 @@ import java.util.Calendar;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class SignallerChatMessage extends RealmObject {
+public class ChatMessage extends RealmObject {
 
   @PrimaryKey
   @SerializedName("id")
@@ -20,17 +20,17 @@ public class SignallerChatMessage extends RealmObject {
   @SerializedName("content")
   private String content;
   @SerializedName("image")
-  private SignallerImage image;
+  private Image image;
   @SerializedName("mtime")
   private long mtime;
   @SerializedName("type")
   private String type;
   @SerializedName("sender")
-  private SignallerSender sender;
+  private ChatSender sender;
   private boolean isSent = true;
   private long timestamp;
 
-  public boolean isSameSender(SignallerChatMessage message) {
+  public boolean isSameSender(ChatMessage message) {
     return sender.getUserId().equals(message.sender.getUserId());
   }
 
@@ -38,7 +38,7 @@ public class SignallerChatMessage extends RealmObject {
     return sender.getUserId().equals(UserData.getInstance().getUserId());
   }
 
-  public boolean isSameDate(SignallerChatMessage message) {
+  public boolean isSameDate(ChatMessage message) {
     Calendar cal1 = Calendar.getInstance();
     Calendar cal2 = Calendar.getInstance();
     cal1.setTimeInMillis(mtime == 0L ? timestamp : mtime);
@@ -88,11 +88,11 @@ public class SignallerChatMessage extends RealmObject {
     this.content = content;
   }
 
-  public SignallerImage getImage() {
+  public Image getImage() {
     return image;
   }
 
-  public void setImage(SignallerImage image) {
+  public void setImage(Image image) {
     this.image = image;
   }
 
@@ -112,11 +112,11 @@ public class SignallerChatMessage extends RealmObject {
     this.type = type;
   }
 
-  public SignallerSender getSender() {
+  public ChatSender getSender() {
     return sender;
   }
 
-  public void setSender(SignallerSender sender) {
+  public void setSender(ChatSender sender) {
     this.sender = sender;
   }
 

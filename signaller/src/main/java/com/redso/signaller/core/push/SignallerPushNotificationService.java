@@ -4,7 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 
 import com.google.android.gms.gcm.GcmListenerService;
-import com.redso.signaller.core.SignallerEvents;
+import com.redso.signaller.core.Events;
 import com.redso.signaller.core.UserData;
 import com.redso.signaller.core.model.PushNotification;
 import com.redso.signaller.util.LogUtils;
@@ -31,10 +31,10 @@ public class SignallerPushNotificationService extends GcmListenerService {
     String chatRoomId = pushNotification.getChatRoomId();
     boolean isInSameChatRoom = chatRoomId.equals(UserData.getInstance().getCurrentChatRoomId());
     if (isInSameChatRoom) {
-      EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(chatRoomId, pushNotification.getMsgId()));
+      EventBus.getDefault().postSticky(new Events.OnMsgReceivedEvent(chatRoomId, pushNotification.getMsgId()));
     }
 
-    EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
+    EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
   }
 
 }

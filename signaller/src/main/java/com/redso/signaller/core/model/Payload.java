@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import io.realm.RealmObject;
 
-public class SignallerPayload extends RealmObject implements Serializable{
+public class Payload extends RealmObject implements Serializable{
 
   private long timestamp;
   private int messageCellIndex;

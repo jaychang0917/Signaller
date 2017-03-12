@@ -8,8 +8,8 @@ import com.google.gson.TypeAdapter;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
-import com.redso.signaller.core.model.SignallerRealmInt;
-import com.redso.signaller.core.model.SignallerRealmString;
+import com.redso.signaller.core.model.RealmInt;
+import com.redso.signaller.core.model.RealmString;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -44,35 +44,35 @@ public class GsonUtils {
       }
     });
 
-    Type stringToken = new TypeToken<RealmList<SignallerRealmString>>() {}.getType();
-    gsonBuilder.registerTypeAdapter(stringToken, new TypeAdapter<RealmList<SignallerRealmString>>() {
+    Type stringToken = new TypeToken<RealmList<RealmString>>() {}.getType();
+    gsonBuilder.registerTypeAdapter(stringToken, new TypeAdapter<RealmList<RealmString>>() {
       @Override
-      public void write(JsonWriter out, RealmList<SignallerRealmString> value) throws IOException {
+      public void write(JsonWriter out, RealmList<RealmString> value) throws IOException {
       }
 
       @Override
-      public RealmList<SignallerRealmString> read(JsonReader in) throws IOException {
-        RealmList<SignallerRealmString> list = new RealmList<>();
+      public RealmList<RealmString> read(JsonReader in) throws IOException {
+        RealmList<RealmString> list = new RealmList<>();
         in.beginArray();
         while (in.hasNext()) {
-          list.add(new SignallerRealmString(in.nextString()));
+          list.add(new RealmString(in.nextString()));
         }
         in.endArray();
         return list;
       }
     });
-    Type intToken = new TypeToken<RealmList<SignallerRealmInt>>() {}.getType();
-    gsonBuilder.registerTypeAdapter(intToken, new TypeAdapter<RealmList<SignallerRealmInt>>() {
+    Type intToken = new TypeToken<RealmList<RealmInt>>() {}.getType();
+    gsonBuilder.registerTypeAdapter(intToken, new TypeAdapter<RealmList<RealmInt>>() {
       @Override
-      public void write(JsonWriter out, RealmList<SignallerRealmInt> value) throws IOException {
+      public void write(JsonWriter out, RealmList<RealmInt> value) throws IOException {
       }
 
       @Override
-      public RealmList<SignallerRealmInt> read(JsonReader in) throws IOException {
-        RealmList<SignallerRealmInt> list = new RealmList<>();
+      public RealmList<RealmInt> read(JsonReader in) throws IOException {
+        RealmList<RealmInt> list = new RealmList<>();
         in.beginArray();
         while (in.hasNext()) {
-          list.add(new SignallerRealmInt(in.nextInt()));
+          list.add(new RealmInt(in.nextInt()));
         }
         in.endArray();
         return list;

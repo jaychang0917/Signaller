@@ -7,8 +7,8 @@ import android.view.View;
 
 import com.redso.signaller.core.AppConfig;
 import com.redso.signaller.core.Signaller;
-import com.redso.signaller.core.model.SignallerChatMessage;
-import com.redso.signaller.core.model.SignallerChatRoom;
+import com.redso.signaller.core.model.ChatMessage;
+import com.redso.signaller.core.model.ChatRoom;
 import com.redso.signaller.demo.Constant;
 import com.redso.signaller.demo.MainActivity;
 import com.redso.signaller.demo.R;
@@ -53,14 +53,14 @@ public class App extends MultiDexApplication {
       .setChatRoomCellProvider(new ChatRoomCellProvider() {
         @NonNull
         @Override
-        public ChatRoomCell getChatRoomCell(SignallerChatRoom chatRoom) {
+        public ChatRoomCell getChatRoomCell(ChatRoom chatRoom) {
           return new CustomChatRoomCell(chatRoom);
         }
       })
       .setChatMessageCellProvider(new ChatMessageCellProvider() {
         @NonNull
         @Override
-        public ChatMessageCell getOwnChatMessageCell(ChatMessageType type, SignallerChatMessage message) {
+        public ChatMessageCell getOwnChatMessageCell(ChatMessageType type, ChatMessage message) {
           if (type.equals(ChatMessageType.TEXT)) {
             return new CustomOwnTextMessageCell(message);
           } else if (type.equals(ChatMessageType.IMAGE)) {
@@ -71,7 +71,7 @@ public class App extends MultiDexApplication {
 
         @NonNull
         @Override
-        public ChatMessageCell getOtherChatMessageCell(ChatMessageType type, SignallerChatMessage message) {
+        public ChatMessageCell getOtherChatMessageCell(ChatMessageType type, ChatMessage message) {
           if (type.equals(ChatMessageType.TEXT)) {
             return new CustomOtherTextMessageCell(message);
           } else if (type.equals(ChatMessageType.IMAGE)) {
@@ -126,14 +126,14 @@ public class App extends MultiDexApplication {
       .setChatRoomDateSectionViewProvider(new ChatRoomDateSectionViewProvider() {
         @NonNull
         @Override
-        public View getChatRoomDateSectionView(SignallerChatMessage item) {
+        public View getChatRoomDateSectionView(ChatMessage item) {
           CustomChatRoomDateSectionView view = new CustomChatRoomDateSectionView(getApplicationContext());
           view.bind(item);
           return view;
         }
 
         @Override
-        public boolean isSameSection(SignallerChatMessage item, SignallerChatMessage nextItem) {
+        public boolean isSameSection(ChatMessage item, ChatMessage nextItem) {
           return item.isSameDate(nextItem);
         }
       })

@@ -31,7 +31,7 @@ public final class Signaller {
     INSTANCE.appConfig = appConfig;
     INSTANCE.uiConfig = uiConfig;
 
-    SignallerDbManager.getInstance().init(app.getApplicationContext());
+    DatabaseManager.getInstance().init(app.getApplicationContext());
   }
 
   public static Signaller getInstance() {
@@ -77,7 +77,7 @@ public final class Signaller {
   public void disconnect() {
     SocketManager.getInstance().disconnect();
     SocketManager.getInstance().invalidate();
-    SignallerDbManager.getInstance().clear();
+    DatabaseManager.getInstance().clear();
     if (isPushNotificationEnabled()) {
       SignallerGcmManager.unregister(appContext);
     }
@@ -138,7 +138,7 @@ public final class Signaller {
   }
 
   public void getUnreadMessageCount(ChatRoomMetaCallback callback) {
-    SignallerDataManager.getInstance().getChatRoomsFromNetwork(null)
+    DataManager.getInstance().getChatRoomsFromNetwork(null)
       .subscribe(
         rooms -> {
           int totalUnreadCount = ChatRoomMeta.getInstance().getTotalUnreadCount();

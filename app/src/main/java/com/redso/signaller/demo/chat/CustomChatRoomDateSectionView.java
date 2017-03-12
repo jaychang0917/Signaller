@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.jaychang.utils.DateTimeFormatUtils;
 import com.redso.signaller.demo.R;
-import com.redso.signaller.core.model.SignallerChatMessage;
+import com.redso.signaller.core.model.ChatMessage;
 
 public class CustomChatRoomDateSectionView extends FrameLayout {
 
@@ -20,7 +20,7 @@ public class CustomChatRoomDateSectionView extends FrameLayout {
     dateView = (TextView) view.findViewById(R.id.dateView);
   }
 
-  public void bind(SignallerChatMessage message) {
+  public void bind(ChatMessage message) {
     String yesterday = "'" + getContext().getString(R.string.yesterday) + "', h:mm a";
     String today = "'" + getContext().getString(R.string.today) + "', h:mm a";
 

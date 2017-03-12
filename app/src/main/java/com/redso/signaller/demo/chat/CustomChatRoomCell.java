@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.redso.signaller.core.model.SignallerChatMessage;
-import com.redso.signaller.core.model.SignallerChatRoom;
-import com.redso.signaller.core.model.SignallerReceiver;
+import com.redso.signaller.core.model.ChatMessage;
+import com.redso.signaller.core.model.ChatRoom;
+import com.redso.signaller.core.model.ChatReceiver;
 import com.redso.signaller.ui.ChatRoomCell;
 import com.jaychang.srv.SimpleViewHolder;
 import com.jaychang.utils.DateTimeFormatUtils;
@@ -24,7 +24,7 @@ import jp.wasabeef.glide.transformations.CropCircleTransformation;
 
 public class CustomChatRoomCell extends ChatRoomCell<CustomChatRoomCell.ViewHolder> {
 
-  public CustomChatRoomCell(SignallerChatRoom chatroom) {
+  public CustomChatRoomCell(ChatRoom chatroom) {
     super(chatroom);
   }
 
@@ -40,14 +40,14 @@ public class CustomChatRoomCell extends ChatRoomCell<CustomChatRoomCell.ViewHold
   }
 
   @Override
-  protected void onBindViewHolder(SignallerChatRoom chatRoom, ViewHolder holder, int position, Context context) {
+  protected void onBindViewHolder(ChatRoom chatRoom, ViewHolder holder, int position, Context context) {
     holder.itemView.setOnClickListener(v -> {
       // If you handle cell click event, you MUST call onCellClicked() first to handle the default stuffs.
       onCellClicked();
       holder.unreadCountView.setVisibility(View.GONE);
     });
 
-    SignallerReceiver receiver = chatRoom.getReceiver();
+    ChatReceiver receiver = chatRoom.getReceiver();
     boolean hasLogo = !TextUtils.isEmpty(receiver.getProfilePhotoUrl());
     Object logo = hasLogo ? receiver.getProfilePhotoUrl() : R.drawable.ic_default_profile_logo;
     Glide.with(context)
@@ -64,7 +64,7 @@ public class CustomChatRoomCell extends ChatRoomCell<CustomChatRoomCell.ViewHold
       holder.unreadCountView.setVisibility(View.INVISIBLE);
     }
 
-    SignallerChatMessage lastMessage = chatRoom.getLastMessage();
+    ChatMessage lastMessage = chatRoom.getLastMessage();
     if (lastMessage != null) {
       if (lastMessage.isText()) {
         holder.lastMsgView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);

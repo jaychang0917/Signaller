@@ -15,6 +15,6 @@ public class ChatMessageResponse {
   @SerializedName("more")
   public boolean hasMore;
   @SerializedName("results")
-  public List<SignallerChatMessage> chatMessages;
+  public List<ChatMessage> chatMessages;
 
 }

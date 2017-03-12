@@ -6,8 +6,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jaychang.srv.SimpleViewHolder;
+import com.redso.signaller.core.model.ChatMessage;
 import com.redso.signaller.demo.R;
-import com.redso.signaller.core.model.SignallerChatMessage;
 import com.redso.signaller.ui.ChatMessageCell;
 import com.vanniktech.emoji.EmojiTextView;
 
@@ -16,7 +16,7 @@ import butterknife.ButterKnife;
 
 public class CustomOwnTextMessageCell extends ChatMessageCell<CustomOwnTextMessageCell.ViewHolder> {
 
-  public CustomOwnTextMessageCell(SignallerChatMessage message) {
+  public CustomOwnTextMessageCell(ChatMessage message) {
     super(message);
   }
 
@@ -32,7 +32,7 @@ public class CustomOwnTextMessageCell extends ChatMessageCell<CustomOwnTextMessa
   }
 
   @Override
-  protected void onBindViewHolder(SignallerChatMessage chatMessage, ViewHolder viewHolder, int position, Context context) {
+  protected void onBindViewHolder(ChatMessage chatMessage, ViewHolder viewHolder, int position, Context context) {
     viewHolder.messageView.setAlpha(chatMessage.isSent() ? 1f : 0.3f);
 
     viewHolder.messageView.setText(chatMessage.getContent());

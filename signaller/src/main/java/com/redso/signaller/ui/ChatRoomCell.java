@@ -4,24 +4,24 @@ import android.content.Context;
 
 import com.jaychang.srv.SimpleCell;
 import com.jaychang.srv.SimpleViewHolder;
-import com.redso.signaller.core.model.SignallerChatMessage;
-import com.redso.signaller.core.model.SignallerChatRoom;
+import com.redso.signaller.core.model.ChatMessage;
+import com.redso.signaller.core.model.ChatRoom;
 
-public abstract class ChatRoomCell<VH extends SimpleViewHolder> extends SimpleCell<SignallerChatRoom, VH> {
+public abstract class ChatRoomCell<VH extends SimpleViewHolder> extends SimpleCell<ChatRoom, VH> {
 
-  public ChatRoomCell(SignallerChatRoom chatRoom) {
+  public ChatRoomCell(ChatRoom chatRoom) {
     super(chatRoom);
   }
 
-  public SignallerChatRoom getChatRoom() {
+  public ChatRoom getChatRoom() {
     return getItem();
   }
 
-  public void setChatRoom(SignallerChatRoom chatRoom) {
+  public void setChatRoom(ChatRoom chatRoom) {
     setItem(chatRoom);
   }
 
-  void updateLastMessage(SignallerChatMessage lastMsg) {
+  void updateLastMessage(ChatMessage lastMsg) {
     getChatRoom().setLastMessage(lastMsg);
   }
 
@@ -43,7 +43,7 @@ public abstract class ChatRoomCell<VH extends SimpleViewHolder> extends SimpleCe
     onBindViewHolder(getChatRoom(), vh, position, context);
   }
 
-  protected abstract void onBindViewHolder(SignallerChatRoom chatRoom, VH vh, int position, Context context);
+  protected abstract void onBindViewHolder(ChatRoom chatRoom, VH vh, int position, Context context);
 
   @Override
   protected long getItemId() {

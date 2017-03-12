@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class SignallerChatRoom extends RealmObject {
+public class ChatRoom extends RealmObject {
 
   @PrimaryKey
   @SerializedName("parent_id")
@@ -15,17 +15,17 @@ public class SignallerChatRoom extends RealmObject {
   @SerializedName("last_message_time")
   private Long lastMessageTime;
   @SerializedName("info")
-  private SignallerChatRoomInfo info;
+  private ChatRoomInfo info;
   @SerializedName("ctime")
   private long ctime;
   @SerializedName("last_message")
-  private SignallerChatMessage lastMessage;
+  private ChatMessage lastMessage;
   @SerializedName("mtime")
   private long mtime;
   @SerializedName("unread_count")
   private int unreadCount;
   @SerializedName("receiver")
-  private SignallerReceiver receiver;
+  private ChatReceiver receiver;
 
   public void increaseUnreadCount() {
     unreadCount++;
@@ -40,19 +40,19 @@ public class SignallerChatRoom extends RealmObject {
     this.chatRoomId = chatRoomId;
   }
 
-  public SignallerChatRoomInfo getInfo() {
+  public ChatRoomInfo getInfo() {
     return info;
   }
 
-  public void setInfo(SignallerChatRoomInfo info) {
+  public void setInfo(ChatRoomInfo info) {
     this.info = info;
   }
 
-  public SignallerChatMessage getLastMessage() {
+  public ChatMessage getLastMessage() {
     return lastMessage;
   }
 
-  public void setLastMessage(SignallerChatMessage lastMessage) {
+  public void setLastMessage(ChatMessage lastMessage) {
     this.lastMessage = lastMessage;
   }
 
@@ -80,11 +80,11 @@ public class SignallerChatRoom extends RealmObject {
     this.unreadCount = unreadCount;
   }
 
-  public SignallerReceiver getReceiver() {
+  public ChatReceiver getReceiver() {
     return receiver;
   }
 
-  public void setReceiver(SignallerReceiver receiver) {
+  public void setReceiver(ChatReceiver receiver) {
     this.receiver = receiver;
   }
   //endregion

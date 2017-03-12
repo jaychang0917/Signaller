@@ -1,9 +1,9 @@
 package com.redso.signaller.core;
 
+import com.redso.signaller.core.model.ChatMessage;
 import com.redso.signaller.core.model.PushNotification;
-import com.redso.signaller.core.model.SignallerChatMessage;
 
-public class SignallerEvents {
+public class Events {
 
   public static class OnMsgReceivedEvent {
     public String chatRoomId;
@@ -58,10 +58,10 @@ public class SignallerEvents {
   }
 
   public static class OnMsgSentEvent {
-    public SignallerChatMessage chatMessage;
+    public ChatMessage chatMessage;
     public int messageCellIndex;
 
-    public OnMsgSentEvent(SignallerChatMessage chatMessage, int messageCellIndex) {
+    public OnMsgSentEvent(ChatMessage chatMessage, int messageCellIndex) {
       this.chatMessage = chatMessage;
       this.messageCellIndex = messageCellIndex;
     }

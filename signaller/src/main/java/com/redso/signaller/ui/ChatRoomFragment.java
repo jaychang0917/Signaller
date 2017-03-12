@@ -21,16 +21,16 @@ import com.jaychang.utils.SimpleTextChangedListener;
 import com.redso.signaller.R;
 import com.redso.signaller.core.NetworkStateMonitor;
 import com.redso.signaller.core.Signaller;
-import com.redso.signaller.core.SignallerDataManager;
-import com.redso.signaller.core.SignallerDbManager;
-import com.redso.signaller.core.SignallerEvents;
+import com.redso.signaller.core.DataManager;
+import com.redso.signaller.core.DatabaseManager;
+import com.redso.signaller.core.Events;
 import com.redso.signaller.core.SocketManager;
 import com.redso.signaller.core.UserData;
-import com.redso.signaller.core.model.SignallerChatMessage;
-import com.redso.signaller.core.model.SignallerImage;
-import com.redso.signaller.core.model.SignallerImageAttribute;
-import com.redso.signaller.core.model.SignallerPayload;
-import com.redso.signaller.core.model.SignallerSocketChatMessage;
+import com.redso.signaller.core.model.ChatMessage;
+import com.redso.signaller.core.model.Image;
+import com.redso.signaller.core.model.ImageAttribute;
+import com.redso.signaller.core.model.Payload;
+import com.redso.signaller.core.model.SocketChatMessage;
 import com.redso.signaller.core.push.SignallerPushNotificationManager;
 import com.redso.signaller.util.GsonUtils;
 import com.redso.signaller.util.LogUtils;
@@ -55,7 +55,7 @@ import static com.redso.signaller.ui.ChatMessageType.TEXT;
 public class ChatRoomFragment extends RxFragment {
 
   interface MessageCallback {
-    void onMessageSavedToDb(SignallerSocketChatMessage message);
+    void onMessageSavedToDb(SocketChatMessage message);
   }
 
   public static final String EXTRA_CHAT_ID = "EXTRA_CHAT_ID";
@@ -153,15 +153,15 @@ public class ChatRoomFragment extends RxFragment {
 
     // date section
     if (chatRoomDateSectionViewProvider != null) {
-      messageRecyclerView.setSectionHeader(new SectionHeaderProviderAdapter<SignallerChatMessage>() {
+      messageRecyclerView.setSectionHeader(new SectionHeaderProviderAdapter<ChatMessage>() {
         @NonNull
         @Override
-        public View getSectionHeaderView(SignallerChatMessage chatMessage, int position) {
+        public View getSectionHeaderView(ChatMessage chatMessage, int position) {
           return chatRoomDateSectionViewProvider.getChatRoomDateSectionView(chatMessage);
         }
 
         @Override
-        public boolean isSameSection(SignallerChatMessage item, SignallerChatMessage nextItem) {
+        public boolean isSameSection(ChatMessage item, ChatMessage nextItem) {
           return chatRoomDateSectionViewProvider.isSameSection(item, nextItem);
         }
       });
@@ -248,8 +248,8 @@ public class ChatRoomFragment extends RxFragment {
   }
 
   private void clearUnreadCount() {
-    SignallerDbManager.getInstance().clearUnreadMessageCount(chatRoomId);
-    SignallerDataManager.getInstance().clearUnreadCount(chatRoomId);
+    DatabaseManager.getInstance().clearUnreadMessageCount(chatRoomId);
+    DataManager.getInstance().clearUnreadCount(chatRoomId);
   }
 
   @Override
@@ -266,41 +266,41 @@ public class ChatRoomFragment extends RxFragment {
     UserData.getInstance().setInChatRoomPage(false);
 
     // clear that unread count for this chat room
-    EventBus.getDefault().postSticky(new SignallerEvents.ClearUnreadCountEvent(chatRoomId));
+    EventBus.getDefault().postSticky(new Events.ClearUnreadCountEvent(chatRoomId));
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void onMsgReceived(SignallerEvents.OnMsgReceivedEvent event) {
+  public void onMsgReceived(Events.OnMsgReceivedEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
-    SignallerChatMessage chatMessage = SignallerDbManager.getInstance().getChatMessage(event.chatRoomId, event.msgId);
+    ChatMessage chatMessage = DatabaseManager.getInstance().getChatMessage(event.chatRoomId, event.msgId);
     handleChatMessage(chatMessage);
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void onMsgSent(SignallerEvents.OnMsgSentEvent event) {
+  public void onMsgSent(Events.OnMsgSentEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
     updateChatMessage(event.messageCellIndex, event.chatMessage);
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void onSocketConnected(SignallerEvents.OnSocketConnectedEvent event) {
+  public void onSocketConnected(Events.OnSocketConnectedEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
     handleInput();
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void onSocketDisconnected(SignallerEvents.OnSocketDisconnectedEvent event) {
+  public void onSocketDisconnected(Events.OnSocketDisconnectedEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
     handleInput();
   }
 
   @Subscribe(threadMode = ThreadMode.MAIN, sticky = true)
-  public void onSocketConnecting(SignallerEvents.OnSocketConnectingEvent event) {
+  public void onSocketConnecting(Events.OnSocketConnectingEvent event) {
     EventBus.getDefault().removeStickyEvent(event);
     handleInput();
   }
 
-  private void handleChatMessage(SignallerChatMessage message) {
+  private void handleChatMessage(ChatMessage message) {
     if (message == null) {
       reload();
       SignallerPushNotificationManager.cancelNotification(chatId);
@@ -318,7 +318,7 @@ public class ChatRoomFragment extends RxFragment {
     }
   }
 
-  private void updateChatMessage(int messageCellIndex, SignallerChatMessage message) {
+  private void updateChatMessage(int messageCellIndex, ChatMessage message) {
     ChatMessageCell cell = (ChatMessageCell) messageRecyclerView.getCell(messageCellIndex);
     if (cell != null) {
       cell.setChatMessage(message);
@@ -336,7 +336,7 @@ public class ChatRoomFragment extends RxFragment {
 
   private void loadChatMessages() {
     messageRecyclerView.setLoadingMore(true);
-    SignallerDataManager.getInstance().getChatMessages(chatId, cursor)
+    DataManager.getInstance().getChatMessages(chatId, cursor)
       .compose(bindUntilEvent(FragmentEvent.DESTROY))
       .subscribe(response -> {
           cursor = response.cursor;
@@ -352,10 +352,10 @@ public class ChatRoomFragment extends RxFragment {
         });
   }
 
-  private void bindChatMessages(List<SignallerChatMessage> chatMessages) {
+  private void bindChatMessages(List<ChatMessage> chatMessages) {
     List<ChatMessageCell> cells = new ArrayList<>();
     for (int i = 0; i < chatMessages.size(); i++) {
-      SignallerChatMessage message = chatMessages.get(i);
+      ChatMessage message = chatMessages.get(i);
 
       int nextPos = i + 1;
       boolean isSameSender = false;
@@ -430,7 +430,7 @@ public class ChatRoomFragment extends RxFragment {
   }
 
   private void addTextMessage() {
-    SignallerChatMessage chatMessage = new SignallerChatMessage();
+    ChatMessage chatMessage = new ChatMessage();
     chatMessage.setTimestamp(System.currentTimeMillis());
     chatMessage.setType("text");
     chatMessage.setSent(false);
@@ -444,19 +444,19 @@ public class ChatRoomFragment extends RxFragment {
     clearInput();
   }
 
-  private void addChatMessageToDb(SignallerChatMessage chatMessage, MessageCallback callback) {
+  private void addChatMessageToDb(ChatMessage chatMessage, MessageCallback callback) {
     // save temp msg to db
-    SignallerDbManager.getInstance().saveChatMessageAsync(chatMessage);
+    DatabaseManager.getInstance().saveChatMessageAsync(chatMessage);
     // save to pending queue
-    SignallerSocketChatMessage socketChatMessage = new SignallerSocketChatMessage();
+    SocketChatMessage socketChatMessage = new SocketChatMessage();
     socketChatMessage.setRoomId(chatRoomId);
-    SignallerPayload payload = new SignallerPayload();
+    Payload payload = new Payload();
     payload.setTimestamp(chatMessage.getTimestamp());
     payload.setMessageCellIndex(messageRecyclerView.getItemCount() - 1);
     socketChatMessage.setPayloadJson(GsonUtils.getGson().toJson(payload));
     socketChatMessage.setPayloadModel(payload);
     socketChatMessage.setMessage(chatMessage);
-    SignallerDbManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
+    DatabaseManager.getInstance().addPendingChatMessageAsync(socketChatMessage, () -> {
       LogUtils.d("Saved chat msg to db and queue.");
       callback.onMessageSavedToDb(socketChatMessage);
     });
@@ -467,12 +467,12 @@ public class ChatRoomFragment extends RxFragment {
   }
 
   private void addImageMessage(Uri uri) {
-    SignallerChatMessage message = new SignallerChatMessage();
+    ChatMessage message = new ChatMessage();
     long time = System.currentTimeMillis();
     message.setMsgTime(time);
-    SignallerImage image = new SignallerImage();
+    Image image = new Image();
     ImageDimension dimension = ImageUtils.getImageDimensionFromUri(uri);
-    image.setAttributes(new SignallerImageAttribute(dimension.getWidth(), dimension.getHeight()));
+    image.setAttributes(new ImageAttribute(dimension.getWidth(), dimension.getHeight()));
     image.setUrl(uri.toString());
     message.setImage(image);
     message.setTimestamp(time);
@@ -485,8 +485,8 @@ public class ChatRoomFragment extends RxFragment {
     });
   }
 
-  private void uploadPhotoAndSendImageMsg(Uri uri, SignallerSocketChatMessage socketChatMessage) {
-    SignallerDataManager.getInstance().uploadPhoto(uri)
+  private void uploadPhotoAndSendImageMsg(Uri uri, SocketChatMessage socketChatMessage) {
+    DataManager.getInstance().uploadPhoto(uri)
       .subscribe(image -> {
           LogUtils.d("Photo uploaded: " + uri.toString());
           socketChatMessage.getMessage().setContent(image.getResourceId());
@@ -498,25 +498,25 @@ public class ChatRoomFragment extends RxFragment {
         });
   }
 
-  private void addOwnTextMessageCell(SignallerChatMessage message) {
+  private void addOwnTextMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(TEXT, message);
     messageRecyclerView.addCell(cell);
     scrollToBottom();
   }
 
-  private void addOwnImageMessageCell(SignallerChatMessage message) {
+  private void addOwnImageMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(IMAGE, message);
     messageRecyclerView.addCell(cell);
     scrollToBottom();
   }
 
-  private void addOtherTextMessageCell(SignallerChatMessage message) {
+  private void addOtherTextMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOtherChatMessageCell(TEXT, message);
     messageRecyclerView.addCell(cell);
     scrollToBottom();
   }
 
-  private void addOtherImageMessageCell(SignallerChatMessage message) {
+  private void addOtherImageMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOtherChatMessageCell(IMAGE, message);
     messageRecyclerView.addCell(cell);
     scrollToBottom();

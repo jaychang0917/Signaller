@@ -2,16 +2,16 @@ package com.redso.signaller.core;
 
 import android.content.Context;
 
-import com.redso.signaller.core.model.SignallerChatMessage;
-import com.redso.signaller.core.model.SignallerChatRoom;
-import com.redso.signaller.core.model.SignallerChatRoomInfo;
-import com.redso.signaller.core.model.SignallerImage;
-import com.redso.signaller.core.model.SignallerImageAttribute;
-import com.redso.signaller.core.model.SignallerPayload;
-import com.redso.signaller.core.model.SignallerProfilePhoto;
-import com.redso.signaller.core.model.SignallerReceiver;
-import com.redso.signaller.core.model.SignallerSender;
-import com.redso.signaller.core.model.SignallerSocketChatMessage;
+import com.redso.signaller.core.model.ChatMessage;
+import com.redso.signaller.core.model.ChatRoom;
+import com.redso.signaller.core.model.ChatRoomInfo;
+import com.redso.signaller.core.model.Image;
+import com.redso.signaller.core.model.ImageAttribute;
+import com.redso.signaller.core.model.Payload;
+import com.redso.signaller.core.model.ProfilePhoto;
+import com.redso.signaller.core.model.ChatReceiver;
+import com.redso.signaller.core.model.ChatSender;
+import com.redso.signaller.core.model.SocketChatMessage;
 import com.redso.signaller.util.LogUtils;
 
 import java.util.List;
@@ -22,17 +22,17 @@ import io.realm.RealmResults;
 import io.realm.Sort;
 import rx.Observable;
 
-public class SignallerDbManager {
+public class DatabaseManager {
 
-  private static final SignallerDbManager INSTANCE = new SignallerDbManager();
+  private static final DatabaseManager INSTANCE = new DatabaseManager();
   private static final int DB_VERSION = 1;
 
   private RealmConfiguration realmConfig;
 
-  private SignallerDbManager() {
+  private DatabaseManager() {
   }
 
-  public static SignallerDbManager getInstance() {
+  public static DatabaseManager getInstance() {
     return INSTANCE;
   }
 
@@ -41,7 +41,7 @@ public class SignallerDbManager {
 
     realmConfig = new RealmConfiguration.Builder()
       .schemaVersion(DB_VERSION)
-      .migration(new SignallerDbMigration())
+      .migration(new DatabaseMigration())
       .name("signaller.realm")
       .modules(new SignallerModule())
       .build();
@@ -53,32 +53,32 @@ public class SignallerDbManager {
 
   void clear() {
     getRealm().executeTransactionAsync(realm -> {
-      realm.delete(SignallerImage.class);
-      realm.delete(SignallerImageAttribute.class);
-      realm.delete(SignallerPayload.class);
-      realm.delete(SignallerProfilePhoto.class);
-      realm.delete(SignallerReceiver.class);
-      realm.delete(SignallerSender.class);
-      realm.delete(SignallerChatMessage.class);
-      realm.delete(SignallerChatRoomInfo.class);
-      realm.delete(SignallerChatRoom.class);
+      realm.delete(Image.class);
+      realm.delete(ImageAttribute.class);
+      realm.delete(Payload.class);
+      realm.delete(ProfilePhoto.class);
+      realm.delete(ChatReceiver.class);
+      realm.delete(ChatSender.class);
+      realm.delete(ChatMessage.class);
+      realm.delete(ChatRoomInfo.class);
+      realm.delete(ChatRoom.class);
     });
   }
 
   /**
    * chat message
    */
-  public Observable<RealmResults<SignallerSocketChatMessage>> getPendingChatMessages() {
+  public Observable<RealmResults<SocketChatMessage>> getPendingChatMessages() {
     Realm realm = getRealm();
 
     return Observable.just(
       realm
-        .where(SignallerSocketChatMessage.class)
+        .where(SocketChatMessage.class)
         .findAllSorted("timestamp", Sort.ASCENDING)
     ).doOnCompleted(realm::close);
   }
 
-  public void addPendingChatMessageAsync(SignallerSocketChatMessage msg, Realm.Transaction.OnSuccess callback) {
+  public void addPendingChatMessageAsync(SocketChatMessage msg, Realm.Transaction.OnSuccess callback) {
     getRealm().executeTransactionAsync(realm -> {
       msg.setTimestamp(msg.getPayloadModel().getTimestamp());
       realm.insertOrUpdate(msg);
@@ -87,7 +87,7 @@ public class SignallerDbManager {
 
   public void removePendingChatMsg(long timestamp) {
     getRealm().executeTransaction(realm -> {
-      SignallerSocketChatMessage msg = realm.where(SignallerSocketChatMessage.class)
+      SocketChatMessage msg = realm.where(SocketChatMessage.class)
         .equalTo("payloadModel.timestamp", timestamp).findFirst();
       if (msg != null) {
         msg.deleteFromRealm();
@@ -96,39 +96,39 @@ public class SignallerDbManager {
     });
   }
 
-  public Observable<RealmResults<SignallerChatMessage>> getChatMessages() {
+  public Observable<RealmResults<ChatMessage>> getChatMessages() {
     Realm realm = getRealm();
 
     return realm
-      .where(SignallerChatMessage.class)
+      .where(ChatMessage.class)
       .findAllSorted("mtime", Sort.DESCENDING)
       .asObservable()
       .doOnCompleted(realm::close);
   }
 
-  public SignallerChatMessage getChatMessage(String chatRoomId, String msgId) {
-    return getRealm().where(SignallerChatMessage.class)
+  public ChatMessage getChatMessage(String chatRoomId, String msgId) {
+    return getRealm().where(ChatMessage.class)
       .equalTo("chatroomId", chatRoomId)
       .equalTo("msgId", msgId)
       .findFirst();
   }
 
-  public void saveChatMessages(final List<SignallerChatMessage> chatMessages) {
+  public void saveChatMessages(final List<ChatMessage> chatMessages) {
     getRealm().executeTransaction(realm -> {
-      for (SignallerChatMessage chatMessage : chatMessages) {
+      for (ChatMessage chatMessage : chatMessages) {
         chatMessage.setSent(true);
       }
       realm.insertOrUpdate(chatMessages);
     });
   }
 
-  public void saveChatMessage(SignallerChatMessage msg) {
+  public void saveChatMessage(ChatMessage msg) {
     getRealm().executeTransaction(realm -> {
       realm.insertOrUpdate(msg);
     });
   }
 
-  public void saveChatMessageAsync(SignallerChatMessage msg) {
+  public void saveChatMessageAsync(ChatMessage msg) {
     getRealm().executeTransactionAsync(realm -> {
       realm.insertOrUpdate(msg);
     });
@@ -136,7 +136,7 @@ public class SignallerDbManager {
 
   public void removeTempChatMessage(long timestamp) {
     getRealm().executeTransaction(realm -> {
-      SignallerChatMessage msg = realm.where(SignallerChatMessage.class)
+      ChatMessage msg = realm.where(ChatMessage.class)
         .equalTo("timestamp", timestamp).findFirst();
       LogUtils.d("Try to remove temp chat msg:" + timestamp + " msg:" + msg);
       if (msg != null) {
@@ -149,15 +149,15 @@ public class SignallerDbManager {
   /**
    * chat room
    */
-  public void saveChatRooms(final List<SignallerChatRoom> chatRooms) {
+  public void saveChatRooms(final List<ChatRoom> chatRooms) {
     getRealm().executeTransaction(realm -> {
       realm.insertOrUpdate(chatRooms);
     });
   }
 
-  public void updateChatRoom(String roomId, SignallerChatMessage lastMsg, boolean dontIncreaseUnreadCount) {
+  public void updateChatRoom(String roomId, ChatMessage lastMsg, boolean dontIncreaseUnreadCount) {
     getRealm().executeTransaction(realm -> {
-      SignallerChatRoom chatRoom = realm.where(SignallerChatRoom.class)
+      ChatRoom chatRoom = realm.where(ChatRoom.class)
         .equalTo("chatRoomId", roomId).findFirst();
       if (chatRoom != null) {
         if (!lastMsg.isOwnMessage() && !dontIncreaseUnreadCount) {
@@ -168,11 +168,11 @@ public class SignallerDbManager {
     });
   }
 
-  public Observable<List<SignallerChatRoom>> getChatRooms() {
+  public Observable<List<ChatRoom>> getChatRooms() {
     Realm realm = getRealm();
 
     return realm
-      .where(SignallerChatRoom.class)
+      .where(ChatRoom.class)
       .findAllSortedAsync("lastUpdateTime", Sort.DESCENDING)
       .asObservable()
       .filter(RealmResults::isLoaded)
@@ -180,17 +180,17 @@ public class SignallerDbManager {
       .first();
   }
 
-  public SignallerChatRoom getChatRoom(String chatRoomId) {
-    return getRealm().where(SignallerChatRoom.class).equalTo("chatRoomId", chatRoomId).findFirst();
+  public ChatRoom getChatRoom(String chatRoomId) {
+    return getRealm().where(ChatRoom.class).equalTo("chatRoomId", chatRoomId).findFirst();
   }
 
-  public SignallerReceiver getReceiver(String userId) {
-    return getRealm().where(SignallerReceiver.class).equalTo("userId", userId).findFirst();
+  public ChatReceiver getReceiver(String userId) {
+    return getRealm().where(ChatReceiver.class).equalTo("userId", userId).findFirst();
   }
 
   public void clearUnreadMessageCount(String chatRoomId) {
     getRealm().executeTransactionAsync(realm -> {
-      SignallerChatRoom chatRoom = realm.where(SignallerChatRoom.class).equalTo("chatRoomId", chatRoomId).findFirst();
+      ChatRoom chatRoom = realm.where(ChatRoom.class).equalTo("chatRoomId", chatRoomId).findFirst();
       if (chatRoom != null) {
         chatRoom.setUnreadCount(0);
       }

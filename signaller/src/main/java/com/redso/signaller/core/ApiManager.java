@@ -18,10 +18,10 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class SignallerApiManager {
+class ApiManager {
 
   private static final String BASE_URL;
-  private static SignallerApi api;
+  private static Api api;
 
   static {
     BASE_URL = Signaller.getInstance().getAppConfig().getServerDomain();
@@ -29,7 +29,7 @@ public class SignallerApiManager {
   }
 
   private static void setup() {
-    api = createRetrofit(createOkHttpClient(), GsonUtils.getGson()).create(SignallerApi.class);
+    api = createRetrofit(createOkHttpClient(), GsonUtils.getGson()).create(Api.class);
   }
 
   private static OkHttpClient createOkHttpClient() {
@@ -67,7 +67,7 @@ public class SignallerApiManager {
     return retrofitBuilder.build();
   }
 
-  public static SignallerApi getApi() {
+  public static Api getApi() {
     return api;
   }
 

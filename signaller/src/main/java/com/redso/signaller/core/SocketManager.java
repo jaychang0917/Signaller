@@ -3,10 +3,9 @@ package com.redso.signaller.core;
 import android.os.Handler;
 import android.os.Looper;
 
+import com.redso.signaller.core.model.Payload;
 import com.redso.signaller.core.model.PushNotification;
-import com.redso.signaller.core.model.SignallerChatMessage;
-import com.redso.signaller.core.model.SignallerPayload;
-import com.redso.signaller.core.model.SignallerSocketChatMessage;
+import com.redso.signaller.core.model.SocketChatMessage;
 import com.redso.signaller.core.push.SignallerPushNotificationManager;
 import com.redso.signaller.util.GsonUtils;
 import com.redso.signaller.util.LogUtils;
@@ -137,7 +136,7 @@ public class SocketManager {
     socket.off(RECEIVE_MESSAGE);
   }
 
-  public void send(SignallerSocketChatMessage message) {
+  public void send(SocketChatMessage message) {
     try {
       JSONObject chatMsgObj = new JSONObject();
       chatMsgObj.put("room_id", message.getRoomId());
@@ -190,112 +189,112 @@ public class SocketManager {
   private Emitter.Listener onConnect = args -> {
     LogUtils.d("onConnect");
     connectionEmitter.onNext(CONNECT);
-    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectEvent());
+    EventBus.getDefault().postSticky(new Events.OnSocketConnectEvent());
   };
 
   private Emitter.Listener onConnecting = args -> {
     LogUtils.d("onConnecting");
     connectionEmitter.onNext(CONNECTING);
-    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectingEvent());
+    EventBus.getDefault().postSticky(new Events.OnSocketConnectingEvent());
   };
 
   private Emitter.Listener onConnected = args -> {
     LogUtils.d("onConnected");
     connectionEmitter.onNext(CONNECTED);
-    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketConnectedEvent());
-    sendPendingChatMsg();
+    EventBus.getDefault().postSticky(new Events.OnSocketConnectedEvent());
+    // todo resent fail msg
+    //sendPendingChatMsg();
   };
 
   private Emitter.Listener onDisconnected = args -> {
     // todo SocketIO BUG, no callback received
     LogUtils.d("onDisconnected");
     connectionEmitter.onNext(DISCONNECTED);
-    EventBus.getDefault().postSticky(new SignallerEvents.OnSocketDisconnectedEvent());
+    EventBus.getDefault().postSticky(new Events.OnSocketDisconnectedEvent());
   };
 
   private Emitter.Listener onMsgReceived = args -> {
-    SignallerSocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SignallerSocketChatMessage.class);
+    SocketChatMessage socketChatMessage = GsonUtils.getGson().fromJson(args[0].toString(), SocketChatMessage.class);
     LogUtils.d("Message is sent / received: " + socketChatMessage.getMessage());
     insertOrUpdateChatMsgInDb(socketChatMessage);
     updateChatRoomInDb(socketChatMessage);
     dispatchMsgEvents(socketChatMessage);
   };
 
-  private void insertOrUpdateChatMsgInDb(SignallerSocketChatMessage socketChatMessage) {
+  private void insertOrUpdateChatMsgInDb(SocketChatMessage socketChatMessage) {
     // update own just sent msg
-    if (socketChatMessage.getPayloadJson() != null && socketChatMessage.getPayloadJson().length() > 0 && socketChatMessage.getMessage().isOwnMessage()) {
-      SignallerPayload payload = GsonUtils.getGson().fromJson(socketChatMessage.getPayloadJson(), SignallerPayload.class);
+    if (isSendByMe(socketChatMessage)) {
+      Payload payload = GsonUtils.getGson().fromJson(socketChatMessage.getPayloadJson(), Payload.class);
       long timestamp = payload.getTimestamp();
       // remove temp msg
-      SignallerDbManager.getInstance().removeTempChatMessage(timestamp);
+      DatabaseManager.getInstance().removeTempChatMessage(timestamp);
       // save real msg with local timestamp
       socketChatMessage.getMessage().setSent(true);
       socketChatMessage.getMessage().setMsgTime(timestamp);
-      SignallerDbManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
+      DatabaseManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
       // remove msg from pending queue
-      SignallerDbManager.getInstance().removePendingChatMsg(timestamp);
-      // notify msg is sent if in the same chat room
-      boolean isInSameChatRoom = UserData.getInstance().isInChatRoomPage() &&
-        UserData.getInstance().getCurrentChatRoomId().equals(socketChatMessage.getRoomId());
-      int messageCellIndex = payload.getMessageCellIndex();
-      if (isInSameChatRoom) {
-        LogUtils.d(String.format("Notify message cell (%1$s) to update.", socketChatMessage.getMessage()));
-        EventBus.getDefault().postSticky(new SignallerEvents.OnMsgSentEvent(socketChatMessage.getMessage(), messageCellIndex));
-      }
+      DatabaseManager.getInstance().removePendingChatMsg(timestamp);
     }
     // save another received msg
     else {
-      SignallerDbManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
+      DatabaseManager.getInstance().saveChatMessage(socketChatMessage.getMessage());
     }
   }
 
-  private void updateChatRoomInDb(SignallerSocketChatMessage socketChatMessage) {
+  private boolean isSendByMe(SocketChatMessage socketChatMessage) {
+    return socketChatMessage.getPayloadJson() != null && socketChatMessage.getPayloadJson().length() > 0 && socketChatMessage.getMessage().isOwnMessage();
+  }
+
+  private void updateChatRoomInDb(SocketChatMessage socketChatMessage) {
     // if in the same chat room now, don't increase unread count
     boolean dontIncreaseUnreadCount = UserData.getInstance().isInChatRoomPage() &&
       UserData.getInstance().getCurrentChatRoomId().equals(socketChatMessage.getRoomId());
 
-    SignallerDbManager.getInstance().updateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage(), dontIncreaseUnreadCount);
+    DatabaseManager.getInstance().updateChatRoom(socketChatMessage.getRoomId(), socketChatMessage.getMessage(), dontIncreaseUnreadCount);
   }
 
-  private void dispatchMsgEvents(SignallerSocketChatMessage socketChatMessage) {
-    SignallerChatMessage chatMessage = socketChatMessage.getMessage();
+  private void dispatchMsgEvents(SocketChatMessage socketChatMessage) {
+    // todo if socketChatMessage is a resent msg, no event, return directly
+
     String chatRoomId = socketChatMessage.getRoomId();
-    String senderId = socketChatMessage.getMessage().getSender().getUserId();
-    String senderName = socketChatMessage.getMessage().getSender().getName();
-    String msgId = chatMessage.getMsgId();
-    String message = chatMessage.getContent();
-    String msgType = chatMessage.getType();
-    PushNotification pushNotification = new PushNotification(message, chatRoomId, senderId, senderName, msgType, msgId);
+    String msgId = socketChatMessage.getMessage().getMsgId();
+    PushNotification pushNotification = PushNotification.from(socketChatMessage);
 
     if (UserData.getInstance().isInChatRoomPage()) {
       boolean isInSameChatRoom = UserData.getInstance().getCurrentChatRoomId().equals(chatRoomId);
       if (isInSameChatRoom) {
-        EventBus.getDefault().postSticky(new SignallerEvents.OnMsgReceivedEvent(chatRoomId, msgId));
-        EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId, false));
+        if (isSendByMe(socketChatMessage)) {
+          Payload payload = GsonUtils.getGson().fromJson(socketChatMessage.getPayloadJson(), Payload.class);
+          int messageCellIndex = payload.getMessageCellIndex();
+          LogUtils.d(String.format("Notify message cell (%1$s) to update.", socketChatMessage.getMessage()));
+          EventBus.getDefault().postSticky(new Events.OnMsgSentEvent(socketChatMessage.getMessage(), messageCellIndex));
+        } else {
+          EventBus.getDefault().postSticky(new Events.OnMsgReceivedEvent(chatRoomId, msgId));
+        }
+        EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId, false));
       } else {
         SignallerPushNotificationManager.showNotification(pushNotification);
-        EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
+        EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
       }
     } else {
-      EventBus.getDefault().postSticky(new SignallerEvents.UpdateChatRoomListEvent(chatRoomId));
+      EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
       SignallerPushNotificationManager.showNotification(pushNotification);
     }
   }
 
-  // todo send multiple times
   private void sendPendingChatMsg() {
-//    SignallerDbManager.getInstance().getPendingChatMessages()
-//      .subscribe(
-//        pendingChatMessages -> {
-//          for (SignallerSocketChatMessage pendingChatMessage : pendingChatMessages) {
-//            send(pendingChatMessage);
-//            LogUtils.d("sent pending chat message:" + pendingChatMessage.getMessage());
-//          }
-//        },
-//        error -> {
-//          LogUtils.e("sendPendingChatMsg:" + error.getMessage());
-//        }
-//      );
+    DatabaseManager.getInstance().getPendingChatMessages()
+      .subscribe(
+        pendingChatMessages -> {
+          for (SocketChatMessage pendingChatMessage : pendingChatMessages) {
+            send(pendingChatMessage);
+            LogUtils.d("Try to resent pending chat message: " + pendingChatMessage.getMessage());
+          }
+        },
+        error -> {
+          LogUtils.e("Fail to resent pending chat message: " + error.getMessage());
+        }
+      );
   }
 
 }

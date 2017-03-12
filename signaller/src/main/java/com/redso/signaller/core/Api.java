@@ -3,7 +3,7 @@ package com.redso.signaller.core;
 
 import com.redso.signaller.core.model.ChatMessageResponse;
 import com.redso.signaller.core.model.ChatRoomResponse;
-import com.redso.signaller.core.model.SignallerImage;
+import com.redso.signaller.core.model.Image;
 
 import okhttp3.MultipartBody;
 import retrofit2.http.GET;
@@ -15,7 +15,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 import rx.Observable;
 
-public interface SignallerApi {
+interface Api {
 
   @GET("api/chats")
   Observable<ChatRoomResponse> getChatRooms(@Query("cursor") String cursor,
@@ -28,7 +28,7 @@ public interface SignallerApi {
 
   @POST("/api/resources/images")
   @Multipart
-  Observable<SignallerImage> uploadPhoto(@Part MultipartBody.Part file);
+  Observable<Image> uploadPhoto(@Part MultipartBody.Part file);
 
   @PUT("api/chatrooms/{room_id}/count")
   Observable<Void> clearUnreadCount(@Path("room_id") String roomId,
