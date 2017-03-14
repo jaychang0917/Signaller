@@ -86,7 +86,7 @@ public final class Signaller {
     ChatRoomMeta.getInstance().clear();
   }
 
-  public void chatWith(Context context, String userId, String toolbarTitle) {
+  public void chatWith(Context context, String receiverId, String toolbarTitle) {
     if (!SocketManager.getInstance().isConnected()) {
       SocketManager.getInstance().connect(new SocketConnectionCallbacks() {
         @Override
@@ -94,21 +94,21 @@ public final class Signaller {
           if (context == null) {
             return;
           }
-          chatWithInternal(context, userId, toolbarTitle);
+          chatWithInternal(context, receiverId, toolbarTitle);
         }
       });
     } else {
-      chatWithInternal(context, userId, toolbarTitle);
+      chatWithInternal(context, receiverId, toolbarTitle);
     }
   }
 
-  private void chatWithInternal(Context context, String userId, String toolbarTitle) {
+  private void chatWithInternal(Context context, String receiverId, String toolbarTitle) {
     String ownUserId = UserData.getInstance().getUserId();
-    String chatRoomId = ownUserId.compareTo(userId) < 0 ?
-      ownUserId + "_" + userId :
-      userId + "_" + ownUserId;
+    String chatRoomId = ownUserId.compareTo(receiverId) < 0 ?
+      ownUserId + "_" + receiverId :
+      receiverId + "_" + ownUserId;
 
-    SocketManager.getInstance().join(userId, chatRoomId, new ChatRoomJoinCallback() {
+    SocketManager.getInstance().join(receiverId, chatRoomId, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId, String userId) {
         ChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
