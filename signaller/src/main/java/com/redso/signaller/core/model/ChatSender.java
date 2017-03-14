@@ -10,8 +10,8 @@ public class ChatSender extends RealmObject {
   @PrimaryKey
   @SerializedName("id")
   private String userId;
-  @SerializedName("is_brand")
-  private boolean isBrand;
+  @SerializedName("type")
+  private String type;
   @SerializedName("image_url")
   private String imageUrl;
   @SerializedName("name")
@@ -24,14 +24,6 @@ public class ChatSender extends RealmObject {
 
   public void setUserId(String userId) {
     this.userId = userId;
-  }
-
-  public boolean isBrand() {
-    return isBrand;
-  }
-
-  public void setBrand(boolean brand) {
-    isBrand = brand;
   }
 
   public String getImageUrl() {
@@ -48,6 +40,14 @@ public class ChatSender extends RealmObject {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
   }
   //endregion
 
