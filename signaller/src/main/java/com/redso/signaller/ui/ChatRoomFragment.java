@@ -416,18 +416,9 @@ public class ChatRoomFragment extends RxFragment {
       }
     };
 
-    if (chatRoomPhotoPickerThemeColor != 0) {
-      NPhotoPicker.with(getContext())
-        .toolbarColor(chatRoomPhotoPickerThemeColor)
-        .statusBarColor(chatRoomPhotoPickerThemeColor)
-        .selectedBorderColor(chatRoomPhotoPickerThemeColor)
-        .pickSinglePhotoFromAlbum()
-        .subscribe(subscriber);
-    } else {
-      NPhotoPicker.with(getContext())
-        .pickSinglePhotoFromAlbum()
-        .subscribe(subscriber);
-    }
+    NPhotoPicker.with(getContext())
+      .takePhotoFromCamera()
+      .subscribe(subscriber);
   }
 
   private void addTextMessage() {
