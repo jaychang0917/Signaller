@@ -217,6 +217,7 @@ public class ChatRoomFragment extends RxFragment {
   private void monitorNetworkState() {
     NetworkStateMonitor.getInstance()
       .monitor(getContext())
+      .compose(bindToLifecycle())
       .subscribe(networkState -> {
         handleInput();
       });
