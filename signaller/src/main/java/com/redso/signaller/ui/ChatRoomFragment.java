@@ -414,7 +414,7 @@ public class ChatRoomFragment extends RxFragment {
       .toolbarColor(themeColor)
       .statusBarColor(themeColor)
       .selectedBorderColor(themeColor)
-      .pickSinglePhotoFromAlbum()
+      .pickSinglePhoto()
       .subscribe(uri -> {
         sendPhotoMessage(uri);
       }, error -> {
@@ -479,6 +479,7 @@ public class ChatRoomFragment extends RxFragment {
   }
 
   private void uploadPhotoAndSendImageMsg(Uri uri, SocketChatMessage socketChatMessage) {
+    LogUtils.d("Trying to upload photo: " + uri.toString());
     DataManager.getInstance().uploadPhoto(uri)
       .subscribe(image -> {
           LogUtils.d("Photo uploaded: " + uri.toString());

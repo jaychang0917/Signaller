@@ -68,7 +68,7 @@ public class ChatRoomActivity extends AppCompatActivity {
 
   private void showCustomPhotoPicker() {
     NPhotoPicker.with(this)
-      .pickSinglePhotoFromAlbum()
+      .pickSinglePhoto()
       .subscribe(uri -> {
         // Send the picked photo
         chatRoomFragment.sendPhotoMessage(uri);
