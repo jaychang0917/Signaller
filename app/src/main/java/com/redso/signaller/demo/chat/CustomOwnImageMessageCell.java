@@ -46,7 +46,9 @@ public class CustomOwnImageMessageCell extends ChatMessageCell<CustomOwnImageMes
       .into(viewHolder.imageView);
 
     viewHolder.imageView.setOnClickListener(v -> {
-      context.startActivity(new Intent(context, PhotoViewerActivity.class));
+      Intent intent = new Intent(context, PhotoViewerActivity.class);
+      intent.putExtra(PhotoViewerActivity.EXTRA_IMAGE_URL, chatMessage.getImage().getUrl());
+      context.startActivity(intent);
     });
   }
 
