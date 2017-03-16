@@ -120,6 +120,19 @@ public final class Signaller {
     SocketManager.getInstance().leave(chatRoomId, callback);
   }
 
+  public void getUnreadMessageCount(ChatRoomMetaCallback callback) {
+    DataManager.getInstance().getChatRoomsFromNetwork(null)
+      .subscribe(
+        rooms -> {
+          int totalUnreadCount = ChatRoomMeta.getInstance().getTotalUnreadCount();
+          callback.onChatRoomMetaReady(totalUnreadCount);
+          LogUtils.d("Unread message count: " + totalUnreadCount);
+        },
+        error -> {
+          LogUtils.e("Fail to get unread message count: " + error.getMessage());
+        });
+  }
+
   public Context getAppContext() {
     return appContext;
   }
@@ -135,19 +148,6 @@ public final class Signaller {
   public void setDebugEnabled(boolean enable) {
     LogUtils.setEnable(enable);
     StethoUtils.setEnable(enable);
-  }
-
-  public void getUnreadMessageCount(ChatRoomMetaCallback callback) {
-    DataManager.getInstance().getChatRoomsFromNetwork(null)
-      .subscribe(
-        rooms -> {
-          int totalUnreadCount = ChatRoomMeta.getInstance().getTotalUnreadCount();
-          callback.onChatRoomMetaReady(totalUnreadCount);
-          LogUtils.d("Unread message count: " + totalUnreadCount);
-        },
-        error -> {
-          LogUtils.e("Fail to get unread message count: " + error.getMessage());
-        });
   }
 
 }

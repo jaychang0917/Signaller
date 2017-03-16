@@ -8,7 +8,7 @@ import android.view.View;
 import com.ogaclejapan.smarttablayout.SmartTabLayout;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
-import com.redso.signaller.demo.ChatRoomsFragment;
+import com.redso.signaller.demo.ChatsFragment;
 import com.redso.signaller.demo.OtherFragment;
 import com.redso.signaller.demo.PeopleFragment;
 import com.redso.signaller.demo.R;
@@ -26,7 +26,7 @@ public class BottomTabManager {
 
   private enum Tab {
     TAB1(R.string.people, PeopleFragment.class),
-    CHAT(R.string.chatRoom, ChatRoomsFragment.class),
+    CHAT(R.string.chatRoom, ChatsFragment.class),
     TAB3(R.string.other, OtherFragment.class),
     TAB4(R.string.other, OtherFragment.class);
 

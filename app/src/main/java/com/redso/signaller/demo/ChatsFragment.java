@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import com.redso.signaller.demo.widget.BottomTabManager;
 import com.redso.signaller.ui.ChatRoomListFragment;
 
-public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTabSelectListener {
+public class ChatsFragment extends Fragment implements BottomTabManager.OnTabSelectListener {
 
   @Nullable
   @Override
@@ -25,9 +25,8 @@ public class ChatRoomsFragment extends Fragment implements BottomTabManager.OnTa
   }
 
   public void init() {
-    ChatRoomListFragment fragment = ChatRoomListFragment.newInstance();
     getChildFragmentManager().beginTransaction()
-      .replace(R.id.chatRoomListFragment, fragment)
+      .replace(R.id.chatRoomListFragment, ChatRoomListFragment.newInstance())
       .commitNow();
   }
 

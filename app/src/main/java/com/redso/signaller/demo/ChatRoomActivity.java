@@ -8,17 +8,20 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
+import com.jaychang.npp.NPhotoPicker;
 import com.redso.signaller.core.Signaller;
 import com.redso.signaller.ui.ChatRoomFragment;
+import com.redso.signaller.util.LogUtils;
 
 public class ChatRoomActivity extends AppCompatActivity {
 
   public static final String EXTRA_CHAT_ROOM_ID = "EXTRA_CHAT_ROOM_ID";
   public static final String EXTRA_CHAT_ID = "EXTRA_CHAT_ID";
   public static final String EXTRA_TITLE = "EXTRA_TITLE";
+  private ChatRoomFragment chatRoomFragment;
 
   public static void start(Context context, String chatRoomId, String chatId, String toolbarTitle) {
-    Intent intent = new Intent(context, com.redso.signaller.ui.ChatRoomActivity.class);
+    Intent intent = new Intent(context, ChatRoomActivity.class);
     intent.putExtra(EXTRA_CHAT_ROOM_ID, chatRoomId);
     intent.putExtra(EXTRA_CHAT_ID, chatId);
     intent.putExtra(EXTRA_TITLE, toolbarTitle);
@@ -54,9 +57,24 @@ public class ChatRoomActivity extends AppCompatActivity {
     String chatRoomId = intent.getStringExtra(EXTRA_CHAT_ROOM_ID);
     String chatId = intent.getStringExtra(EXTRA_CHAT_ID);
 
+    chatRoomFragment = ChatRoomFragment.newInstance(chatId, chatRoomId);
+    // Set your custom action when photo icon is clicked
+    chatRoomFragment.setPickPhotoCallback(this::showCustomPhotoPicker);
+
     getSupportFragmentManager().beginTransaction()
-      .replace(com.redso.signaller.R.id.messageFragmentContainer, ChatRoomFragment.newInstance(chatId, chatRoomId))
+      .replace(R.id.messageFragmentContainer, chatRoomFragment)
       .commitNow();
+  }
+
+  private void showCustomPhotoPicker() {
+    NPhotoPicker.with(this)
+      .pickSinglePhotoFromAlbum()
+      .subscribe(uri -> {
+        // Send the picked photo
+        chatRoomFragment.sendPhotoMessage(uri);
+      }, error -> {
+        LogUtils.e("Fail to show photo picker:" + error.getMessage());
+      });
   }
 
   @Override

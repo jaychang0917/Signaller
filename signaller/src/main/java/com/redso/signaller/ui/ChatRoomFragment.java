@@ -19,11 +19,11 @@ import com.jaychang.utils.ImageDimension;
 import com.jaychang.utils.ImageUtils;
 import com.jaychang.utils.SimpleTextChangedListener;
 import com.redso.signaller.R;
-import com.redso.signaller.core.NetworkStateMonitor;
-import com.redso.signaller.core.Signaller;
 import com.redso.signaller.core.DataManager;
 import com.redso.signaller.core.DatabaseManager;
 import com.redso.signaller.core.Events;
+import com.redso.signaller.core.NetworkStateMonitor;
+import com.redso.signaller.core.Signaller;
 import com.redso.signaller.core.SocketManager;
 import com.redso.signaller.core.UserData;
 import com.redso.signaller.core.model.ChatMessage;
@@ -46,8 +46,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import rx.Subscriber;
-
 import static com.redso.signaller.ui.ChatMessageType.IMAGE;
 import static com.redso.signaller.ui.ChatMessageType.TEXT;
 
@@ -56,6 +54,10 @@ public class ChatRoomFragment extends RxFragment {
 
   interface MessageCallback {
     void onMessageSavedToDb(SocketChatMessage message);
+  }
+
+  public interface PickPhotoCallback {
+    void onPickPhoto();
   }
 
   public static final String EXTRA_CHAT_ID = "EXTRA_CHAT_ID";
@@ -77,6 +79,7 @@ public class ChatRoomFragment extends RxFragment {
   private int chatRoomEmptyStateViewRes;
   private View chatRoomEmptyStateView;
   private int chatRoomBackgroundRes;
+  private PickPhotoCallback pickPhotoCallback;
 
   private String chatId;
   private String chatRoomId;
@@ -196,11 +199,15 @@ public class ChatRoomFragment extends RxFragment {
     }
 
     photoIconView.setOnClickListener(view -> {
-      showPhotoPicker();
+      if (pickPhotoCallback != null) {
+        pickPhotoCallback.onPickPhoto();
+      } else {
+        showDefaultPhotoPicker();
+      }
     });
 
     sendMsgView.setOnClickListener(view -> {
-      addTextMessage();
+      sendTextMessage();
     });
 
     messageInputViewPlaceholder.addView(messageInputView);
@@ -399,38 +406,23 @@ public class ChatRoomFragment extends RxFragment {
     emojiPopup.toggle();
   }
 
-  private void showPhotoPicker() {
-    Subscriber<Uri> subscriber = new Subscriber<Uri>() {
-      @Override
-      public void onCompleted() {
-      }
+  private void showDefaultPhotoPicker() {
+    int themeColor = chatRoomPhotoPickerThemeColor != 0 ?
+      chatRoomPhotoPickerThemeColor : android.R.color.background_dark;
 
-      @Override
-      public void onError(Throwable error) {
+    NPhotoPicker.with(getContext())
+      .toolbarColor(themeColor)
+      .statusBarColor(themeColor)
+      .selectedBorderColor(themeColor)
+      .pickSinglePhotoFromAlbum()
+      .subscribe(uri -> {
+        sendPhotoMessage(uri);
+      }, error -> {
         LogUtils.e("Fail to show photo picker:" + error.getMessage());
-      }
-
-      @Override
-      public void onNext(Uri uri) {
-        addImageMessage(uri);
-      }
-    };
-
-    if (chatRoomPhotoPickerThemeColor != 0) {
-      NPhotoPicker.with(getContext())
-        .toolbarColor(chatRoomPhotoPickerThemeColor)
-        .statusBarColor(chatRoomPhotoPickerThemeColor)
-        .selectedBorderColor(chatRoomPhotoPickerThemeColor)
-        .pickSinglePhotoFromAlbum()
-        .subscribe(subscriber);
-    } else {
-      NPhotoPicker.with(getContext())
-        .pickSinglePhotoFromAlbum()
-        .subscribe(subscriber);
-    }
+      });
   }
 
-  private void addTextMessage() {
+  public void sendTextMessage() {
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setTimestamp(System.currentTimeMillis());
     chatMessage.setType("text");
@@ -467,7 +459,7 @@ public class ChatRoomFragment extends RxFragment {
     inputEditText.setText("");
   }
 
-  private void addImageMessage(Uri uri) {
+  public void sendPhotoMessage(Uri uri) {
     ChatMessage message = new ChatMessage();
     long time = System.currentTimeMillis();
     message.setMsgTime(time);
@@ -480,7 +472,7 @@ public class ChatRoomFragment extends RxFragment {
     message.setType("image");
     message.setSent(false);
 
-    addOwnImageMessageCell(message);
+    addOwnPhotoMessageCell(message);
     addChatMessageToDb(message, socketChatMessage -> {
       uploadPhotoAndSendImageMsg(uri, socketChatMessage);
     });
@@ -505,7 +497,7 @@ public class ChatRoomFragment extends RxFragment {
     scrollToBottom();
   }
 
-  private void addOwnImageMessageCell(ChatMessage message) {
+  private void addOwnPhotoMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(IMAGE, message);
     messageRecyclerView.addCell(cell);
     scrollToBottom();
@@ -534,14 +526,8 @@ public class ChatRoomFragment extends RxFragment {
     }
   }
 
-//  @Override
-//  public void onBackPressed() {
-//    super.onBackPressed();
-//    if (isTaskRoot()) {
-//      TaskStackBuilder.create(this)
-//        .addNextIntentWithParentStack(new Intent(this, Signaller.getInstance().getAppConfig().getPushNotificationParentStack()))
-//        .startActivities();
-//    }
-//  }
+  public void setPickPhotoCallback(PickPhotoCallback pickPhotoCallback) {
+    this.pickPhotoCallback = pickPhotoCallback;
+  }
 
 }
