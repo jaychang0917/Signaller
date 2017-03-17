@@ -2,16 +2,16 @@ package com.redso.signaller.core;
 
 public abstract class SocketConnectionCallbacks {
 
-  void onConnect() {
+  public void onConnect() {
   }
 
-  void onConnecting() {
+  public void onConnecting() {
   }
 
-  void onConnected() {
+  public void onConnected() {
   }
 
-  void onDisconnected() {
+  public void onDisconnected() {
   }
 
 }
