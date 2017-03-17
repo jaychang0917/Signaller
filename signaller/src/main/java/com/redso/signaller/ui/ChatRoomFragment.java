@@ -335,6 +335,13 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
   }
 
   private void updateChatMessage(int messageCellIndex, ChatMessage message) {
+    // if the OnMsgSentEvent come back when re-enter chat room (send photo -> back -> come back),
+    // since the data is not sync with server,
+    // the messageCellIndex may lager than data's size, then we ignore updating it.
+    if (messageCellIndex >= messageRecyclerView.getItemCount()) {
+      return;
+    }
+
     ChatMessageCell cell = (ChatMessageCell) messageRecyclerView.getCell(messageCellIndex);
     if (cell != null) {
       cell.setChatMessage(message);

@@ -273,12 +273,16 @@ public class SocketManager {
         }
         EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId, false));
       } else {
-        SignallerPushNotificationManager.showNotification(pushNotification);
+        if (!isSendByMe(socketChatMessage)) {
+          SignallerPushNotificationManager.showNotification(pushNotification);
+        }
         EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
       }
     } else {
       EventBus.getDefault().postSticky(new Events.UpdateChatRoomListEvent(chatRoomId));
-      SignallerPushNotificationManager.showNotification(pushNotification);
+      if (!isSendByMe(socketChatMessage)) {
+        SignallerPushNotificationManager.showNotification(pushNotification);
+      }
     }
   }
 
