@@ -118,6 +118,10 @@ public final class Signaller {
     });
   }
 
+  private void joinChatRoom(Context context, String chatRoomId, String toolbarTitle) {
+    SocketManager.getInstance().join(chatRoomId, chatRoomId, null);
+  }
+
   public void sendPhotoMessage(Uri uri) throws IllegalStateException {
     ChatRoomFragmentProxy proxy = ProxyManager.getInstance().getChatRoomFragmentProxy();
     if (proxy == null) {
