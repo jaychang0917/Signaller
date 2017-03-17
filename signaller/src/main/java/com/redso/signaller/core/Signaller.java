@@ -65,15 +65,19 @@ public final class Signaller {
     return pushNotificationSenderId != null && !pushNotificationSenderId.isEmpty();
   }
 
-  public void connect(String accessToken, String userId) {
+  public void connect(String accessToken, String userId, SocketConnectionCallbacks callbacks) {
     UserData.getInstance().setAccessToken(accessToken);
     UserData.getInstance().setUserId(userId);
     SocketManager.getInstance().initSocket(accessToken);
-    SocketManager.getInstance().connect();
+    SocketManager.getInstance().connect(callbacks);
     registerAppCallback(app);
     if (isPushNotificationEnabled()) {
       SignallerGcmManager.register(appContext);
     }
+  }
+
+  public void connect(String accessToken, String userId) {
+    connect(accessToken, userId, null);
   }
 
   public void disconnect() {
