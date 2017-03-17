@@ -118,7 +118,7 @@ public final class Signaller {
     });
   }
 
-  private void joinChatRoom(Context context, String chatRoomId, String toolbarTitle) {
+  public void joinChatRoom(Context context, String chatRoomId, String toolbarTitle) {
     SocketManager.getInstance().join(chatRoomId, chatRoomId, null);
   }
 
