@@ -2,10 +2,12 @@ package com.redso.signaller.core;
 
 import android.app.Application;
 import android.content.Context;
+import android.net.Uri;
 
 import com.jaychang.utils.AppStatusUtils;
 import com.redso.signaller.core.push.SignallerGcmManager;
 import com.redso.signaller.ui.ChatRoomActivity;
+import com.redso.signaller.ui.ChatRoomFragmentProxy;
 import com.redso.signaller.ui.UIConfig;
 import com.redso.signaller.util.LogUtils;
 import com.redso.signaller.util.StethoUtils;
@@ -114,6 +116,24 @@ public final class Signaller {
         ChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
       }
     });
+  }
+
+  public void sendPhotoMessage(Uri uri) throws IllegalStateException {
+    ChatRoomFragmentProxy proxy = ProxyManager.getInstance().getChatRoomFragmentProxy();
+    if (proxy == null) {
+      throw new IllegalStateException("You must call this method when you are in chat room page.");
+    }
+
+    proxy.sendPhotoMessage(uri);
+  }
+
+  public void sendTextMessage(String message) throws IllegalStateException {
+    ChatRoomFragmentProxy proxy = ProxyManager.getInstance().getChatRoomFragmentProxy();
+    if (proxy == null) {
+      throw new IllegalStateException("You must call this method when you are in chat room page.");
+    }
+
+    proxy.sendTextMessage(message);
   }
 
   public void leaveChatRoom(String chatRoomId, ChatRoomLeaveCallback callback) {

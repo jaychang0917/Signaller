@@ -23,6 +23,7 @@ import com.redso.signaller.core.DataManager;
 import com.redso.signaller.core.DatabaseManager;
 import com.redso.signaller.core.Events;
 import com.redso.signaller.core.NetworkStateMonitor;
+import com.redso.signaller.core.ProxyManager;
 import com.redso.signaller.core.Signaller;
 import com.redso.signaller.core.SocketManager;
 import com.redso.signaller.core.UserData;
@@ -50,7 +51,7 @@ import static com.redso.signaller.ui.ChatMessageType.IMAGE;
 import static com.redso.signaller.ui.ChatMessageType.TEXT;
 
 
-public class ChatRoomFragment extends RxFragment {
+public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
 
   interface MessageCallback {
     void onMessageSavedToDb(SocketChatMessage message);
@@ -107,6 +108,13 @@ public class ChatRoomFragment extends RxFragment {
     super.onViewCreated(view, savedInstanceState);
     init();
     loadChatMessages();
+    ProxyManager.getInstance().setChatRoomFragmentProxy(new ChatRoomFragmentProxy(this));
+  }
+
+  @Override
+  public void onDestroy() {
+    super.onDestroy();
+    ProxyManager.getInstance().setChatRoomFragmentProxy(null);
   }
 
   public void init() {
@@ -207,7 +215,7 @@ public class ChatRoomFragment extends RxFragment {
     });
 
     sendMsgView.setOnClickListener(view -> {
-      sendTextMessage();
+      sendTextMessage(inputEditText.getText().toString());
     });
 
     messageInputViewPlaceholder.addView(messageInputView);
@@ -422,12 +430,13 @@ public class ChatRoomFragment extends RxFragment {
       });
   }
 
-  public void sendTextMessage() {
+  @Override
+  public void sendTextMessage(String msg) {
     ChatMessage chatMessage = new ChatMessage();
     chatMessage.setTimestamp(System.currentTimeMillis());
     chatMessage.setType("text");
     chatMessage.setSent(false);
-    chatMessage.setContent(inputEditText.getText().toString());
+    chatMessage.setContent(msg);
 
     addOwnTextMessageCell(chatMessage);
     addChatMessageToDb(chatMessage, socketChatMessage -> {
@@ -459,6 +468,7 @@ public class ChatRoomFragment extends RxFragment {
     inputEditText.setText("");
   }
 
+  @Override
   public void sendPhotoMessage(Uri uri) {
     ChatMessage message = new ChatMessage();
     long time = System.currentTimeMillis();

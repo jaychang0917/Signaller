@@ -18,7 +18,6 @@ public class ChatRoomActivity extends AppCompatActivity {
   public static final String EXTRA_CHAT_ROOM_ID = "EXTRA_CHAT_ROOM_ID";
   public static final String EXTRA_CHAT_ID = "EXTRA_CHAT_ID";
   public static final String EXTRA_TITLE = "EXTRA_TITLE";
-  private ChatRoomFragment chatRoomFragment;
 
   public static void start(Context context, String chatRoomId, String chatId, String toolbarTitle) {
     Intent intent = new Intent(context, ChatRoomActivity.class);
@@ -57,7 +56,7 @@ public class ChatRoomActivity extends AppCompatActivity {
     String chatRoomId = intent.getStringExtra(EXTRA_CHAT_ROOM_ID);
     String chatId = intent.getStringExtra(EXTRA_CHAT_ID);
 
-    chatRoomFragment = ChatRoomFragment.newInstance(chatId, chatRoomId);
+    ChatRoomFragment chatRoomFragment = ChatRoomFragment.newInstance(chatId, chatRoomId);
     // Set your custom action when photo icon is clicked
     chatRoomFragment.setPickPhotoCallback(this::showCustomPhotoPicker);
 
@@ -71,7 +70,7 @@ public class ChatRoomActivity extends AppCompatActivity {
       .pickSinglePhoto()
       .subscribe(uri -> {
         // Send the picked photo
-        chatRoomFragment.sendPhotoMessage(uri);
+        Signaller.getInstance().sendPhotoMessage(uri);
       }, error -> {
         LogUtils.e("Fail to show photo picker:" + error.getMessage());
       });
