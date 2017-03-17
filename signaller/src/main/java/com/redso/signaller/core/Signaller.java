@@ -96,7 +96,7 @@ public final class Signaller {
     if (!SocketManager.getInstance().isConnected()) {
       SocketManager.getInstance().connect(new SocketConnectionCallbacks() {
         @Override
-        void onConnected() {
+        public void onConnected() {
           if (context == null) {
             return;
           }
