@@ -11,8 +11,8 @@ public class ChatRoomFragmentProxy implements ChatRoomOperations {
    }
 
    @Override
-   public void sendPhotoMessage(Uri uri) {
-     real.sendPhotoMessage(uri);
+   public void sendImageMessage(Uri uri) {
+     real.sendImageMessage(uri);
    }
 
    @Override

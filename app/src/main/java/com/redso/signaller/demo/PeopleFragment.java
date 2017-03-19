@@ -24,27 +24,27 @@ public class PeopleFragment extends Fragment {
 
   @OnClick(R.id.joinJay10Button)
   void chatWithJay10() {
-    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY10, "jay10");
+    Signaller.getInstance().goToIndividualChatMessagePage(getActivity(), Constant.USER_ID_JAY10, "jay10");
   }
 
   @OnClick(R.id.joinJay11Button)
   void chatWithJay11() {
-    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY11, "jay11");
+    Signaller.getInstance().goToIndividualChatMessagePage(getActivity(), Constant.USER_ID_JAY11, "jay11");
   }
 
   @OnClick(R.id.joinJay12Button)
   void chatWithJay12() {
-    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY12, "jay12");
+    Signaller.getInstance().goToIndividualChatMessagePage(getActivity(), Constant.USER_ID_JAY12, "jay12");
   }
 
   @OnClick(R.id.joinJay13Button)
   void chatWithJay13() {
-    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY13, "jay13");
+    Signaller.getInstance().goToIndividualChatMessagePage(getActivity(), Constant.USER_ID_JAY13, "jay13");
   }
 
   @OnClick(R.id.joinJay14Button)
   void chatWithJay14() {
-    Signaller.getInstance().chatWith(getActivity(), Constant.USER_ID_JAY14, "jay14");
+    Signaller.getInstance().goToIndividualChatMessagePage(getActivity(), Constant.USER_ID_JAY14, "jay14");
   }
 
 }

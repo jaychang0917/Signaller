@@ -30,6 +30,7 @@ public class SignallerPushNotificationManager {
     Context context = Signaller.getInstance().getAppContext();
 
     Intent intent = new Intent(context, ChatRoomActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
     intent.putExtra(ChatRoomActivity.EXTRA_CHAT_ID, pushNotification.getChatId());
     intent.putExtra(ChatRoomActivity.EXTRA_CHAT_ROOM_ID, pushNotification.getChatRoomId());
     intent.putExtra(ChatRoomActivity.EXTRA_TITLE, pushNotification.getRoomTitle());

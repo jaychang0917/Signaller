@@ -1,4 +1,4 @@
-package com.redso.signaller.demo;
+package com.redso.signaller.demo.chat;
 
 import android.os.Bundle;
 

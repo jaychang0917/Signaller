@@ -39,6 +39,7 @@ public class SocketManager {
   private Handler mainThreadHandler;
 
   private PublishSubject<String> connectionEmitter;
+  private SocketConnectionCallback socketConnectionCallback;
 
   private SocketManager() {
     mainThreadHandler = new Handler(Looper.getMainLooper());
@@ -59,6 +60,7 @@ public class SocketManager {
       opts.query = "access_token=" + accessToken;
       opts.secure = true;
       socket = IO.socket(Signaller.getInstance().getAppConfig().getSocketUrl(), opts);
+      registerConnectionCallbacks();
     } catch (URISyntaxException e) {
       throw new RuntimeException(e);
     }
@@ -75,44 +77,50 @@ public class SocketManager {
     return socket != null && socket.connected();
   }
 
-  public void connect(SocketConnectionCallbacks callback) {
-    initSocketIfNeed();
-
-    if (!isConnected()) {
-      onEvents();
-      socket.connect();
-      LogUtils.d("connect");
-      registerConnectionCallbacks(callback);
-    }
-  }
-
-  private void registerConnectionCallbacks(SocketConnectionCallbacks callback) {
-    if (callback == null) {
-      return;
-    }
-
-    connectionEmitter.subscribe(type -> {
-      if (type.equals(CONNECT)) {
-        callback.onConnect();
-      } else if (type.equals(CONNECTING)) {
-        callback.onConnecting();
-      } else if (type.equals(CONNECTED)) {
-        callback.onConnected();
-      } else if (type.equals(DISCONNECTED)) {
-        callback.onDisconnected();
-      }
-    });
-  }
-
   public void connect() {
     connect(null);
   }
 
+  public void connect(SocketConnectionCallback callback) {
+    initSocketIfNeed();
+
+    socketConnectionCallback = callback;
+
+    if (!isConnected()) {
+      onEvents();
+      socket.connect();
+    }
+  }
+
+  private void registerConnectionCallbacks() {
+    connectionEmitter.subscribe(type -> {
+      if (socketConnectionCallback == null) {
+        return;
+      }
+
+      if (type.equals(CONNECT)) {
+        socketConnectionCallback.onConnect();
+      } else if (type.equals(CONNECTING)) {
+        socketConnectionCallback.onConnecting();
+      } else if (type.equals(CONNECTED)) {
+        socketConnectionCallback.onConnected();
+      } else if (type.equals(DISCONNECTED)) {
+        socketConnectionCallback.onDisconnected();
+      }
+    });
+  }
+
   public void disconnect() {
+    disconnect(null);
+  }
+
+  public void disconnect(SocketConnectionCallback callback) {
+    socketConnectionCallback = callback;
+
     if (isConnected()) {
       offEvents();
       socket.disconnect();
-      LogUtils.d("disconnect");
+      LogUtils.d("Disconnect socket");
     }
   }
 
@@ -151,22 +159,29 @@ public class SocketManager {
       socket.emit(SEND_MESSAGE, chatMsgObj);
     } catch (JSONException e) {
       e.printStackTrace();
+      LogUtils.e("Fail to send message: " + e.getMessage());
     }
   }
 
   void join(String userId, String chatRoomId, ChatRoomJoinCallback callback) {
     try {
       JSONObject object = new JSONObject();
-      object.put("user_id", userId);
+      // if userId is null, means join ownself
+      if (userId != null) {
+        object.put("user_id", userId);
+      }
       object.put("room_id", chatRoomId);
       socket.emit(JOIN, object, (Ack) args -> {
         LogUtils.d("onJoined");
         mainThreadHandler.post(() -> {
-          callback.onChatRoomJoined(chatRoomId, userId);
+          if (callback != null) {
+            callback.onChatRoomJoined(chatRoomId);
+          }
         });
       });
     } catch (JSONException e) {
       e.printStackTrace();
+      LogUtils.e("Fail to Join chat room: " + e.getMessage());
     }
   }
 
@@ -178,28 +193,31 @@ public class SocketManager {
       socket.emit(LEAVE, object, (Ack) args -> {
         LogUtils.d("onLeft");
         mainThreadHandler.post(() -> {
-          callback.onChatRoomLeft(chatRoomId);
+          if (callback != null) {
+            callback.onChatRoomLeft(chatRoomId);
+          }
         });
       });
     } catch (JSONException e) {
       e.printStackTrace();
+      LogUtils.e("Fail to leave room: " + e.getMessage());
     }
   }
 
   private Emitter.Listener onConnect = args -> {
-    LogUtils.d("onConnect");
+    LogUtils.d("Connect socket");
     connectionEmitter.onNext(CONNECT);
     EventBus.getDefault().postSticky(new Events.OnSocketConnectEvent());
   };
 
   private Emitter.Listener onConnecting = args -> {
-    LogUtils.d("onConnecting");
+    LogUtils.d("Connecting socket");
     connectionEmitter.onNext(CONNECTING);
     EventBus.getDefault().postSticky(new Events.OnSocketConnectingEvent());
   };
 
   private Emitter.Listener onConnected = args -> {
-    LogUtils.d("onConnected");
+    LogUtils.d("Connected socket");
     connectionEmitter.onNext(CONNECTED);
     EventBus.getDefault().postSticky(new Events.OnSocketConnectedEvent());
     // todo resent fail msg
@@ -208,7 +226,7 @@ public class SocketManager {
 
   private Emitter.Listener onDisconnected = args -> {
     // todo SocketIO BUG, no callback received
-    LogUtils.d("onDisconnected");
+    LogUtils.d("Disconnected socket");
     connectionEmitter.onNext(DISCONNECTED);
     EventBus.getDefault().postSticky(new Events.OnSocketDisconnectedEvent());
   };

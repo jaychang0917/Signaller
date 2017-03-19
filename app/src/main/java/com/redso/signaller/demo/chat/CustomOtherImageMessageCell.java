@@ -11,7 +11,6 @@ import com.bumptech.glide.Glide;
 import com.jaychang.srv.SimpleViewHolder;
 import com.jaychang.utils.ViewUtils;
 import com.redso.signaller.core.model.ChatMessage;
-import com.redso.signaller.demo.PhotoViewerActivity;
 import com.redso.signaller.demo.R;
 import com.redso.signaller.ui.ChatMessageCell;
 

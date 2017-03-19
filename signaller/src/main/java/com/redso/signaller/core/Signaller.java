@@ -9,13 +9,14 @@ import com.redso.signaller.core.push.SignallerGcmManager;
 import com.redso.signaller.ui.ChatRoomActivity;
 import com.redso.signaller.ui.ChatRoomFragmentProxy;
 import com.redso.signaller.ui.UIConfig;
+import com.redso.signaller.util.ChatUtils;
 import com.redso.signaller.util.LogUtils;
 import com.redso.signaller.util.StethoUtils;
 
 public final class Signaller {
 
-  public interface ChatRoomMetaCallback {
-    void onChatRoomMetaReady(int count);
+  public interface UnreadMessageCountCallback {
+    void onUnreadMessageCountReady(int count);
   }
 
   private static final Signaller INSTANCE = new Signaller();
@@ -45,13 +46,13 @@ public final class Signaller {
       @Override
       public void onAppEnterBackground() {
         SocketManager.getInstance().disconnect();
-        LogUtils.d("onAppEnterBackground, disconnect socket");
+        LogUtils.d("App did enter background, disconnect socket");
       }
 
       @Override
       public void onAppEnterForeground() {
         SocketManager.getInstance().connect();
-        LogUtils.d("onAppEnterForeground, connect socket");
+        LogUtils.d("App did enter foreground, connect socket");
       }
     });
   }
@@ -88,43 +89,103 @@ public final class Signaller {
     ChatRoomMeta.getInstance().clear();
   }
 
-  public void chatWith(Context context, String receiverId, String toolbarTitle) {
-    if (!SocketManager.getInstance().isConnected()) {
-      SocketManager.getInstance().connect(new SocketConnectionCallbacks() {
-        @Override
-        void onConnected() {
-          if (context == null) {
-            return;
-          }
-          chatWithInternal(context, receiverId, toolbarTitle);
-        }
-      });
-    } else {
-      chatWithInternal(context, receiverId, toolbarTitle);
-    }
+  public void connectSocket(String accessToken) {
+    SocketManager.getInstance().initSocket(accessToken);
+    SocketManager.getInstance().connect();
   }
 
-  private void chatWithInternal(Context context, String receiverId, String toolbarTitle) {
-    String ownUserId = UserData.getInstance().getUserId();
-    String chatRoomId = ownUserId.compareTo(receiverId) < 0 ?
-      ownUserId + "_" + receiverId :
-      receiverId + "_" + ownUserId;
-
-    SocketManager.getInstance().join(receiverId, chatRoomId, new ChatRoomJoinCallback() {
+  public void connectSocket(String accessToken, ConnectSocketCallback callback) {
+    SocketManager.getInstance().initSocket(accessToken);
+    SocketManager.getInstance().connect(new SocketConnectionCallback() {
       @Override
-      public void onChatRoomJoined(String chatRoomId, String userId) {
-        ChatRoomActivity.start(context, chatRoomId, userId, toolbarTitle);
+      public void onConnect() {
+        callback.onConnect();
+      }
+
+      @Override
+      public void onConnecting() {
+        callback.onConnecting();
+      }
+
+      @Override
+      public void onConnected() {
+        callback.onConnected();
       }
     });
   }
 
-  public void sendPhotoMessage(Uri uri) throws IllegalStateException {
+  public void disconnectSocket() {
+    SocketManager.getInstance().disconnect();
+  }
+
+  public void disconnectSocket(DisconnectSocketCallback callback) {
+    SocketManager.getInstance().disconnect(new SocketConnectionCallback() {
+      @Override
+      protected void onDisconnected() {
+        callback.onDisconnected();
+      }
+    });
+  }
+
+  public void goToIndividualChatMessagePage(Context context, String targetUserId, String toolbarTitle) {
+    if (!SocketManager.getInstance().isConnected()) {
+      SocketManager.getInstance().connect(new SocketConnectionCallback() {
+        @Override
+        protected void onConnected() {
+          if (context == null) {
+            return;
+          }
+          goToIndividualChatMessagePageInternal(context, targetUserId, toolbarTitle);
+        }
+      });
+    } else {
+      goToIndividualChatMessagePageInternal(context, targetUserId, toolbarTitle);
+    }
+  }
+
+  private void goToIndividualChatMessagePageInternal(Context context, String targetUserId, String toolbarTitle) {
+    String chatRoomId = ChatUtils.createChatRoomId(UserData.getInstance().getUserId(), targetUserId);
+
+    SocketManager.getInstance().join(targetUserId, chatRoomId, new ChatRoomJoinCallback() {
+      @Override
+      public void onChatRoomJoined(String chatRoomId) {
+        ChatRoomActivity.start(context, chatRoomId, targetUserId, toolbarTitle);
+      }
+    });
+  }
+
+  public void goToGroupChatMessagePage(Context context, String groupChatId, String toolbarTitle) {
+    if (!SocketManager.getInstance().isConnected()) {
+      SocketManager.getInstance().connect(new SocketConnectionCallback() {
+        @Override
+        protected void onConnected() {
+          if (context == null) {
+            return;
+          }
+          goToIndividualChatMessagePageInternal(context, groupChatId, toolbarTitle);
+        }
+      });
+    } else {
+      goToIndividualChatMessagePageInternal(context, groupChatId, toolbarTitle);
+    }
+  }
+
+  private void goToGroupChatMessagePageInternal(Context context, String groupChatId, String toolbarTitle) {
+    SocketManager.getInstance().join(null, groupChatId, new ChatRoomJoinCallback() {
+      @Override
+      public void onChatRoomJoined(String chatRoomId) {
+        ChatRoomActivity.start(context, chatRoomId, groupChatId, toolbarTitle);
+      }
+    });
+  }
+
+  public void sendImageMessage(Uri uri) throws IllegalStateException {
     ChatRoomFragmentProxy proxy = ProxyManager.getInstance().getChatRoomFragmentProxy();
     if (proxy == null) {
       throw new IllegalStateException("You must call this method when you are in chat room page.");
     }
 
-    proxy.sendPhotoMessage(uri);
+    proxy.sendImageMessage(uri);
   }
 
   public void sendTextMessage(String message) throws IllegalStateException {
@@ -136,16 +197,28 @@ public final class Signaller {
     proxy.sendTextMessage(message);
   }
 
+  public void joinChatRoom(String chatRoomId) {
+    joinChatRoom(chatRoomId, null);
+  }
+
+  public void joinChatRoom(String chatRoomId, ChatRoomLeaveCallback callback) {
+    SocketManager.getInstance().leave(chatRoomId, callback);
+  }
+
+  public void leaveChatRoom(String chatRoomId) {
+    leaveChatRoom(chatRoomId, null);
+  }
+
   public void leaveChatRoom(String chatRoomId, ChatRoomLeaveCallback callback) {
     SocketManager.getInstance().leave(chatRoomId, callback);
   }
 
-  public void getUnreadMessageCount(ChatRoomMetaCallback callback) {
+  public void getUnreadMessageCount(UnreadMessageCountCallback callback) {
     DataManager.getInstance().getChatRoomsFromNetwork(null)
       .subscribe(
         rooms -> {
           int totalUnreadCount = ChatRoomMeta.getInstance().getTotalUnreadCount();
-          callback.onChatRoomMetaReady(totalUnreadCount);
+          callback.onUnreadMessageCountReady(totalUnreadCount);
           LogUtils.d("Unread message count: " + totalUnreadCount);
         },
         error -> {
@@ -167,6 +240,7 @@ public final class Signaller {
 
   public void setDebugEnabled(boolean enable) {
     LogUtils.setEnable(enable);
+    StethoUtils.init(appContext);
     StethoUtils.setEnable(enable);
   }
 

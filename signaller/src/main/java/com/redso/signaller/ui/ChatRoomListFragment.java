@@ -234,7 +234,7 @@ public class ChatRoomListFragment extends RxFragment {
   }
 
   private void chatWith(ChatReceiver receiver) {
-    Signaller.getInstance().chatWith(getContext(), receiver.getUserId(), receiver.getName());
+    Signaller.getInstance().goToIndividualChatMessagePage(getContext(), receiver.getUserId(), receiver.getName());
   }
 
 }

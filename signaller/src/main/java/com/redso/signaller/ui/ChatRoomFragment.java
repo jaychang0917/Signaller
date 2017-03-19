@@ -33,6 +33,7 @@ import com.redso.signaller.core.model.ImageAttribute;
 import com.redso.signaller.core.model.Payload;
 import com.redso.signaller.core.model.SocketChatMessage;
 import com.redso.signaller.core.push.SignallerPushNotificationManager;
+import com.redso.signaller.util.ChatUtils;
 import com.redso.signaller.util.GsonUtils;
 import com.redso.signaller.util.LogUtils;
 import com.trello.rxlifecycle.android.FragmentEvent;
@@ -82,19 +83,28 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
   private int chatRoomBackgroundRes;
   private PickPhotoCallback pickPhotoCallback;
 
-  private String chatId;
   private String chatRoomId;
+  private String chatId;
   private String cursor;
   private boolean hasMoreData;
   private boolean questScrollToBottom = true;
 
-  public static ChatRoomFragment newInstance(String chatId, String chatRoomId) {
+  static ChatRoomFragment newInstance(String chatRoomId, String userId) {
     ChatRoomFragment fragment = new ChatRoomFragment();
     Bundle bundle = new Bundle();
-    bundle.putString(EXTRA_CHAT_ID, chatId);
     bundle.putString(EXTRA_CHAT_ROOM_ID, chatRoomId);
+    bundle.putString(EXTRA_CHAT_ID, userId);
     fragment.setArguments(bundle);
     return fragment;
+  }
+
+  public static ChatRoomFragment fromUserId(String userId) {
+    String chatRoomId = ChatUtils.createChatRoomId(UserData.getInstance().getUserId(), userId);
+    return newInstance(chatRoomId, userId);
+  }
+
+  public static ChatRoomFragment fromGroupId(String groupId) {
+    return newInstance(groupId, groupId);
   }
 
   @Nullable
@@ -194,7 +204,7 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
   private void initMessageInputView() {
     View messageInputView = LayoutInflater.from(getContext()).inflate(chatRoomMessageInputViewProvider.getLayoutRes(), null);
     inputEditText = (EmojiEditText) messageInputView.findViewById(chatRoomMessageInputViewProvider.getInputEditTextId());
-    photoIconView = (ImageView) messageInputView.findViewById(chatRoomMessageInputViewProvider.getPhotoIconViewId());
+    photoIconView = (ImageView) messageInputView.findViewById(chatRoomMessageInputViewProvider.getPhotoPickerIconViewId());
     sendMsgView = messageInputView.findViewById(chatRoomMessageInputViewProvider.getSendMessageViewId());
 
     EmojiKeyboardViewInfo emojiKeyboardViewInfo = chatRoomMessageInputViewProvider.getEmojiKeyboardViewInfo();
@@ -431,7 +441,7 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
       .selectedBorderColor(themeColor)
       .pickSinglePhoto()
       .subscribe(uri -> {
-        sendPhotoMessage(uri);
+        sendImageMessage(uri);
       }, error -> {
         LogUtils.e("Fail to show photo picker:" + error.getMessage());
       });
@@ -476,7 +486,7 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
   }
 
   @Override
-  public void sendPhotoMessage(Uri uri) {
+  public void sendImageMessage(Uri uri) {
     ChatMessage message = new ChatMessage();
     long time = System.currentTimeMillis();
     message.setMsgTime(time);
@@ -489,7 +499,7 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
     message.setType("image");
     message.setSent(false);
 
-    addOwnPhotoMessageCell(message);
+    addOwnImageMessageCell(message);
     addChatMessageToDb(message, socketChatMessage -> {
       uploadPhotoAndSendImageMsg(uri, socketChatMessage);
     });
@@ -515,7 +525,7 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
     scrollToBottom();
   }
 
-  private void addOwnPhotoMessageCell(ChatMessage message) {
+  private void addOwnImageMessageCell(ChatMessage message) {
     ChatMessageCell cell = chatMessageCellProvider.getOwnChatMessageCell(IMAGE, message);
     messageRecyclerView.addCell(cell);
     scrollToBottom();

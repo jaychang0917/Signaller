@@ -11,7 +11,7 @@ public interface ChatRoomMessageInputViewProvider {
 
   EmojiKeyboardViewInfo getEmojiKeyboardViewInfo();
 
-  @IdRes int getPhotoIconViewId();
+  @IdRes int getPhotoPickerIconViewId();
 
   @IdRes int getSendMessageViewId();
 

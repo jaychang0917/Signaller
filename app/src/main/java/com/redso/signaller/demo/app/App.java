@@ -12,7 +12,6 @@ import com.redso.signaller.core.model.ChatRoom;
 import com.redso.signaller.demo.Constant;
 import com.redso.signaller.demo.MainActivity;
 import com.redso.signaller.demo.R;
-import com.redso.signaller.demo.Utils;
 import com.redso.signaller.demo.chat.CustomChatRoomCell;
 import com.redso.signaller.demo.chat.CustomChatRoomDateSectionView;
 import com.redso.signaller.demo.chat.CustomChatRoomToolbar;
@@ -25,8 +24,8 @@ import com.redso.signaller.ui.ChatMessageCellProvider;
 import com.redso.signaller.ui.ChatMessageType;
 import com.redso.signaller.ui.ChatRoomCell;
 import com.redso.signaller.ui.ChatRoomCellProvider;
-import com.redso.signaller.ui.ChatRoomMessageInputViewAdapter;
 import com.redso.signaller.ui.ChatRoomDateSectionViewProvider;
+import com.redso.signaller.ui.SimpleChatRoomMessageInputViewProvider;
 import com.redso.signaller.ui.ChatRoomToolbarProvider;
 import com.redso.signaller.ui.EmojiKeyboardViewInfo;
 import com.redso.signaller.ui.UIConfig;
@@ -38,8 +37,6 @@ public class App extends MultiDexApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-
-    Utils.init(this);
 
     initSignaller();
   }
@@ -80,7 +77,7 @@ public class App extends MultiDexApplication {
           throw new RuntimeException("Unsupported chat message type");
         }
       })
-      .setChatRoomMessageInputViewProvider(new ChatRoomMessageInputViewAdapter() {
+      .setChatRoomMessageInputViewProvider(new SimpleChatRoomMessageInputViewProvider() {
         @Override
         public int getLayoutRes() {
           return R.layout.view_message_input;
@@ -113,8 +110,8 @@ public class App extends MultiDexApplication {
         }
 
         @Override
-        public int getPhotoIconViewId() {
-          return R.id.photoIconView;
+        public int getPhotoPickerIconViewId() {
+          return R.id.photoPickerIconView;
         }
 
         @Override
@@ -149,10 +146,10 @@ public class App extends MultiDexApplication {
       .setChatRoomBackgroundRes(R.color.colorBackground)
       .setChatRoomListEmptyStateViewRes(R.layout.view_empty_state)
       .setChatRoomListDividerColorRes(R.color.colorGrey)
-      .setChatRoomListDividerPadding(64, 0, 0, 0)
+      .setChatRoomListDividerPaddingDp(64, 0, 0, 0)
       .build();
 
-    // init Signaller
+    // init Signaller with provided configs
     Signaller.init(this, appConfig, uiConfig);
 
     // Enable debug log and Stetho

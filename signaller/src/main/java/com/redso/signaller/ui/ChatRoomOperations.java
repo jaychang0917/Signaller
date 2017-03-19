@@ -4,7 +4,7 @@ import android.net.Uri;
 
 public interface ChatRoomOperations {
 
-  void sendPhotoMessage(Uri uri);
+  void sendImageMessage(Uri uri);
 
   void sendTextMessage(String msg);
 

@@ -15,14 +15,14 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 public class ChatRoomActivity extends RxAppCompatActivity {
 
-  public static final String EXTRA_CHAT_ROOM_ID = "EXTRA_CHAT_ROOM_ID";
   public static final String EXTRA_CHAT_ID = "EXTRA_CHAT_ID";
+  public static final String EXTRA_CHAT_ROOM_ID = "EXTRA_CHAT_ROOM_ID";
   public static final String EXTRA_TITLE = "EXTRA_TITLE";
 
   public static void start(Context context, String chatRoomId, String chatId, String toolbarTitle) {
     Intent intent = new Intent(context, ChatRoomActivity.class);
-    intent.putExtra(EXTRA_CHAT_ROOM_ID, chatRoomId);
     intent.putExtra(EXTRA_CHAT_ID, chatId);
+    intent.putExtra(EXTRA_CHAT_ROOM_ID, chatRoomId);
     intent.putExtra(EXTRA_TITLE, toolbarTitle);
     context.startActivity(intent);
   }
@@ -48,11 +48,11 @@ public class ChatRoomActivity extends RxAppCompatActivity {
   }
 
   private void initMessageFragment(Intent intent) {
-    String chatRoomId = intent.getStringExtra(EXTRA_CHAT_ROOM_ID);
     String chatId = intent.getStringExtra(EXTRA_CHAT_ID);
+    String chatRoomId = intent.getStringExtra(EXTRA_CHAT_ROOM_ID);
 
     getSupportFragmentManager().beginTransaction()
-      .replace(R.id.messageFragmentContainer, ChatRoomFragment.newInstance(chatId, chatRoomId))
+      .replace(R.id.messageFragmentContainer, ChatRoomFragment.newInstance(chatRoomId, chatId))
       .commitNow();
   }
 

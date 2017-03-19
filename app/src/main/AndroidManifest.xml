@@ -22,14 +22,14 @@
         <activity android:name=".MainActivity"
                   android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
 
-        <activity android:name=".ChatRoomActivity"
+        <activity android:name=".chat.CustomChatRoomActivity"
                   android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
 
-        <activity android:name=".PhotoViewerActivity"
+        <activity android:name=".chat.PhotoViewerActivity"
                   android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"/>
 
         <service
-            android:name=".PushNotificationService"
+            android:name=".chat.PushNotificationService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />

@@ -1,10 +1,11 @@
-package com.redso.signaller.demo;
+package com.redso.signaller.demo.chat;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.jaychang.utils.AppUtils;
+import com.redso.signaller.demo.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

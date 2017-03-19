@@ -21,8 +21,8 @@ public class ChatsFragment extends Fragment implements BottomTabManager.OnTabSel
   @Override
   public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
-    ChatRoomActivity.start(getContext(), "5714163003293696_5730827476402176", "5730827476402176", "xx");
-//    init();
+//    ChatRoomActivity.start(getContext(), "5714163003293696_5730827476402176", "5730827476402176", "xx");
+    init();
   }
 
   public void init() {

@@ -128,7 +128,7 @@ public class UIConfig {
       return this;
     }
 
-    public Builder setChatRoomListDividerPadding(int leftDp, int topDp, int rightDp, int bottomDp) {
+    public Builder setChatRoomListDividerPaddingDp(int leftDp, int topDp, int rightDp, int bottomDp) {
       chatRoomListDividerPaddingLeftDp = leftDp;
       chatRoomListDividerPaddingTopDp = topDp;
       chatRoomListDividerPaddingRightDp = rightDp;

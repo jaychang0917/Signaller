@@ -16,7 +16,7 @@
         android:src="@drawable/ic_emoji" />
 
     <ImageView
-        android:id="@+id/photoIconView"
+        android:id="@+id/photoPickerIconView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_camera" />
