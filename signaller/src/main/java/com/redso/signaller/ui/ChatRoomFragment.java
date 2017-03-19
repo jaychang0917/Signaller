@@ -137,6 +137,7 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
     monitorInput();
     cancelNotificationIfNeed();
     clearUnreadCount();
+    clearEvents();
   }
 
   private void initViews(View rootView) {
@@ -276,6 +277,13 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
   private void clearUnreadCount() {
     DatabaseManager.getInstance().clearUnreadMessageCount(chatRoomId);
     DataManager.getInstance().clearUnreadCount(chatRoomId);
+  }
+
+  // in init state, clear events (OnMsgReceivedEvent, OnMsgSentEvent) to
+  // prevent duplicate calls like loadChatMessages().
+  private void clearEvents() {
+    EventBus.getDefault().removeStickyEvent(Events.OnMsgReceivedEvent.class);
+    EventBus.getDefault().removeStickyEvent(Events.OnMsgSentEvent.class);
   }
 
   @Override

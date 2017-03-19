@@ -4,58 +4,55 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.TaskStackBuilder;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.jaychang.npp.NPhotoPicker;
 import com.redso.signaller.core.Signaller;
 import com.redso.signaller.demo.R;
+import com.redso.signaller.ui.AbstractChatRoomActivity;
 import com.redso.signaller.ui.ChatRoomFragment;
 import com.redso.signaller.util.LogUtils;
 
-// todo base chat activity handle onNewIntent and onBackPressed
-// todo jcenter
-public class CustomChatRoomActivity extends AppCompatActivity {
+public class CustomChatRoomActivity extends AbstractChatRoomActivity {
 
   public static final String EXTRA_USER_ID = "EXTRA_USER_ID";
-  public static final String EXTRA_TITLE = "EXTRA_TITLE";
+  public static final String EXTRA_TOOLBAR_TITLE = "EXTRA_TOOLBAR_TITLE";
 
   public static void start(Context context, String userId, String toolbarTitle) {
     Intent intent = new Intent(context, CustomChatRoomActivity.class);
     intent.putExtra(EXTRA_USER_ID, userId);
-    intent.putExtra(EXTRA_TITLE, toolbarTitle);
+    intent.putExtra(EXTRA_TOOLBAR_TITLE, toolbarTitle);
     context.startActivity(intent);
   }
 
   @Override
-  public void onNewIntent(Intent intent) {
-    super.onNewIntent(intent);
-    initToolbar(intent);
-    initMessageFragment(intent);
+  protected void onCreateFromPushNotification(String chatRoomId, String chatId, String toolbarTitle) {
+    initToolbar(toolbarTitle);
+    initMessageFragment(chatId);
   }
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_chatroom);
-    init();
+
+    // if it is created from push notification, onCreateFromPushNotification() will be called.
+    if (!isFromPushNotification()) {
+      init();
+    }
   }
 
   private void init() {
-    initToolbar(getIntent());
-    initMessageFragment(getIntent());
+    initToolbar(getIntent().getStringExtra(EXTRA_TOOLBAR_TITLE));
+    initMessageFragment(getIntent().getStringExtra(EXTRA_USER_ID));
   }
 
-  private void initToolbar(Intent intent) {
-    String title = intent.getStringExtra(EXTRA_TITLE);
+  private void initToolbar(String toolbarTitle) {
     Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-    toolbar.setTitle(title);
+    toolbar.setTitle(toolbarTitle);
   }
 
-  private void initMessageFragment(Intent intent) {
-    String userId = intent.getStringExtra(EXTRA_USER_ID);
-
+  private void initMessageFragment(String userId) {
     ChatRoomFragment chatRoomFragment = ChatRoomFragment.fromUserId(userId);
     // Set your custom action when photo icon is clicked
     chatRoomFragment.setPickPhotoCallback(this::showCustomPhotoPicker);
@@ -74,17 +71,6 @@ public class CustomChatRoomActivity extends AppCompatActivity {
       }, error -> {
         LogUtils.e("Fail to show photo picker:" + error.getMessage());
       });
-  }
-
-  // You should han
-  @Override
-  public void onBackPressed() {
-    super.onBackPressed();
-    if (isTaskRoot()) {
-      TaskStackBuilder.create(this)
-        .addNextIntentWithParentStack(new Intent(this, Signaller.getInstance().getAppConfig().getPushNotificationParentActivity()))
-        .startActivities();
-    }
   }
 
 }

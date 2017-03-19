@@ -12,6 +12,7 @@ import com.redso.signaller.core.model.ChatRoom;
 import com.redso.signaller.demo.Constant;
 import com.redso.signaller.demo.MainActivity;
 import com.redso.signaller.demo.R;
+import com.redso.signaller.demo.chat.CustomChatRoomActivity;
 import com.redso.signaller.demo.chat.CustomChatRoomCell;
 import com.redso.signaller.demo.chat.CustomChatRoomDateSectionView;
 import com.redso.signaller.demo.chat.CustomChatRoomToolbar;
@@ -25,9 +26,9 @@ import com.redso.signaller.ui.ChatMessageType;
 import com.redso.signaller.ui.ChatRoomCell;
 import com.redso.signaller.ui.ChatRoomCellProvider;
 import com.redso.signaller.ui.ChatRoomDateSectionViewProvider;
-import com.redso.signaller.ui.SimpleChatRoomMessageInputViewProvider;
 import com.redso.signaller.ui.ChatRoomToolbarProvider;
 import com.redso.signaller.ui.EmojiKeyboardViewInfo;
+import com.redso.signaller.ui.SimpleChatRoomMessageInputViewProvider;
 import com.redso.signaller.ui.UIConfig;
 
 public class App extends MultiDexApplication {
@@ -43,7 +44,14 @@ public class App extends MultiDexApplication {
 
   private void initSignaller() {
     AppConfig appConfig = AppConfig.newBuilder(Constant.SOCKET_URL, Constant.SERVER_DOMAIN)
-      .enablePushNotification(R.string.app_name, R.mipmap.ic_launcher, Constant.PUSH_SENDER_ID, MainActivity.class)
+      .enablePushNotification(
+        R.string.app_name_kol,
+        R.mipmap.ic_launcher,
+        Constant.PUSH_SENDER_ID,
+        // optional, only need if you use your own chat room activity
+        CustomChatRoomActivity.class,
+        // parent activity of CustomChatRoomActivity
+        MainActivity.class)
       .build();
 
     UIConfig uiConfig = UIConfig.newBuilder()

@@ -3,6 +3,8 @@ package com.redso.signaller.core;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.StringRes;
 
+import com.redso.signaller.ui.ChatRoomActivity;
+
 public final class AppConfig {
 
   private String socketUrl;
@@ -10,7 +12,8 @@ public final class AppConfig {
   private int appName;
   private int appIcon;
   private String pushNotificationSenderId;
-  private Class<?> pushNotificationParentActivity;
+  private Class<?> chatRoomActivity;
+  private Class<?> chatRoomParentActivity;
 
   private AppConfig(Builder builder) {
     socketUrl = builder.socketUrl;
@@ -18,7 +21,8 @@ public final class AppConfig {
     appName = builder.appName;
     appIcon = builder.appIcon;
     pushNotificationSenderId = builder.senderId;
-    pushNotificationParentActivity = builder.parentActivity;
+    chatRoomActivity = builder.chatRoomActivity;
+    chatRoomParentActivity = builder.chatRoomParentActivity;
   }
 
   public static Builder newBuilder(String socketUrl, String serverDomain) {
@@ -32,7 +36,8 @@ public final class AppConfig {
     private int appName;
     private int appIcon;
     private String senderId;
-    private Class<?> parentActivity;
+    private Class<?> chatRoomParentActivity;
+    private Class<?> chatRoomActivity;
 
     private Builder(String socketUrl, String serverDomain) {
       this.socketUrl = socketUrl;
@@ -42,12 +47,21 @@ public final class AppConfig {
     public Builder enablePushNotification(@StringRes int appName,
                                           @DrawableRes int appIcon,
                                           String senderId,
-                                          Class<?> parentActivity) {
+                                          Class<?> chatRoomActivity,
+                                          Class<?> chatRoomParentActivity) {
       this.appName = appName;
       this.appIcon = appIcon;
       this.senderId = senderId;
-      this.parentActivity = parentActivity;
+      this.chatRoomActivity = chatRoomActivity;
+      this.chatRoomParentActivity = chatRoomParentActivity;
       return this;
+    }
+
+    public Builder enablePushNotification(@StringRes int appName,
+                                          @DrawableRes int appIcon,
+                                          String senderId,
+                                          Class<?> chatRoomParentActivity) {
+      return enablePushNotification(appName, appIcon, senderId, null, chatRoomParentActivity);
     }
 
     public AppConfig build() {
@@ -75,8 +89,15 @@ public final class AppConfig {
     return pushNotificationSenderId;
   }
 
-  public Class<?> getPushNotificationParentActivity() {
-    return pushNotificationParentActivity;
+  public Class<?> getChatRoomParentActivity() {
+    return chatRoomParentActivity;
+  }
+
+  public Class<?> getChatRoomActivity() {
+    if (chatRoomActivity != null) {
+      return chatRoomActivity;
+    }
+    return ChatRoomActivity.class;
   }
 
 }

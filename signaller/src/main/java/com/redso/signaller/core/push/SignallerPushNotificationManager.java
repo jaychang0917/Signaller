@@ -11,7 +11,7 @@ import android.support.v4.app.NotificationCompat;
 import com.redso.signaller.R;
 import com.redso.signaller.core.Signaller;
 import com.redso.signaller.core.model.PushNotification;
-import com.redso.signaller.ui.ChatRoomActivity;
+import com.redso.signaller.ui.AbstractChatRoomActivity;
 
 import java.util.HashMap;
 
@@ -29,11 +29,12 @@ public class SignallerPushNotificationManager {
 
     Context context = Signaller.getInstance().getAppContext();
 
-    Intent intent = new Intent(context, ChatRoomActivity.class);
+    Intent intent = new Intent(context, Signaller.getInstance().getAppConfig().getChatRoomActivity());
     intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-    intent.putExtra(ChatRoomActivity.EXTRA_CHAT_ID, pushNotification.getChatId());
-    intent.putExtra(ChatRoomActivity.EXTRA_CHAT_ROOM_ID, pushNotification.getChatRoomId());
-    intent.putExtra(ChatRoomActivity.EXTRA_TITLE, pushNotification.getRoomTitle());
+    intent.putExtra(AbstractChatRoomActivity.EXTRA_FROM_PUSH_NOTIFICATION, true);
+    intent.putExtra(AbstractChatRoomActivity.EXTRA_CHAT_ID, pushNotification.getChatId());
+    intent.putExtra(AbstractChatRoomActivity.EXTRA_CHAT_ROOM_ID, pushNotification.getChatRoomId());
+    intent.putExtra(AbstractChatRoomActivity.EXTRA_TOOLBAR_TITLE, pushNotification.getRoomTitle());
 
     PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
