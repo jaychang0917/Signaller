@@ -127,7 +127,7 @@ public final class Signaller {
     });
   }
 
-  public void goToIndividualChatMessagePage(Context context, String targetUserId, String toolbarTitle) {
+  public void goToIndividualChatRoomPage(Context context, String targetUserId, String toolbarTitle) {
     if (!SocketManager.getInstance().isConnected()) {
       SocketManager.getInstance().connect(new SocketConnectionCallback() {
         @Override
@@ -135,15 +135,15 @@ public final class Signaller {
           if (context == null) {
             return;
           }
-          goToIndividualChatMessagePageInternal(context, targetUserId, toolbarTitle);
+          goToIndividualChatRoomPageInternal(context, targetUserId, toolbarTitle);
         }
       });
     } else {
-      goToIndividualChatMessagePageInternal(context, targetUserId, toolbarTitle);
+      goToIndividualChatRoomPageInternal(context, targetUserId, toolbarTitle);
     }
   }
 
-  private void goToIndividualChatMessagePageInternal(Context context, String targetUserId, String toolbarTitle) {
+  private void goToIndividualChatRoomPageInternal(Context context, String targetUserId, String toolbarTitle) {
     String chatRoomId = ChatUtils.createChatRoomId(UserData.getInstance().getUserId(), targetUserId);
 
     SocketManager.getInstance().join(targetUserId, chatRoomId, new ChatRoomJoinCallback() {
@@ -154,7 +154,7 @@ public final class Signaller {
     });
   }
 
-  public void goToGroupChatMessagePage(Context context, String groupChatId, String toolbarTitle) {
+  public void goToGroupChatRoomPage(Context context, String groupChatId, String toolbarTitle) {
     if (!SocketManager.getInstance().isConnected()) {
       SocketManager.getInstance().connect(new SocketConnectionCallback() {
         @Override
@@ -162,15 +162,15 @@ public final class Signaller {
           if (context == null) {
             return;
           }
-          goToIndividualChatMessagePageInternal(context, groupChatId, toolbarTitle);
+          goToIndividualChatRoomPageInternal(context, groupChatId, toolbarTitle);
         }
       });
     } else {
-      goToIndividualChatMessagePageInternal(context, groupChatId, toolbarTitle);
+      goToIndividualChatRoomPageInternal(context, groupChatId, toolbarTitle);
     }
   }
 
-  private void goToGroupChatMessagePageInternal(Context context, String groupChatId, String toolbarTitle) {
+  private void goToGroupChatRoomPageInternal(Context context, String groupChatId, String toolbarTitle) {
     SocketManager.getInstance().join(null, groupChatId, new ChatRoomJoinCallback() {
       @Override
       public void onChatRoomJoined(String chatRoomId) {

@@ -86,6 +86,7 @@ public class App extends MultiDexApplication {
         }
       })
       .setChatRoomMessageInputViewProvider(new SimpleChatRoomMessageInputViewProvider() {
+        // if you enable the default emoji keyboard, your MUST use SignallerEditText as the input view
         @Override
         public int getLayoutRes() {
           return R.layout.view_message_input;
@@ -96,7 +97,7 @@ public class App extends MultiDexApplication {
           return R.id.inputEditText;
         }
 
-        // optional
+        // optional, set it if you want an emoji keyboard
         @Override
         public EmojiKeyboardViewInfo getEmojiKeyboardViewInfo() {
           return new EmojiKeyboardViewInfo() {
