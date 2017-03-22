@@ -5,7 +5,7 @@ import android.support.annotation.IdRes;
 
 public interface EmojiKeyboardViewInfo {
 
-  @IdRes int getEmojiIconViewId();
+  @IdRes int getEmojiIconImageViewId();
 
   @DrawableRes int getEmojiIconResId();
 

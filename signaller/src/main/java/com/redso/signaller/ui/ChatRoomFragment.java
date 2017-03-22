@@ -210,7 +210,7 @@ public class ChatRoomFragment extends RxFragment implements ChatRoomOperations {
 
     EmojiKeyboardViewInfo emojiKeyboardViewInfo = chatRoomMessageInputViewProvider.getEmojiKeyboardViewInfo();
     if (emojiKeyboardViewInfo != null) {
-      emojiIconView = (ImageView) messageInputView.findViewById(emojiKeyboardViewInfo.getEmojiIconViewId());
+      emojiIconView = (ImageView) messageInputView.findViewById(emojiKeyboardViewInfo.getEmojiIconImageViewId());
       emojiIconView.setOnClickListener(view -> {
         showEmojiKeyboard();
       });

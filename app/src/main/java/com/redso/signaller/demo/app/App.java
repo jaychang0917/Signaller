@@ -102,7 +102,7 @@ public class App extends MultiDexApplication {
         public EmojiKeyboardViewInfo getEmojiKeyboardViewInfo() {
           return new EmojiKeyboardViewInfo() {
             @Override
-            public int getEmojiIconViewId() {
+            public int getEmojiIconImageViewId() {
               return R.id.emojiIconView;
             }
 
