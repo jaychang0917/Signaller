@@ -166,7 +166,7 @@ public class SocketManager {
   void join(String userId, String chatRoomId, ChatRoomJoinCallback callback) {
     try {
       JSONObject object = new JSONObject();
-      // if userId is null, means join ownself
+      // if userId is null, means join a group chat
       if (userId != null) {
         object.put("user_id", userId);
       }

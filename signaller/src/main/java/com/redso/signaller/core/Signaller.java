@@ -162,11 +162,11 @@ public final class Signaller {
           if (context == null) {
             return;
           }
-          goToIndividualChatRoomPageInternal(context, groupChatId, toolbarTitle);
+          goToGroupChatRoomPageInternal(context, groupChatId, toolbarTitle);
         }
       });
     } else {
-      goToIndividualChatRoomPageInternal(context, groupChatId, toolbarTitle);
+      goToGroupChatRoomPageInternal(context, groupChatId, toolbarTitle);
     }
   }
 
@@ -197,20 +197,38 @@ public final class Signaller {
     proxy.sendTextMessage(message);
   }
 
-  public void joinChatRoom(String chatRoomId) {
-    joinChatRoom(chatRoomId, null);
+  public void joinIndividualChatRoom(String targetUserId) {
+    joinIndividualChatRoom(targetUserId, null);
   }
 
-  public void joinChatRoom(String chatRoomId, ChatRoomLeaveCallback callback) {
+  public void joinIndividualChatRoom(String targetUserId, ChatRoomJoinCallback callback) {
+    String chatRoomId = ChatUtils.createChatRoomId(UserData.getInstance().getUserId(), targetUserId);
+    SocketManager.getInstance().join(targetUserId, chatRoomId, callback);
+  }
+
+  public void joinGroupChatRoom(String groupChatId) {
+    joinGroupChatRoom(groupChatId, null);
+  }
+
+  public void joinGroupChatRoom(String groupChatId, ChatRoomJoinCallback callback) {
+    SocketManager.getInstance().join(null, groupChatId, callback);
+  }
+
+  public void leaveIndividualChatRoom(String targetUserId) {
+    leaveIndividualChatRoom(targetUserId, null);
+  }
+
+  public void leaveIndividualChatRoom(String targetUserId, ChatRoomLeaveCallback callback) {
+    String chatRoomId = ChatUtils.createChatRoomId(UserData.getInstance().getUserId(), targetUserId);
     SocketManager.getInstance().leave(chatRoomId, callback);
   }
 
-  public void leaveChatRoom(String chatRoomId) {
-    leaveChatRoom(chatRoomId, null);
+  public void leaveGroupChatRoom(String groupChatId) {
+    leaveGroupChatRoom(groupChatId, null);
   }
 
-  public void leaveChatRoom(String chatRoomId, ChatRoomLeaveCallback callback) {
-    SocketManager.getInstance().leave(chatRoomId, callback);
+  public void leaveGroupChatRoom(String groupChatId, ChatRoomLeaveCallback callback) {
+    SocketManager.getInstance().leave(groupChatId, callback);
   }
 
   public void getUnreadMessageCount(UnreadMessageCountCallback callback) {
