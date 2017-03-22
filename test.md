@@ -14,10 +14,11 @@
     - [Connect / Disconnect Socket](#socket)
     - [Join / Leave Chat Room](#join_leave_room)
     - [Send Message](#send_msg)
-    - [Go to chat page](#go_chat_page)
+    - [Go to Chat Page](#go_chat_page)
     - [Get Unread Message Count](#unread)
     - [Push Notification Handling](#push)
-    - [Customize chatroom page](#cus_chatroom) 
+    - [Embed Chat Room](#embed_chatroom) 
+    - [Use Own Photo Picker](#cus_photo_picker)
 
 ## Sample project
 <img src="https://github.com/jaychang0917/SimpleRecyclerView/blob/master/art/qr_code_1_1_9.png" width="100" height="100">
@@ -275,21 +276,21 @@ And register it in `AndroidManifest.xml`
 
 If you **ONLY** need signaller push notification, signaller will do all the tedious works for you!
 
-### <a name=cus_chatroom>Customize chatroom page</a>
-In some case you want to embed the chat room fragment in somewhere of your page, you can use `ChatRoomFragment`.
+### <a name=embed_chatroom>Embed Chat Room</a>
+In some case you want to embed the chat room in somewhere of your page, you can use `ChatRoomFragment`.
 ```java
 ChatRoomFragment.fromUserId(userId);
 // or
 ChatRoomFragment.fromGroupId(groupId);
 ```
 
-### <a name=cus_photo_picker>Use own photo picker</a>
+### <a name=cus_photo_picker>Customize Photo Picker Icon Click Event Handing</a>
 Signaller shows a default photo picker for choosing photo when you click the photo picker icon. If you want to customize the
-click event handling, you should set a `PickPhotoCallback` to `ChatRoomFragment`.
+click event handling (e.g. show a dialog to choose camera or photo picker), you should set a `PickPhotoCallback` to `ChatRoomFragment`.
 ```java
 ChatRoomFragment chatRoomFragment = ChatRoomFragment.fromUserId(userId);
 // Set your custom action when photo icon is clicked
-chatRoomFragment.setPickPhotoCallback(this::showCustomPhotoPicker);
+chatRoomFragment.setPickPhotoCallback(callback);
 ```
 After you get the photo uri,
 ```java
