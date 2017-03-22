@@ -10,13 +10,14 @@
 
 ## Table of Contents
 - [Basic Usage](#basic_usage)
-- [Connect / Disconnect Socket](#socket)
-- [Join / Leave Chat Room](#join_leave_room)
-- [Send Message](#send_msg)
-- [Go to chat page](#go_chat_page)
-- [Get Unread Message Count](#unread)
-- [Push Notification](#push)
-- [Customize chatroom page](#cus_chatroom) 
+- [Advance Usage](#adv_usage)
+    - [Connect / Disconnect Socket](#socket)
+    - [Join / Leave Chat Room](#join_leave_room)
+    - [Send Message](#send_msg)
+    - [Go to chat page](#go_chat_page)
+    - [Get Unread Message Count](#unread)
+    - [Push Notification](#push)
+    - [Customize chatroom page](#cus_chatroom) 
 
 ## Sample project
 <img src="https://github.com/jaychang0917/SimpleRecyclerView/blob/master/art/qr_code_1_1_9.png" width="100" height="100">
@@ -193,47 +194,88 @@ getChildFragmentManager().beginTransaction()
 
 #### That's it!
 
-## <a name=socket>Connect / Disconnect Socket</a>
+---
+
+## <a name=adv_usage>Advanced Usage</a>
+
+### <a name=socket>Connect / Disconnect Socket</a>
 ```java
 Signaller.getInstance().connectSocket(accessToken); 
 // or
 Signaller.getInstance().connectSocket(accessToken, callback); 
 ```
 
-## <a name=join_leave_room>Join / Leave Chat Room</a>
+### <a name=join_leave_room>Join / Leave Chat Room</a>
 ```java
-Signaller.getInstance().joinChatRoom(chatRoomId); 
+Signaller.getInstance().joinIndividualChatRoom(targetUserId); 
 // or
-Signaller.getInstance().joinChatRoom(chatRoomId, callback); 
+Signaller.getInstance().joinIndividualChatRoom(targetUserId, callback); 
 ```
 ```java
-Signaller.getInstance().leaveChatRoom(chatRoomId); 
+Signaller.getInstance().joinGroupChatRoom(groupChatId); 
 // or
-Signaller.getInstance().leaveChatRoom(chatRoomId, callback); 
+Signaller.getInstance().joinGroupChatRoom(groupChatId, callback); 
+```
+```java
+Signaller.getInstance().leaveIndividualChatRoom(targetUserId); 
+// or
+Signaller.getInstance().leaveIndividualChatRoom(targetUserId, callback); 
+```
+```java
+Signaller.getInstance().leaveGroupChatRoom(groupChatId); 
+// or
+Signaller.getInstance().leaveGroupChatRoom(groupChatId, callback); 
 ```
 
-## <a name=send_msg>Send Message</a>
+### <a name=send_msg>Send Message</a>
 ```java
 Signaller.getInstance().sendTextMessage(message); 
 // or
 Signaller.getInstance().sendImageMessage(uri); 
 ```
 
-## <a name=go_chat_page>Go to chat room page</a>
+### <a name=go_chat_page>Go to chat room page</a>
 ```java
 Signaller.getInstance().goToIndividualChatRoomPage(context, targetUserId, toolbarTitle); 
 // or
 Signaller.getInstance().goToGroupChatRoomPage(context, groupChatId, toolbarTitle); 
 ```
 
-## <a name=unread>Get Unread Message Count</a>
+### <a name=unread>Get Unread Message Count</a>
 ```java
 Signaller.getInstance().getUnreadMessageCount(callback)
 ```
 
-## <a name=push>Push Notification</a>
+### <a name=push>Push Notification Handling</a>
+If you need *BOTH* signaller and app specific push notification, what you need to do is just create a service which extends 
+`SignallerPushNotificationService`, and handle your app push notification logic in `onMessageReceived()`, that is it, siganller will do the rest for you.
+```java
+public class PushNotificationService extends SignallerPushNotificationService {
 
-## <a name=cus_chatroom>Customize chatroom page</a>
+  @Override
+  public void onMessageReceived(String from, Bundle data) {
+    super.onMessageReceived(from, data);
+
+    // app push notification handling
+  }
+
+}
+```
+And register it in `AndroidManifest.xml`
+```xml
+<service
+    android:name=".chat.PushNotificationService"
+    android:exported="false">
+    <intent-filter>
+        <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+    </intent-filter>
+</service>
+```
+
+If you *ONLY* need siganller push notification, signaller do all the tedious works for you!
+
+### <a name=cus_chatroom>Customize chatroom page</a>
+
 
 
 
