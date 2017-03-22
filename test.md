@@ -236,7 +236,7 @@ Signaller.getInstance().sendTextMessage(message);
 Signaller.getInstance().sendImageMessage(imageUri); 
 ```
 
-### <a name=go_chat_page>Go to chat room page</a>
+### <a name=go_chat_page>Go to Chat Room Page</a>
 ```java
 Signaller.getInstance().goToIndividualChatRoomPage(context, targetUserId, toolbarTitle); 
 // or
