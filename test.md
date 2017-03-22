@@ -16,7 +16,7 @@
     - [Send Message](#send_msg)
     - [Go to chat page](#go_chat_page)
     - [Get Unread Message Count](#unread)
-    - [Push Notification](#push)
+    - [Push Notification Handling](#push)
     - [Customize chatroom page](#cus_chatroom) 
 
 ## Sample project
