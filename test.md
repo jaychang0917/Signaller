@@ -18,7 +18,7 @@
     - [Get Unread Message Count](#unread)
     - [Push Notification Handling](#push)
     - [Embed Chat Room](#embed_chatroom) 
-    - [Use Own Photo Picker](#cus_photo_picker)
+    - [Customize Photo Picker Icon Click Event Handing](#cus_photo_picker)
 
 ## Sample project
 <img src="https://github.com/jaychang0917/SimpleRecyclerView/blob/master/art/qr_code_1_1_9.png" width="100" height="100">
