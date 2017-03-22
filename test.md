@@ -90,7 +90,7 @@ public class App extends MultiDexApplication {
         }
       })
       .setChatRoomMessageInputViewProvider(new SimpleChatRoomMessageInputViewProvider() {
-        // if you enable the default emoji keyboard, your MUST use SignallerEditText as the input view
+        // if you enabled the default emoji keyboard, your MUST use SignallerEditText as the input view
         @Override
         public int getLayoutRes() {
           return R.layout.view_message_input;
@@ -106,7 +106,7 @@ public class App extends MultiDexApplication {
         public EmojiKeyboardViewInfo getEmojiKeyboardViewInfo() {
           return new EmojiKeyboardViewInfo() {
             @Override
-            public int getEmojiIconViewId() {
+            public int getEmojiIconImageViewId() {
               return R.id.emojiIconView;
             }
 
@@ -177,7 +177,7 @@ public class App extends MultiDexApplication {
 Signaller.getInstance().connect(accessToken, userId);
 ```
 
-### Step 3 - Disconnect signaller after logout
+### Step 3 - Disconnect signaller when logout
 ```java
 Signaller.getInstance().disconnect();
 ```
@@ -232,7 +232,7 @@ Signaller.getInstance().leaveGroupChatRoom(groupChatId, callback);
 ```java
 Signaller.getInstance().sendTextMessage(message); 
 // or
-Signaller.getInstance().sendImageMessage(uri); 
+Signaller.getInstance().sendImageMessage(imageUri); 
 ```
 
 ### <a name=go_chat_page>Go to chat room page</a>
@@ -244,11 +244,11 @@ Signaller.getInstance().goToGroupChatRoomPage(context, groupChatId, toolbarTitle
 
 ### <a name=unread>Get Unread Message Count</a>
 ```java
-Signaller.getInstance().getUnreadMessageCount(callback)
+Signaller.getInstance().getUnreadMessageCount(callback);
 ```
 
 ### <a name=push>Push Notification Handling</a>
-If you need *BOTH* signaller and app specific push notification, what you need to do is just create a service which extends 
+If you need **BOTH** signaller and app specific push notification, what you need to do is just create a service which extends 
 `SignallerPushNotificationService`, and handle your app push notification logic in `onMessageReceived()`, that is it, siganller will do the rest for you.
 ```java
 public class PushNotificationService extends SignallerPushNotificationService {
@@ -273,10 +273,28 @@ And register it in `AndroidManifest.xml`
 </service>
 ```
 
-If you *ONLY* need siganller push notification, signaller do all the tedious works for you!
+If you **ONLY** need signaller push notification, signaller will do all the tedious works for you!
 
 ### <a name=cus_chatroom>Customize chatroom page</a>
+In some case you want to embed the chat room fragment in somewhere of your page, you can use `ChatRoomFragment`.
+```java
+ChatRoomFragment.fromUserId(userId);
+// or
+ChatRoomFragment.fromGroupId(groupId);
+```
 
-
+### <a name=cus_photo_picker>Use own photo picker</a>
+Signaller shows a default photo picker for choosing photo when you click the photo picker icon. If you want to customize the
+click event handling, you should set a `PickPhotoCallback` to `ChatRoomFragment`.
+```java
+ChatRoomFragment chatRoomFragment = ChatRoomFragment.fromUserId(userId);
+// Set your custom action when photo icon is clicked
+chatRoomFragment.setPickPhotoCallback(this::showCustomPhotoPicker);
+```
+After you get the photo uri,
+```java
+// Send the picked photo
+Signaller.getInstance().sendImageMessage(photoUri);
+```
 
 
