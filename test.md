@@ -6,6 +6,8 @@
 - [x] Push notification
 
 ## Todo
+- [ ] Support video, event message type
+- [ ] Support user online status
 - [ ] Prevent duplicate message request
 
 ## Table of Contents
@@ -20,16 +22,11 @@
     - [Embed Chat Room](#embed_chatroom) 
     - [Customize Photo Picker Icon Click Event Handing](#cus_photo_picker)
 
-## Sample project
-<img src="https://github.com/jaychang0917/SimpleRecyclerView/blob/master/art/qr_code_1_1_9.png" width="100" height="100">
-
-[Sample apk](https://github.com/jaychang0917/SimpleRecyclerView/blob/master/art/SimpleRecyclerView_1_1_9.apk)
-
 ## Installation
 In your app level build.gradle :
 ```java
 dependencies {
-    compile 'com.github.jaychang0917:SimpleRecyclerView:1.1.10'
+    compile 'com.jaychang:signaller:0.0.1'
 }
 ```
 
