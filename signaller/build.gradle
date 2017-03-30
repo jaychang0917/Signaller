@@ -13,9 +13,6 @@ buildscript {
 apply plugin: 'com.android.library'
 apply plugin: 'realm-android'
 apply plugin: 'me.tatarka.retrolambda'
-apply plugin: 'com.github.dcendents.android-maven'
-
-group='com.github.jaychang0917'
 
 android {
     compileSdkVersion 25
@@ -71,4 +68,78 @@ dependencies {
     compile 'com.github.jaychang0917:Utils:0.1.2'
     compile 'com.github.jaychang0917:SimpleRecyclerView:1.1.10'
     compile 'com.github.jaychang0917:nPhotoPicker:1.2.10'
+}
+
+apply plugin: 'com.jfrog.bintray'
+apply plugin: 'com.github.dcendents.android-maven'
+
+def gitUrl = 'git@bitbucket.org:redso/signaller.android.git'
+def repoName = 'signaller.android'
+def libraryName = 'Signaller'
+
+version = "0.0.1"
+group = "com.jaychang"
+
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+
+                // Set your license
+                licenses {
+                    license {
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id 'jaychang0917'
+                        name 'Jay Chang'
+                        email 'jay.chang@redso.com.hk'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                }
+            }
+        }
+    }
+}
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+
+bintray {
+    user = properties.getProperty("bintray.user")
+    key = properties.getProperty("bintray.apikey")
+    configurations = ['archives']
+    pkg {
+        repo = repoName
+        name = libraryName
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
+}
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    failOnError false
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
 }
