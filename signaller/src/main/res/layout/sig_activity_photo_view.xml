@@ -1,7 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<uk.co.senab.photoview.PhotoView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/photoView"
-    android:background="@android:color/black"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"/>
+    android:layout_height="match_parent">
+
+    <uk.co.senab.photoview.PhotoView
+        android:id="@+id/photoView"
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/closeView"
+        android:layout_width="wrap_content"
+        android:src="@drawable/ic_close"
+        android:padding="8dp"
+        android:layout_height="wrap_content"/>
+
+</FrameLayout>
