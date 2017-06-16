@@ -121,6 +121,7 @@ public class ChatRoomActivity extends RxAppCompatActivity {
     ButterKnife.bind(this);
     init();
     loadChatMessages();
+
   }
 
   @Override
