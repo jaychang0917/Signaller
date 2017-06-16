@@ -114,6 +114,8 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
+    AppUtils.setStatusBarColor(this, android.R.color.transparent);
+    AppUtils.setContentBehindStatusBar(this);
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sig_activity_chatroom);
     ButterKnife.bind(this);
