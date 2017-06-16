@@ -114,7 +114,6 @@ public class ChatRoomActivity extends RxAppCompatActivity {
 
   @Override
   protected void onCreate(@Nullable Bundle savedInstanceState) {
-    AppUtils.setStatusBarColor(this, R.color.sig_tran);
     AppUtils.setContentBehindStatusBar(this);
     super.onCreate(savedInstanceState);
     setContentView(R.layout.sig_activity_chatroom);
